@@ -7,8 +7,8 @@ class Battery(object):
         """
         Initialize a battery, assign it coordinates, type, capacity and id
         """
-        self.location = (x_coordinate, y_coordinate)
-        self.capacity = capacity
+        self.location = (int(x_coordinate), int(y_coordinate))
+        self.capacity = float(capacity)
         self.type = bat_type
         self.id = id(self)
         self.connected_houses = list()
