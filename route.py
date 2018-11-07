@@ -4,13 +4,14 @@ class Route(object):
     """
     # initiate id to 1
     id = 1
-    def __init__(self, house, battery):
+    def __init__(self, house, battery_id, battery_location):
         # route id
         self.id = Route.id
         Route.id += 1
         # def house and battery connected by route
         self.house = house
-        self.battery = battery
+        self.battery_id = battery_id
+        self.battery_location - battery_location
         # calculate manhattan distance
         self.length = abs(self.house.location[0] - self.battery.location[0]) + abs(self.house.location[1] - self.battery.location[1])
         # calculate cost

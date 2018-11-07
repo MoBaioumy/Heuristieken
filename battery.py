@@ -4,13 +4,18 @@ class Battery(object):
     """
     # initiate id to 1
     id = 1
-    def __init__(self, x_coordinate, y_coordinate, bat_type, capacity):
+    def __init__(self, x_coordinate, y_coordinate, bat_type, capacity, cost):
         """
         Initialize a battery, assign it coordinates, type, capacity and id
         """
         self.location = (int(x_coordinate), int(y_coordinate))
+        # max capacity
         self.capacity = float(capacity)
+        # keeps track of amount of capacity leftover
+        self.current_capacity = float(capacity)
         self.type = bat_type
+        self.cost = cost
+        # id
         self.id = Battery.id
         Battery.id += 1
         # list of all houses that are connected to this battery

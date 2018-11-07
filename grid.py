@@ -18,8 +18,6 @@ class Grid(object):
         # load houses and batteries
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
-        # list of routes
-        self.routes = list()
         # size of grid
         self.size = (50, 50)
 
@@ -27,7 +25,7 @@ class Grid(object):
         """
         Print description
         """
-        return f" ID: {self.id} size: {self.size}"
+        return f" GridID: {self.id} Grid size: {self.size}"
 
     def load_houses(self, filename):
         """
@@ -58,5 +56,23 @@ class Grid(object):
             # print
             for row in battery_reader:
                 if row[0].isdigit():
-                    batteries.append(Battery(row[0], row[1], "Normal", row[2]))
+                    batteries.append(Battery(row[0], row[1], "Normal", row[2], 5000))
         return batteries
+
+    def connect(self, house_id,  battery_id):
+        """
+        Connect a house to a battery and change information in system accordingly
+        """
+        # get house
+        for house in self.houses
+            if house.id == house_id
+                H = house
+            else
+                eprint("House not found")
+        # get battery
+        for battery in self.load_batteries:
+            if battery.id == battery_id
+                B_location = battery.location
+            else
+                eprint("Battery not found")
+        # create route
