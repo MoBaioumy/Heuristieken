@@ -8,11 +8,8 @@ class House(object):
         """
         Initialize an house, give it coordinates and a , description and room id
         """
-        # tuple with x/y location
         self.location = (int(x_coordinate), int(y_coordinate))
-        # output
-        self.max_output = max_output
-        # potential information in regard to batteries
+        self.max_output = float(max_output)
         self.closest_battery = []
         self.distance_closest_battery = []
         self.connected_battery = []

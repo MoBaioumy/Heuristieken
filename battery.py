@@ -8,12 +8,8 @@ class Battery(object):
         """
         Initialize a battery, assign it coordinates, type, capacity and id
         """
-        # location = tuple with coordinates
         self.location = (int(x_coordinate), int(y_coordinate))
-        # both keep track of max cap and current capactity (when houses are connected current capacity reduces)
-        self.max_capacity = capacity
-        self.current_capacity = capacity
-        # type and id
+        self.capacity = float(capacity)
         self.type = bat_type
         self.id = Battery.id
         Battery.id += 1
