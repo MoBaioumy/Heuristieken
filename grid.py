@@ -7,14 +7,21 @@ class Grid(object):
     """
     Representation of a grid in the SmartGrid assignment
     """
-
+    # initiate id to 1
+    id = 1
     def __init__(self, wijk_N):
         """
         Initialize a grid"""
-        # self.size = (length, width)
-        self.id = wijk_N
+        # id
+        self.id = Grid.id
+        Grid.id += 1
+        # load houses and batteries
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
+        # list of routes
+        self.routes = list()
+        # size of grid
+        self.size = (50, 50)
 
     def __str__(self):
         """
@@ -38,6 +45,7 @@ class Grid(object):
                     houses.append(House(row[0], row[1], row[2]))
 
         return houses
+
     def load_batteries(self, filename):
         """
         Load houses from .txt
@@ -45,7 +53,7 @@ class Grid(object):
         with open(filename, "r") as csvfile:
             # create variable with all lines
             battery_reader = csv.reader(csvfile)
-            # houselist
+            # battery list
             batteries = list()
             # print
             for row in battery_reader:
