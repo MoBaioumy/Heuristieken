@@ -1,6 +1,7 @@
 import csv
 from house import House
 from battery import Battery
+from route import Route
 
 class Grid(object):
     """
@@ -12,8 +13,8 @@ class Grid(object):
         Initialize a grid"""
         # self.size = (length, width)
         self.id = wijk_N
-        self.houses = self.load_houses(f"Huizen&Batterijen/{wijk_N}_huizen.csv")
-        self.batteries = self.load_batteries(f"Huizen&Batterijen/{wijk_N}_batterijen.csv")
+        self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
+        self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
 
     def __str__(self):
         """
@@ -51,6 +52,3 @@ class Grid(object):
                 if row[0].isdigit():
                     batteries.append(Battery(row[0], row[1], "Normal", row[2]))
         return batteries
-
-if __name__ == "__main__":
-    grid = Grid("wijk1")
