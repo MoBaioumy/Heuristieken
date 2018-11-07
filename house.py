@@ -8,7 +8,7 @@ class House(object):
         Initialize an house, give it coordinates and a , description and room id
         """
         self.location = (int(x_coordinate), int(y_coordinate))
-        self.max_output = int(max_output)
+        self.max_output = float(max_output)
         self.closest_battery = []
         self.distance_closest_battery = []
         self.connected_battery = []
