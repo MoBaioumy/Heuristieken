@@ -21,7 +21,9 @@ class House(object):
         House.id += 1
 
     def closest_battery(self, id):
-
+        """
+        Load houses and batteries first to Grid file to use this method
+        """
         # obtain location of the house
         x_house = self.houses[id].location[0]
         y_house = self.houses[id].location[1]
@@ -36,9 +38,9 @@ class House(object):
 
         # calculate overall distance
         man_distance = list(map(add, x_dif, y_dif))
-        index_battery = man_distance.index(min(man_distance))
+        battery_id = man_distance.index(min(man_distance))
 
-        return index_battery
+        return battery_id
 
     def __str__(self):
         """
