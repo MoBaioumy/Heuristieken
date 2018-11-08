@@ -1,3 +1,5 @@
+from operator import add
+
 class House(object):
     """
     Representation of a House in the SmartGrid assignment
@@ -17,6 +19,28 @@ class House(object):
         # id
         self.id = House.id
         House.id += 1
+
+    def closest_battery(self, id):
+        """
+        Load houses and batteries first to Grid file to use this method
+        """
+        # obtain location of the house
+        x_house = self.houses[id].location[0]
+        y_house = self.houses[id].location[1]
+
+        x_dif = []
+        y_dif = []
+
+        # calculate distances per x and y
+        for i in range(5):
+            x_dif.append(abs(x_house - self.batteries[i].location[0]))
+            y_dif.append(abs(y_house - self.batteries[i].location[1]))
+
+        # calculate overall distance
+        man_distance = list(map(add, x_dif, y_dif))
+        battery_id = man_distance.index(min(man_distance))
+
+        return battery_id
 
     def __str__(self):
         """
