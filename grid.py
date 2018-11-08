@@ -33,7 +33,8 @@ class Grid(object):
         """
         # Open file
         with open(filename, "r") as csvfile:
-            # create variable with all lines
+            # create variab
+            le with all lines
             houses_reader = csv.reader(csvfile)
             # houselist
             houses = list()
@@ -75,4 +76,11 @@ class Grid(object):
                 B_location = battery.location
             else
                 eprint("Battery not found")
-        # create route
+        # create Route
+
+    def calculate_cost(self):
+        total_cost = 0
+        for battery in self.batteries:
+            total_bat_cost += battery.cost
+            for route in battery.routes:
+                 total_route_cost += route.cost

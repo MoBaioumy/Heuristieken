@@ -10,7 +10,7 @@ class Battery(object):
         """
         self.location = (int(x_coordinate), int(y_coordinate))
         # max capacity
-        self.capacity = float(capacity)
+        self.max_capacity = float(capacity)
         # keeps track of amount of capacity leftover
         self.current_capacity = float(capacity)
         self.type = bat_type
@@ -18,8 +18,8 @@ class Battery(object):
         # id
         self.id = Battery.id
         Battery.id += 1
-        # list of all houses that are connected to this battery
-        self.connected_houses = list()
+        # list of all routes from this battery
+        self.routes = list()
 
     def __str__(self):
         """

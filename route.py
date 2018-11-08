@@ -11,7 +11,7 @@ class Route(object):
         # def house and battery connected by route
         self.house = house
         self.battery_id = battery_id
-        self.battery_location - battery_location
+        self.battery_location = battery_location
         # calculate manhattan distance
         self.length = abs(self.house.location[0] - self.battery.location[0]) + abs(self.house.location[1] - self.battery.location[1])
         # calculate cost
@@ -20,8 +20,7 @@ class Route(object):
         # set route
         self.grid_route = list()
         self.grid_route = self.plan_grid_route()
-
-
+        
     def __str__(self):
         """
         Print description
