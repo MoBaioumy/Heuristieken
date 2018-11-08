@@ -59,20 +59,20 @@ class Grid(object):
                     batteries.append(Battery(row[0], row[1], "Normal", row[2], 5000))
         return batteries
 
-    def connect(self, house_id,  battery_id):
-        """
-        Connect a house to a battery and change information in system accordingly
-        """
-        # get house
-        for house in self.houses
-            if house.id == house_id
-                H = house
-            else
-                eprint("House not found")
-        # get battery
-        for battery in self.load_batteries:
-            if battery.id == battery_id
-                B_location = battery.location
-            else
-                eprint("Battery not found")
-        # create route
+    # def connect(self, house_id,  battery_id):
+        # """
+        # Connect a house to a battery and change information in system accordingly
+        # """
+        # # get house
+        # for house in self.houses
+        #     if house.id == house_id
+        #         H = house
+        #     else
+        #         eprint("House not found")
+        # # get battery
+        # for battery in self.load_batteries:
+        #     if battery.id == battery_id
+        #         B_location = battery.location
+        #     else
+        #         eprint("Battery not found")
+        # # create route
