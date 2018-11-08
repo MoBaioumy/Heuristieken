@@ -20,7 +20,7 @@ class Route(object):
         # set route
         self.grid_route = list()
         self.grid_route = self.plan_grid_route()
-        
+
     def __str__(self):
         """
         Print description

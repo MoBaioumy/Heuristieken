@@ -17,6 +17,7 @@ class Grid(object):
         Grid.id += 1
         # load houses and batteries
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
+        self.unconnected_houses = self.houses
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
         # size of grid
         self.size = (50, 50)
@@ -33,8 +34,7 @@ class Grid(object):
         """
         # Open file
         with open(filename, "r") as csvfile:
-            # create variab
-            le with all lines
+            # create variable with all lines
             houses_reader = csv.reader(csvfile)
             # houselist
             houses = list()
@@ -65,18 +65,25 @@ class Grid(object):
         Connect a house to a battery and change information in system accordingly
         """
         # get house
-        for house in self.houses
-            if house.id == house_id
+        for house in self.unconnected_houses:
+            if house.id == house_id:
                 H = house
-            else
-                eprint("House not found")
+                break
+        # error check
+        if not H:
+            print("House not found")
+
         # get battery
-        for battery in self.load_batteries:
-            if battery.id == battery_id
-                B_location = battery.location
-            else
-                eprint("Battery not found")
+        for battery in self.batteries:
+            if battery.id == battery_id:
+                B = battery
+                break
+        # error check
+        if not B:
+            print("Battery not found")
+
         # create Route
+        move house from grid to battery
 
     def calculate_cost(self):
         total_cost = 0

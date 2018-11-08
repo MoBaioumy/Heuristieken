@@ -1,3 +1,5 @@
+from house import House
+
 class Battery(object):
     """
     Representation of a battery in the SmartGrid assignment
@@ -16,7 +18,7 @@ class Battery(object):
         self.type = bat_type
         self.cost = cost
         # id
-        self.id = Battery.d
+        self.id = Battery.id
         Battery.id += 1
         # list of all routes from this battery
         self.houses = list()

@@ -20,6 +20,9 @@ class House(object):
         self.id = House.id
         House.id += 1
 
+        # Thomas: I'm not sure if this methode can and should be implemented, you can't acces
+        # information from the grid e.g. self.houses since a house object does not contain grid info
+        # so maybe this method should be implemented in the grid 
     def closest_battery(self, id):
         """
         Load houses and batteries first to Grid file to use this method
