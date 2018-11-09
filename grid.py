@@ -34,30 +34,18 @@ class Grid(object):
         """
         # Open file
         with open(filename, "r") as csvfile:
-            # create variable with all lines
-            houses_reader = csv.reader(csvfile)
-            # houselist
-            houses = list()
-            # print
-            for row in houses_reader:
-                if row[0].isdigit():
-                    houses.append(House(row[0], row[1], row[2]))
-
+            # loop over rows of csv file, make house based on content and add house to house list of grid
+            houses = [House(row[0], row[1], row[2]) for row in csv.reader(csvfile) if row[0].isdigit()]
         return houses
 
     def load_batteries(self, filename):
         """
-        Load houses from .txt
+        Load batteries from .csv
         """
+        # open file
         with open(filename, "r") as csvfile:
-            # create variable with all lines
-            battery_reader = csv.reader(csvfile)
-            # battery list
-            batteries = list()
-            # print
-            for row in battery_reader:
-                if row[0].isdigit():
-                    batteries.append(Battery(row[0], row[1], "Normal", row[2], 5000))
+            # loop over rows of csv file make battery based on data and add to battery list
+            batteries = [Battery(row[0], row[1], "Normal", row[2], 5000) for row in csv.reader(csvfile) if row[0].isdigit()]
         return batteries
 
     def connect(self, house_id,  battery_id):
@@ -65,29 +53,57 @@ class Grid(object):
         Connect a house to a battery and change information in system accordingly
         """
         # get house
-        for house in self.unconnected_houses:
-            if house.id == house_id:
-                H = house
-                break
+        H = [house for house in self.unconnected_houses if house.id == house_id]
         # error check
         if not H:
             print("House not found")
+            return 1
+        if len(H) > 1:
+            print("Mutiple houses found, please reload grid")
+            return 2
+        # unlist
+        H = H[0]
 
         # get battery
-        for battery in self.batteries:
-            if battery.id == battery_id:
-                B = battery
-                break
+        B = [battery for battery in self.batteries if battery.id == battery_id]
         # error check
         if not B:
             print("Battery not found")
+            return 1
+        if len(B) > 1:
+            print("Mutiple batteries found, please reload grid")
+            return 2
+        # unlist
+        B = B[0]
 
-        # create Route
-        move house from grid to battery
+        if B.current_capacity < H.max_output:
+            print(f"Battery capacity ({round(B.current_capacity, 2)}) is not sufficient")
+            return 3
 
-    def calculate_cost(self):
-        total_cost = 0
-        for battery in self.batteries:
-            total_bat_cost += battery.cost
-            for route in battery.routes:
-                 total_route_cost += route.cost
+        # remove house from unconnected list
+        self.unconnected_houses.remove(H)
+
+        # get battery index in battery list of grid
+        B_index = self.batteries.index(B)
+
+        # Make a route and append it to the route list in the corresponding battery
+        route = Route(H, B.id, B.location)
+        self.batteries[B_index].routes.append(route)
+
+        # print connection made
+        print(f"connected house {H.id} with battery {B.id}")
+
+        # recalculate battery current capacity
+        self.batteries[B_index].current_capacity -= H.max_output
+
+        # print leftover capacity
+        print(f"capcity left on battery: {round(self.batteries[B_index].current_capacity, 2)}")
+
+
+
+    # def calculate_cost(self):
+    #     total_cost = 0
+    #     for battery in self.batteries:
+    #         total_bat_cost += battery.cost
+    #         for route in battery.routes:
+    #              total_route_cost += route.cost

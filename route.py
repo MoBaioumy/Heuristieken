@@ -13,7 +13,7 @@ class Route(object):
         self.battery_id = battery_id
         self.battery_location = battery_location
         # calculate manhattan distance
-        self.length = abs(self.house.location[0] - self.battery.location[0]) + abs(self.house.location[1] - self.battery.location[1])
+        self.length = abs(self.house.location[0] - self.battery_location[0]) + abs(self.house.location[1] - self.battery_location[1])
         # calculate cost
         cost_gridline = 9
         self.cost = self.length * cost_gridline
@@ -25,7 +25,7 @@ class Route(object):
         """
         Print description
         """
-        return f"this route connects house: {self.house.id} and battery: {self.battery.id}"
+        return f"this route (ID = {self.id}) connects house: {self.house.id} and battery: {self.battery_id}"
 
     def plan_grid_route(self):
         """
@@ -34,14 +34,12 @@ class Route(object):
         # initiate empty list to append to and return at end
         grid_route = list()
         # calculate the distance between x locations
-        distance_x = self.house.location[0] - self.battery.location[0]
+        distance_x = self.house.location[0] - self.battery_location[0]
         # calculate the distance between y locations
-        distance_y = self.house.location[1] - self.battery.location[1]
+        distance_y = self.house.location[1] - self.battery_location[1]
         # initiate current location that will be updated to house location
         current_location = self.house.location
 
-        for i in range(0, distance_x):
-            print(i)
         # loop over x axis update location in steps of 1
         for i in range(abs(distance_x)):
             # if difference is positive  increment with - 1
@@ -61,4 +59,5 @@ class Route(object):
                 current_location = (current_location[0], current_location[1] + 1)
                 grid_route.append(current_location)
         # return list of coordinates of grid_route
+        print(f"length route:{self.length}")
         return grid_route

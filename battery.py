@@ -21,7 +21,7 @@ class Battery(object):
         self.id = Battery.id
         Battery.id += 1
         # list of all routes from this battery
-        self.houses = list()
+        self.routes = list()
 
     def __str__(self):
         """
