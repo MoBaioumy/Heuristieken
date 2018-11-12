@@ -7,6 +7,7 @@ Created on Thu Nov  1 11:11:39 2018
 
 import matplotlib.pyplot as plt
 import csv
+# import 
 
 
 x_huizen = []
@@ -14,18 +15,24 @@ y_huizen = []
 with open('wijk1_huizen.csv', newline='') as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
-        x_huizen.append(row[0])
-        y_huizen.append(row[1])
+        try: 
+            x_huizen.append(int(row[0]))
+            y_huizen.append(int(row[1]))
+        except:
+            print("hi")
         # print(', '.join(row))
 
 x = [38, 43, 42, 49, 3]
 y = [12, 13, 3, 23, 45]
 
+#x_huizen.sort()
+#y_huizen.sort()
 
 plt.plot(x, y, '*b')
 plt.plot(x_huizen, y_huizen, '*r')
-plt.xticks([])
-plt.yticks([])
+
+plt.xticks(range(1, 50, 5))
+plt.yticks(range(1, 50, 5))
 plt.axis([-5, 60, -5, 60])
 plt.xlabel('X coordinates of area')
 plt.ylabel('Y coordinates of area')
