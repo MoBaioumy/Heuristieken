@@ -1,4 +1,5 @@
 from house import House
+from distance import distance
 
 class Battery(object):
     """
@@ -34,3 +35,23 @@ class Battery(object):
         Move battery to new x/y location
         """
         self.location = (new_x, new_y)
+        for route in self.routes:
+            route.battery_location = self.location
+            route.length = abs(route.house.location[0] - route.battery_location[0]) + abs(route.house.location[1] - route.battery_location[1])
+            route.cost = route.length * route.cost_gridline
+            route.grid_route = route.plan_grid_route()
+            print(route.id)
+
+    def find_closest_house(self, houses):
+        smallest_distance = 100000000000000000000000000000000000
+        smallest_distance_id = None
+        for house in houses:
+            dist = distance(house.location, self.location)
+            if self.current_capacity > house.max_output:
+                if dist < smallest_distance:
+                    smallest_distance = dist
+                    smallest_distance_id = house.id
+        if smallest_distance_id == None:
+            # print(f"No shortest distance found, probably because battery capacity is full. current capcity: {self.current_capacity}")
+            return
+        return smallest_distance_id
