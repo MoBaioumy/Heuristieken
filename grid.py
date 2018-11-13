@@ -101,23 +101,33 @@ class Grid(object):
         # print leftover capacity
         print(f"capcity left on battery: {round(self.batteries[B_index].current_capacity, 2)}")
 
-    # def disconnect(self, house_id)
-    #     for battery in self.batteries:
-    #         for route in battery.routes
-    #             if route.house.id == house_id:
-    #                 self.unconnected_houses.append(route.house)
-
+    def disconnect(self, house_id):
+        # loop over routes in each battery untill we find the correct house
+        for battery in self.batteries:
+            for route in battery.routes:
+                if route.house.id == house_id:
+                    # find battery index
+                    battery_idx = self.batteries.index(battery)
+                    # place house back to unconnected_houses
+                    self.unconnected_houses.append(route.house)
+                    # remove route
+                    self.batteries[battery_idx].routes.remove(route)
+                    return
+        # if house id not found print error message
+        print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
+        return
 
 
     def greedy(self):
         # find min and max
-        min = 100000000000
+        min = float('inf')
         max = 0
         for house in self.houses:
             if house.max_output > max:
                 max = house.max_output
             if house.max_output < min:
                 min = house.max_output
+
         # loop over batteries
         for battery in self.batteries:
             # repeat for amount of unconnected_houses
@@ -148,13 +158,14 @@ class Grid(object):
 
                     # find difference is still over 15 find if a combination of 2 house is better
                     current_best =  1000000000
+                    house_id1, house_id2 =  -1, -1
                     if difference_best > 5:
                         for house1 in self.unconnected_houses:
                             for house2 in self.unconnected_houses:
                                 if  0 < house1.max_output + house2.max_output - battery.current_capacity < 5 and house1.max_output + house2.max_output - battery.current_capacity < current_best:
                                     current_best = house1.max_output + house2.max_output - battery.current_capacity
                                     house_id = house1.id
-
+                                    house_id2 = house2.id
 
                     self.connect(house_id, battery.id)
 
