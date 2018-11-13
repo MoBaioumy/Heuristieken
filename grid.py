@@ -2,7 +2,9 @@ import csv
 from house import House
 from battery import Battery
 from route import Route
+from distance import distance
 from operator import attrgetter
+import copy
 
 class Grid(object):
     """
@@ -179,3 +181,46 @@ class Grid(object):
         for battery in self.batteries:
             for numb in range(150, 0, -1):
                 self.connect(numb, battery.id)
+
+    def find_best_option(self, houses, new_houses_cap, new_houses_total_dist):
+        # alle combinaties/kinderen genereren voor een batterij
+        #
+        # als de kosten boven self.simple kosten oplossing komen dan afkappen
+        # Dubbele combinaties?
+        # volgorde maakt niet uit, dus het gaat om combinaties --> uitrekene min en max aantal huizen per batterij,
+        # dus eerst sorteren en dan kijken hoeveel van de kleinste er in passen en hoeveel van de grootse er in passen
+        # of kosten van een oplossing opslaan en zodra je er onder komt afkappen
+        # als capaciteit is bereikt afpakken
+        def myFunc(house):
+            return house.max_output
+        self.unconnected_houses.sort(key=myFunc)
+        for i in range(5):
+            for house in houses:
+                print(house.id)
+                self.connect(house.id, i + 1)
+
+            print(self.batteries[i].current_capacity)
+
+
+
+        print(len(self.batteries[0].routes))
+
+
+    #     cap = self.batteries[0].max_capacity
+    #     if new_houses_cap > cap:
+    #         # print("cap reached")
+    #         return
+    #     if new_houses_total_dist > 450:
+    #         print("longer")
+    #         return
+    #     for house in houses:
+    #         new_houses = copy.deepcopy(houses)
+    #         for i in new_houses:
+    #                 if i.id == house.id:
+    #                     new_houses_cap += i.max_output
+    #                     dist =  distance(i.location, self.batteries[0].location)
+    #                     new_houses_total_dist += dist
+    #                     # print(new_houses_cap)
+    #                     new_houses.remove(i)
+    #         self.find_best_option(new_houses, new_houses_cap, new_houses_total_dist)
+    # print("done")
