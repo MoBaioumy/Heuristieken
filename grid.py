@@ -2,6 +2,7 @@ import csv
 from house import House
 from battery import Battery
 from route import Route
+from operator import attrgetter
 
 class Grid(object):
     """
@@ -110,7 +111,7 @@ class Grid(object):
 
     def greedy(self):
         # find min and max
-        min = 1000000
+        min = 100000000000
         max = 0
         for house in self.houses:
             if house.max_output > max:
@@ -146,11 +147,12 @@ class Grid(object):
                                 difference_best = battery.current_capacity - H.max_output
 
                     # find difference is still over 15 find if a combination of 2 house is better
+                    current_best =  1000000000
                     if difference_best > 5:
                         for house1 in self.unconnected_houses:
                             for house2 in self.unconnected_houses:
-                                if  house1.max_output + house2.max_output - battery.current_capacity < 5:
-
+                                if  0 < house1.max_output + house2.max_output - battery.current_capacity < 5 and house1.max_output + house2.max_output - battery.current_capacity < current_best:
+                                    current_best = house1.max_output + house2.max_output - battery.current_capacity
                                     house_id = house1.id
 
 
