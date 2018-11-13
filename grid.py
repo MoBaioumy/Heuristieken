@@ -117,6 +117,10 @@ class Grid(object):
         print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
         return
 
+    def calculate_total_cost(self):
+        total_cost = sum([battery.calculate_routes_cost() for battery in self.batteries])
+        return total_cost
+
 
     def greedy(self):
         # find min and max
@@ -137,11 +141,11 @@ class Grid(object):
 
                 # check if closest house is found
                 if not house_id == None:
-                    # find current house object
+                    # find current house as object
                     for house in self.unconnected_houses:
                         if house_id == house.id:
                             H = house
-                    # get difference between current cap and house max_output
+                    # get difference between current capacity and house max_output
                     difference_best = battery.current_capacity - H.max_output
                     # find better option if difference is in range 5 to max_max_ouput
                     if difference_best > 5 and difference_best < max:
@@ -156,10 +160,10 @@ class Grid(object):
                                 house_id = house.id
                                 difference_best = battery.current_capacity - H.max_output
 
-                    # find difference is still over 15 find if a combination of 2 house is better
+                    # find difference is still over 5 find if a combination of 2 house is better
                     current_best =  1000000000
                     house_id1, house_id2 =  -1, -1
-                    if difference_best > 5:
+                    if difference_best > 10:
                         for house1 in self.unconnected_houses:
                             for house2 in self.unconnected_houses:
                                 if  0 < house1.max_output + house2.max_output - battery.current_capacity < 5 and house1.max_output + house2.max_output - battery.current_capacity < current_best:
@@ -168,31 +172,10 @@ class Grid(object):
                                     house_id2 = house2.id
 
                     self.connect(house_id, battery.id)
+                else:
+                    print("No houses to connect")
 
-
-        # for counter in range(len(self.unconnected_houses)):
-        #     for battery in self.batteries:
-        #         house_id = battery.find_closest_house(self.unconnected_houses)
-        #         if not house_id == None:
-        #             for house in self.unconnected_houses:
-        #                 if house_id == house.id:
-        #                     H = house
-        #
-        #             print(battery.current_capacity - H.max_output)
-        #             if battery.current_capacity - H.max_output > 5 and battery.current_capacity - H.max_output < 76.16:
-        #
-        #                 for house in self.unconnected_houses:
-        #                     if battery.current_capacity - house.max_output < battery.current_capacity - H.max_output:
-        #                         house_id = H.id
-        #
-        #
-        #             self.connect(house_id, battery.id)
-
-
-
-    # def calculate_cost(self):
-    #     total_cost = 0
-    #     for battery in self.batteries:
-    #         total_bat_cost += battery.cost
-    #         for route in battery.routes:
-    #              total_route_cost += route.cost
+    def simple(self):
+        for battery in self.batteries:
+            for numb in range(150, 0, -1):
+                self.connect(numb, battery.id)

@@ -23,6 +23,8 @@ class Battery(object):
         Battery.id += 1
         # list of all routes from this battery
         self.routes = list()
+        # route cost
+        self.cost_routes = 0
 
     def __str__(self):
         """
@@ -55,3 +57,8 @@ class Battery(object):
             # print(f"No shortest distance found, probably because battery capacity is full. current capcity: {self.current_capacity}")
             return
         return smallest_distance_id
+
+    def calculate_routes_cost(self):
+        total_route_cost = sum([route.cost for route in self.routes])
+        self.cost_routes =  total_route_cost
+        return total_route_cost
