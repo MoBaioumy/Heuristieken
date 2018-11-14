@@ -12,6 +12,7 @@ class Grid(object):
     """
     # initiate id to 1
     id = 1
+    counter = 0
     def __init__(self, wijk_N):
         """
         Initialize a grid"""
@@ -110,10 +111,13 @@ class Grid(object):
                 if route.house.id == house_id:
                     # find battery index
                     battery_idx = self.batteries.index(battery)
+                    # update battery capacity
+                    self.batteries[battery_idx].current_capacity += route.house.max_output
                     # place house back to unconnected_houses
                     self.unconnected_houses.append(route.house)
                     # remove route
                     self.batteries[battery_idx].routes.remove(route)
+                    print(f"house {house_id} disconnected")
                     return
         # if house id not found print error message
         print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
@@ -125,7 +129,7 @@ class Grid(object):
 
 
     def greedy(self):
-        # find min and max
+        # find min and max output value
         min = float('inf')
         max = 0
         for house in self.houses:
@@ -182,7 +186,37 @@ class Grid(object):
             for numb in range(150, 0, -1):
                 self.connect(numb, battery.id)
 
-    def find_best_option(self, houses, new_houses_cap, new_houses_total_dist):
+    def range_connected(self, battery):
+        """
+        Returns absolute minimum and maximum of house that can be connected to input battery
+        """
+        # function that returns max output
+        def max_output_func(house):
+            return house.max_output
+        # sort houses from smallest max output to largest
+        self.unconnected_houses.sort(key=max_output_func)
+        # get min amount of houses able to connect
+        capacity_taken = 0
+        max_connected_houses = 0
+        for house in self.unconnected_houses:
+            if capacity_taken + house.max_output < battery.max_capacity:
+                capacity_taken += house.max_output
+                max_connected_houses += 1
+        # sort houses from largest to smallest max output
+        self.unconnected_houses.sort(reverse=True, key=max_output_func)
+        # get max amount of houses able to connect
+        capacity_taken = 0
+        min_connected_houses = 0
+        for house in self.unconnected_houses:
+            if capacity_taken + house.max_output < battery.max_capacity:
+                capacity_taken += house.max_output
+                min_connected_houses += 1
+
+        range = (min_connected_houses, max_connected_houses)
+        return range
+
+
+    def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):
         # alle combinaties/kinderen genereren voor een batterij
         #
         # als de kosten boven self.simple kosten oplossing komen dan afkappen
@@ -191,36 +225,24 @@ class Grid(object):
         # dus eerst sorteren en dan kijken hoeveel van de kleinste er in passen en hoeveel van de grootse er in passen
         # of kosten van een oplossing opslaan en zodra je er onder komt afkappen
         # als capaciteit is bereikt afpakken
-        def myFunc(house):
-            return house.max_output
-        self.unconnected_houses.sort(key=myFunc)
-        for i in range(5):
-            for house in houses:
-                print(house.id)
-                self.connect(house.id, i + 1)
+        if sum_houses_capacity > battery.max_capacity:
+            if sum_houses_distance < 300:
+                print("lalalalalalalaalalalalallaalalallalala")
+            print("cap reached")
+            return
+        if sum_houses_distance > 500:
+            print("longer route")
+            return
+        Grid.counter += 1
+        for house in houses:
+            new_houses = copy.deepcopy(houses)
+            for i in new_houses:
+                    if i.id == house.id:
+                        sum_houses_capacity+= i.max_output
+                        dist =  distance(i.location, battery.location)
+                        sum_houses_distance += dist
+                    new_houses.remove(i)
+            print(Grid.counter)
+            self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
 
-            print(self.batteries[i].current_capacity)
-
-
-
-        print(len(self.batteries[0].routes))
-
-
-    #     cap = self.batteries[0].max_capacity
-    #     if new_houses_cap > cap:
-    #         # print("cap reached")
-    #         return
-    #     if new_houses_total_dist > 450:
-    #         print("longer")
-    #         return
-    #     for house in houses:
-    #         new_houses = copy.deepcopy(houses)
-    #         for i in new_houses:
-    #                 if i.id == house.id:
-    #                     new_houses_cap += i.max_output
-    #                     dist =  distance(i.location, self.batteries[0].location)
-    #                     new_houses_total_dist += dist
-    #                     # print(new_houses_cap)
-    #                     new_houses.remove(i)
-    #         self.find_best_option(new_houses, new_houses_cap, new_houses_total_dist)
-    # print("done")
+    print("done")

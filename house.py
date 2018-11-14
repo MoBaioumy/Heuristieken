@@ -49,4 +49,4 @@ class House(object):
         """
         Print name and description
         """
-        return f"id: {self.id} x: {self.location[0]} y: {self.location[1]} capacity: {self.max_output}"
+        return f"id: {self.id} x: {self.location[0]} y: {self.location[1]} max output: {self.max_output}"
