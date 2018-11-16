@@ -178,8 +178,6 @@ class Grid(object):
                                     house_id2 = house2.id
 
                     self.connect(house_id, battery.id)
-                else:
-                    print("No houses to connect")
 
     def simple(self):
         for battery in self.batteries:
@@ -246,3 +244,35 @@ class Grid(object):
             self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
 
     print("done")
+
+    def greedy_optimized(self):
+
+        counter = 1
+
+        while counter == 1:
+            counter = 0
+            for batteries_one in self.batteries:
+                for house_one in batteries_one.routes:
+                    for batteries_two in self.batteries:
+                        for house_two in batteries_two.routes:
+
+                            total_one = house_one.house.max_output + batteries_one.current_capacity
+                            total_two = house_two.house.max_output + batteries_two.current_capacity
+
+                            if house_one.house.max_output < total_two and house_two.house.max_output < total_one:
+
+                                    lengte_new = distance(house_one.house.location, self.batteries[house_two.battery_id - 1].location) + distance(house_two.house.location, self.batteries[house_one.battery_id - 1].location)
+
+                                    lengte_old = house_one.length + house_two.length
+
+                                    if counter < 1 and lengte_new < lengte_old and house_one.house.id != house_two.house.id:
+
+                                        counter += 1
+                                        # disconnect houses
+                                        self.disconnect(house_one.house.id)
+                                        self.disconnect(house_two.house.id)
+
+                                        # switch connections
+                                        self.connect(house_one.house.id, house_two.battery_id)
+                                        self.connect(house_two.house.id, house_one.battery_id)
+                                        break
