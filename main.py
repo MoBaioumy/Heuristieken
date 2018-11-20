@@ -6,11 +6,11 @@ from route import Route
 
 
 if __name__ == "__main__":
-    grid = Grid("wijk3")
+    grid = Grid("wijk0")
     # for i in range(len(grid.houses)):
     #     grid.connect(i, 1)
 
-    grid.find_best_option(grid.unconnected_houses, grid.batteries[0], 0, 0)
+    grid.find_best_option(grid.unconnected_houses[0:3], grid.batteries[0], 0, 0)
 
     # grid.simple()
     # grid.greedy()
