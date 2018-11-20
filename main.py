@@ -3,9 +3,10 @@ from grid import Grid
 from house import House
 from battery import Battery
 from route import Route
-
+from distance import distance
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     grid = Grid("wijk0")
     # for i in range(len(grid.houses)):
     #     grid.connect(i, 1)
@@ -33,11 +34,16 @@ if __name__ == "__main__":
     #     print(i.house.max_output)
     # closest_house = grid.batteries[0].find_closest_house([])
     # print(closest_house)
+=======
+>>>>>>> e5d45d3b0733161c61b6416ef3e2784f7269c933
 
-    # total_output = [house.max_output for house in grid.houses]
-    # total_output = sum(total_output)
-    # print(total_output)
-    #
-    # total_capacity =[battery.max_capacity for battery in grid.batteries]
-    # total_capacity = sum(total_capacity)
-    # print(total_capacity)
+    grid = Grid("wijk1")
+    grid.greedy()
+    first = grid.calculate_total_cost()
+    grid.greedy_optimized()
+    second = grid.calculate_total_cost()
+    difference = first - second
+    print(difference)
+    print(grid.unconnected_houses)
+    
+    grid.draw_grid([10, 28], [9, 3])

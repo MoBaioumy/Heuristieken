@@ -4,6 +4,9 @@ from battery import Battery
 from route import Route
 from distance import distance
 from operator import attrgetter
+import matplotlib.pyplot as plt
+import numpy as np
+import random
 import copy
 
 class Grid(object):
@@ -178,8 +181,6 @@ class Grid(object):
                                     house_id2 = house2.id
 
                     self.connect(house_id, battery.id)
-                else:
-                    print("No houses to connect")
 
     def simple(self):
         for battery in self.batteries:
@@ -253,4 +254,69 @@ class Grid(object):
         #     self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
         #     for i in new_houses:
         #         print(i)
-        return
+    print("done")
+
+    def draw_grid(self, grid):
+        """
+        This method draw the grid itself with the houses and batteries but
+        not the connections
+        """
+        x = 2
+
+
+
+
+    def draw_route(self, house, bat):
+        """
+        This test function draws funtion based on a non logic based
+        greedy algorithm. So the batteries can go over limit
+        """
+        # if they share a coordinate, draw a staight line
+        if (house[0] == bat[0]) or (house[1] == bat[1]):
+            plt.plot([house[0], bat[0]], [house[1], bat[1]])
+
+        else:
+            mid_points = [ [house[0], bat[1]], [bat[0], house[1]]]
+            mid_point = mid_points[random.randint(0 ,1)]
+            #print(mid_point)
+            # mid_point = [house[0], bat[1]]
+
+            colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+            color = colors[random.randint(0, len(colors) - 1)]
+
+            plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
+            plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
+
+
+
+    def greedy_optimized(self):
+
+        counter = 1
+
+        while counter == 1:
+            counter = 0
+            for batteries_one in self.batteries:
+                for house_one in batteries_one.routes:
+                    for batteries_two in self.batteries:
+                        for house_two in batteries_two.routes:
+
+                            total_one = house_one.house.max_output + batteries_one.current_capacity
+                            total_two = house_two.house.max_output + batteries_two.current_capacity
+
+                            if house_one.house.max_output < total_two and house_two.house.max_output < total_one:
+
+                                    lengte_new = distance(house_one.house.location, self.batteries[house_two.battery_id - 1].location) + distance(house_two.house.location, self.batteries[house_one.battery_id - 1].location)
+
+                                    lengte_old = house_one.length + house_two.length
+
+                                    if counter < 1 and lengte_new < lengte_old and house_one.house.id != house_two.house.id:
+
+                                        counter += 1
+                                        # disconnect houses
+                                        self.disconnect(house_one.house.id)
+                                        self.disconnect(house_two.house.id)
+
+                                        # switch connections
+                                        self.connect(house_one.house.id, house_two.battery_id)
+                                        self.connect(house_two.house.id, house_one.battery_id)
+                                        break
