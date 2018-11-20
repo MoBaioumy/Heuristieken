@@ -81,11 +81,27 @@ def draw_route(house, bat):
         #print(mid_point)
         # mid_point = [house[0], bat[1]]
         
-        colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
-        color = colors[random.randint(0, len(colors) - 1)]
         
-        plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
-        plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
+# =============================================================================
+#         Random colors and angles
+# =============================================================================
+        
+#        colors = ['b', 'g', 'm', 'y', 'k', 'r', 'c' ]
+#        color = colors[random.randint(0, len(colors) - 1)]
+#        
+#        plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
+#        plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
+        
+        
+
+# =============================================================================
+#         # Every Bat has its own color
+# =============================================================================
+        
+        colors = ['b', 'g', 'm', 'y', 'k']
+        
+        plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{colors[i % 5]}')
+        plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{colors[i % 5]}')
         
     
 
