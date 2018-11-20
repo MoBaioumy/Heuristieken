@@ -226,23 +226,31 @@ class Grid(object):
         # of kosten van een oplossing opslaan en zodra je er onder komt afkappen
         # als capaciteit is bereikt afpakken
         if sum_houses_capacity > battery.max_capacity:
-            if sum_houses_distance < 300:
-                print("lalalalalalalaalalalalallaalalallalala")
             print("cap reached")
             return
         if sum_houses_distance > 500:
             print("longer route")
             return
         Grid.counter += 1
-        for house in houses:
-            new_houses = copy.deepcopy(houses)
-            for i in new_houses:
-                    if i.id == house.id:
-                        sum_houses_capacity+= i.max_output
-                        dist =  distance(i.location, battery.location)
-                        sum_houses_distance += dist
-                    new_houses.remove(i)
-            print(Grid.counter)
+
+        new_houses = copy.deepcopy(houses)
+        for house in new_houses:
+            print(house)
+            new_houses.remove(house)
             self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
 
-    print("done")
+        # for house in houses:
+        #     new_houses = copy.deepcopy(houses)
+        #     print(house)
+        #     for i in new_houses:
+        #         print(i)
+        #         if i.id == house.id:
+        #             sum_houses_capacity += i.max_output
+        #             dist =  distance(i.location, battery.location)
+        #             sum_houses_distance += dist
+        #         new_houses.remove(i)
+        #     print(Grid.counter)
+        #     self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
+        #     for i in new_houses:
+        #         print(i)
+        return
