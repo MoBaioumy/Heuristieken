@@ -4,6 +4,9 @@ from battery import Battery
 from route import Route
 from distance import distance
 from operator import attrgetter
+import matplotlib.pyplot as plt
+import numpy as np
+import random
 import copy
 
 class Grid(object):
@@ -244,6 +247,39 @@ class Grid(object):
             self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
 
     print("done")
+    
+    def draw_grid(self, grid):
+        """
+        This method draw the grid itself with the houses and batteries but 
+        not the connections
+        """
+        x = 2 
+               
+        
+        
+    
+    def draw_route(self, house, bat):
+        """
+        This test function draws funtion based on a non logic based 
+        greedy algorithm. So the batteries can go over limit
+        """
+        # if they share a coordinate, draw a staight line
+        if (house[0] == bat[0]) or (house[1] == bat[1]):
+            plt.plot([house[0], bat[0]], [house[1], bat[1]])
+            
+        else:
+            mid_points = [ [house[0], bat[1]], [bat[0], house[1]]]
+            mid_point = mid_points[random.randint(0 ,1)]
+            #print(mid_point)
+            # mid_point = [house[0], bat[1]]
+            
+            colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+            color = colors[random.randint(0, len(colors) - 1)]
+            
+            plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
+            plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
+    
+    
 
     def greedy_optimized(self):
 

@@ -15,3 +15,5 @@ if __name__ == "__main__":
     difference = first - second
     print(difference)
     print(grid.unconnected_houses)
+    
+    grid.draw_grid([10, 28], [9, 3])
