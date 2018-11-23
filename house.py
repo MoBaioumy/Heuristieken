@@ -43,7 +43,7 @@ class House(object):
         man_distance = list(map(add, x_dif, y_dif))
         battery_id = man_distance.index(min(man_distance))
 
-        return battery_id
+        return [battery_id, man_distance]
 
     def __str__(self):
         """

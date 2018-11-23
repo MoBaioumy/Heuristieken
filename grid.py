@@ -157,7 +157,7 @@ class Grid(object):
                     # get difference between current capacity and house max_output
                     difference_best = battery.current_capacity - H.max_output
                     # find better option if difference is in range 5 to max_max_ouput
-                    if difference_best > 5 and difference_best < max:
+                    if difference_best > (max - min) / 5 and difference_best < max:
                         # loop over unconnected_houses
                         for house in self.unconnected_houses:
                             # difference of current loop house
@@ -170,14 +170,15 @@ class Grid(object):
                                 difference_best = battery.current_capacity - H.max_output
 
                     # find difference is still over 5 find if a combination of 2 house is better
-                    current_best =  1000000000
+                    current_best = float('inf')
                     house_id1, house_id2 =  -1, -1
                     if difference_best > 10:
                         for house1 in self.unconnected_houses:
                             for house2 in self.unconnected_houses:
-                                if  0 < house1.max_output + house2.max_output - battery.current_capacity < 5 and house1.max_output + house2.max_output - battery.current_capacity < current_best:
+                                if  0 < house1.max_output + house2.max_output - battery.current_capacity < (max - min) / 5 and house1.max_output + house2.max_output - battery.current_capacity < current_best:
                                     current_best = house1.max_output + house2.max_output - battery.current_capacity
                                     house_id = house1.id
+                                    print("x")
                                     house_id2 = house2.id
 
                     self.connect(house_id, battery.id)
@@ -254,7 +255,6 @@ class Grid(object):
         #     self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
         #     for i in new_houses:
         #         print(i)
-    print("done")
 
     def draw_grid(self, grid):
         """
@@ -287,7 +287,41 @@ class Grid(object):
             plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
             plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
 
+    def shortest_paths(self):
+        """
+        Finds the manhattan distance for the shortest path for each house
+        Returns a list with all shortest distances
+        """
+        all_shortest = []
+        # loop over houses for each house loop over batteries
+        # find the shortest distance to a battery and append to output list
+        for house in self.houses:
+            current_house_shortest = float('inf')
+            for battery in self.batteries:
+                dist = distance(house.location, battery.location)
+                if dist < current_house_shortest:
+                    current_house_shortest = dist
+            all_shortest.append(current_house_shortest)
 
+        return all_shortest
+
+    def longest_paths(self):
+        """
+        Finds the manhattan distance for the longest path for each house
+        Returns a list with all longest distances
+        """
+        all_longest = []
+        # loop over houses for each house loop over batteries
+        # find the longest distance to a battery and append to output list
+        for house in self.houses:
+            current_house_shortest = float('-inf')
+            for battery in self.batteries:
+                dist = distance(house.location, battery.location)
+                if dist > current_house_shortest:
+                    current_house_shortest = dist
+            all_longest.append(current_house_shortest)
+
+        return all_longest
 
     def greedy_optimized(self):
 
