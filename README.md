@@ -11,17 +11,17 @@ Groene energie is de energie van de toekomst, en zelf produceren is de mode van 
 
 Voor een feasibility study zijn drie dummy-woonwijken opgesteld, met daarin vijf batterijen. De huizen hebben zonnepanelen met een maximale output, de batterijen hebben een maximale capaciteit.
 
-#### Problem A
+### Problem A
 
 Verbind alle huizen in de drie wijken aan een batterij. De maximumcapaciteit van de huizen mag die van de batterijen uiteraard niet overschrijden.
 
-##### State Space problem A
+#### State Space problem A
 
-##### Lower bound problem A
+#### Lower bound problem A
 
-##### Upper bound problem A
+#### Upper bound problem A
 
-#### Problem B
+### Problem B
 
 De batterijen kosten 5000 per stuk. De kabels kosten 9 per grid-segment. De kabels liggen op de gridlijnen, mogen ook gridpunten met een huis passeren, en de afstand van een huis tot een batterij wordt berekend volgens de manhattan distance.Bereken de kosten voor de in a) geconfigureerde wijk. Probeer je SmartGrid te optimaliseren en vind een zo goed mogelijke configuratie van kabels.
 
