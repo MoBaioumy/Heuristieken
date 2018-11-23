@@ -15,8 +15,8 @@ class Route(object):
         # calculate manhattan distance
         self.length = abs(self.house.location[0] - self.battery_location[0]) + abs(self.house.location[1] - self.battery_location[1])
         # calculate cost
-        cost_gridline = 9
-        self.cost = self.length * cost_gridline
+        self.cost_gridline = 9
+        self.cost = self.length * self.cost_gridline
         # set route
         self.grid_route = list()
         self.grid_route = self.plan_grid_route()
@@ -25,7 +25,9 @@ class Route(object):
         """
         Print description
         """
-        return f"this route (ID = {self.id}) connects house: {self.house.id} and battery: {self.battery_id}"
+        return f"this route (ID = {self.id}) connects house: {self.house.id} with battery: {self.battery_id}"
+
+
 
     def plan_grid_route(self):
         """
@@ -59,5 +61,5 @@ class Route(object):
                 current_location = (current_location[0], current_location[1] + 1)
                 grid_route.append(current_location)
         # return list of coordinates of grid_route
-        print(f"length route:{self.length}")
+        # print(f"length route:{self.length}")
         return grid_route
