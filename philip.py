@@ -12,6 +12,10 @@ if __name__ == "__main__":
     num_batteries = 5
 
     # load load_batteries
+    batteries = grid.batteries
+
+    batteries = [i for i in grid.batteries]
+
     batteries = []
     for i in range(len(grid.batteries)):
          batteries.append(grid.batteries[i])
