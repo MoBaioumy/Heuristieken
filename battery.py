@@ -45,18 +45,18 @@ class Battery(object):
             print(route.id)
 
     def find_closest_house(self, houses):
-        smallest_distance = 100000000000000000000000000000000000
-        smallest_distance_id = None
+        smallest_distance = float('inf')
+        smallest_distance_house = None
         for house in houses:
             dist = distance(house.location, self.location)
             if self.current_capacity > house.max_output:
                 if dist < smallest_distance:
                     smallest_distance = dist
-                    smallest_distance_id = house.id
-        if smallest_distance_id == None:
+                    smallest_distance_house = house
+        if smallest_distance_house == None:
             # print(f"No shortest distance found, probably because battery capacity is full. current capcity: {self.current_capacity}")
             return
-        return smallest_distance_id
+        return smallest_distance_house
 
     def calculate_routes_cost(self):
         total_route_cost = sum([route.cost for route in self.routes])

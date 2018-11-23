@@ -10,13 +10,16 @@ if __name__ == "__main__":
     grid = Grid("wijk3")
 
 
+    # grid.random()
     grid.greedy()
+    grid.disconnect_all()
+    # grid.greedy()
     # grid.simple()
-    x = grid.calculate_total_cost() + 25000
-    grid.greedy_optimized()
-    print(x)
-    print(grid.calculate_total_cost() + 25000)
-
+    # x = grid.calculate_total_cost() + 25000
+    # grid.greedy_optimized()
+    # # print(x)
+    # print(grid.calculate_total_cost() + 25000)
+    print(len(grid.unconnected_houses))
     # grid = Grid("wijk2")
     # print(sum(grid.shortest_paths()))
     # print(sum(grid.longest_paths()))
