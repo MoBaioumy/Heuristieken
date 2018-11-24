@@ -19,7 +19,7 @@ class Route(object):
         self.cost = self.length * self.cost_gridline
         # set route
         self.grid_route = list()
-        self.grid_route = self.plan_grid_route()
+        self.grid_route = self.plan_manhattan_grid_route()
 
     def __str__(self):
         """
@@ -27,9 +27,7 @@ class Route(object):
         """
         return f"this route (ID = {self.id}) connects house: {self.house.id} with battery: {self.battery_id}"
 
-
-
-    def plan_grid_route(self):
+    def plan_manhattan_grid_route(self):
         """
         Plan a grid route by first moving all spaces on x axis then on y axis
         """
@@ -61,5 +59,5 @@ class Route(object):
                 current_location = (current_location[0], current_location[1] + 1)
                 grid_route.append(current_location)
         # return list of coordinates of grid_route
-        # print(f"length route:{self.length}")
+        print(f"length route:{self.length}")
         return grid_route
