@@ -26,7 +26,7 @@ class Battery(object):
         Battery.id += 1
 
         # list of all routes from this battery
-        self.routes = list
+        self.routes = list()
 
         # route cost
         self.cost_routes = 0
