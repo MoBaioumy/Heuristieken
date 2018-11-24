@@ -7,16 +7,22 @@ from distance import distance
 
 
 if __name__ == "__main__":
-
     i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
+
+    grid.greedy()
+    # grid.greedy_optimized()
+    print(grid.calculate_total_cost())
+
+    # for house in grid.houses:
+    #     print(house.max_output)
     # grid.simple()
-    print(grid.range_connected(grid.batteries[0]))
-
-
+    # print(grid.range_connected(grid.batteries[0]))
+    # grid.greedy()
+    # print(grid.calculate_total_cost())
     # wijk_naam = "wijk3"
-    # cost_bound = 43890
+    # cost_bound = 46258
     # repeats = 1500
     # grid.random_hillclimber(cost_bound, repeats)
 

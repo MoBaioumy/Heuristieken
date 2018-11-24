@@ -60,7 +60,7 @@ class Grid(object):
             # loop over rows of csv file make battery based on data and add to battery list
             batteries = [Battery(row[0], row[1], "Normal", row[2], 5000) for row in csv.reader(csvfile) if row[0].isdigit()]
         return batteries
-        
+
 
     def connect(self, house_id,  battery_id):
         """
@@ -80,6 +80,7 @@ class Grid(object):
 
         # get battery
         B = [battery for battery in self.batteries if battery.id == battery_id]
+
         # error check
         if not B:
             print("Battery not found, please enter the id not the index number")
@@ -309,10 +310,21 @@ class Grid(object):
         """
         Connects next closest house to battery
         """
+        # random.shuffle(self.batteries)
 
         # find min and max output value
         min_out = min(house.max_output for house in self.houses)
         max_out = max(house.max_output for house in self.houses)
+
+        # algoritm does not work for third wijk because range of output is very low
+        # the smallest house is left over when connecting via greedy,
+        # therefore for this wijk we connect this house first to the first battery
+        # this gives us the best option to make a good fit with this house included
+        if self.name == 'wijk3':
+            for house in self.houses:
+                if house.max_output == min_out:
+                    min_house_id = house.id
+                    self.connect(min_house_id, 1)
 
         # for each battery loop over houses find current closest house and connect
         # when leftover capacity is under the max output a house can possibly have
@@ -332,7 +344,7 @@ class Grid(object):
                 # leftover capcity after adding current house that will be connected
                 leftover_cap = battery.current_capacity - closest_house.max_output
 
-                if leftover_cap > 5 and leftover_cap < max_out:
+                if  max_out > leftover_cap > 5:
                     # find better option to connect if present
                     for house in self.unconnected_houses:
                         # difference of current loop house
@@ -355,8 +367,32 @@ class Grid(object):
                                 print('x')
 
 
+
+
                 # print(house_id_connect)
                 self.connect(house_id_connect, battery.id)
+
+        # if self.unconnected_houses != []:
+        #     # leftover_house = self.unconnected_houses[0]
+        #     for idx in range(len(self.unconnected_houses)):
+        #         leftover_house = self.unconnected_houses[idx]
+        #         # print(leftover_house.id)
+        #         for battery in self.batteries:
+        #             for route in battery.routes:
+        #                  cap_without_current_house = battery.current_capacity + route.house.max_output
+        #                  # print(cap_without_current_house)
+        #                  # print(cap_without_current_house - leftover_house.max_output)
+        #                  # print(battery.current_capacity)
+        #                  if  cap_without_current_house - leftover_house.max_output < battery.current_capacity:
+        #                      self.disconnect(route.house.id)
+        #                      self.connect(leftover_house.id, battery.id)
+        #                      leftover_house = self.unconnected_houses[idx]
+        #     print(leftover_house)
+        #
+        #     for i in self.batteries:
+        #         print(i.current_capacity)
+
+
 
 
     def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):

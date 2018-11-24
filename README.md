@@ -153,18 +153,18 @@ Wijk 1:
 * Simple: **76642**
 * Greedy normaal: **60586**
 * Greedy hillclimber: **56536**
-* Random hillclimber best:
+* Random hillclimber best: **56392**
 
 Wijk 2:
 * Simple: **66679**
 * Greedy normaal: **49138**
 * Greedy hillclimber: **46258**
-* Random hillclimber best:
+* Random hillclimber best: **45736**
 
 Wijk 3:
 * Simple: **69271**
-* Greedy normaal: **geen oplossing**
-* Greedy hillclimber: **43927**
+* Greedy normaal: **50371**
+* Greedy hillclimber: **44125**
 * Random hillclimber best: **43891**
 
 #### Upper bound probleem A + B
