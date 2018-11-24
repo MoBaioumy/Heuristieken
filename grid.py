@@ -436,7 +436,7 @@ class Grid(object):
         #     for i in new_houses:
         #         print(i)
 
-    def greedy_optimized(self):
+    def hillclimber(self):
         # please comment
 
         counter = 1
@@ -504,7 +504,7 @@ class Grid(object):
             costs.append(cost)
 
             # run hillclimber
-            self.greedy_optimized()
+            self.hillclimber()
             cost = self.calculate_total_cost()
 
             # if cost of hillclimber is best solution save data for .json export
@@ -529,7 +529,7 @@ class Grid(object):
 
         # save all results in dict aswell
         combination["All random results"] = costs
-        combination["All optimized results"] = costs_optimal
+        combination["All hillclimber results"] = costs_optimal
 
         # get current datetime in string
         dt = datetime.now()

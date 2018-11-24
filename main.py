@@ -12,7 +12,7 @@ if __name__ == "__main__":
     grid = Grid(wijk_naam)
 
     grid.greedy()
-    # grid.greedy_optimized()
+    grid.hillclimber()
     print(grid.calculate_total_cost())
 
     # for house in grid.houses:
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # grid.greedy()
     # grid.simple()
     # x = grid.calculate_total_cost() + 25000
-    # grid.greedy_optimized()
+    # grid.hillclimber()
     # # print(x)
     # print(grid.calculate_total_cost() + 25000)
     print(len(grid.unconnected_houses))
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # grid = Grid("wijk1")
     # grid.greedy()
     # first = grid.calculate_total_cost()
-    # grid.greedy_optimized()
+    # grid.hillclimber()
     # second = grid.calculate_total_cost()
     # difference = first - second
     # print(difference)
