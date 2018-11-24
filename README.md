@@ -19,7 +19,29 @@ Verbind alle huizen in de drie wijken aan een batterij. De maximumcapaciteit van
 
 De batterijen kosten 5000 per stuk. De kabels kosten 9 per grid-segment. De kabels liggen op de gridlijnen, mogen ook gridpunten met een huis passeren, en de afstand van een huis tot een batterij wordt berekend volgens de manhattan distance. Bereken de kosten voor de in a) geconfigureerde wijk. Probeer je SmartGrid te optimaliseren en vind een zo goed mogelijke configuratie van kabels.
 
+### Data structure
+
+Om deze problemen op te lossen hebben we een data structuur gecreerd met de volgende objecten
+
+* Grid
+* Battery
+* Route
+*
+
+
 ### Algoritmes
+
+#### Simple algortime
+
+Het simple algortime verbind alle huizen in omgekeerde volgorde aan de batterijen
+Dit geeft voor a) voor alle drie de wijken een oplossing (toevallig)
+Dit algoritme wordt vooral gebruikt als vergelijking om in ieder geval een oplossing te hebben
+
+#### Random algoritme
+
+Het random algoritme verbind per battery random huizen totdat de capaciteit vol is
+Garandeerd geen oplossing.
+Wanneer dit algoritme wel een oplossing geeft kan deze gebruikt worden als beginpunt van een hillclimber
 
 #### Greedy algoritme:
 

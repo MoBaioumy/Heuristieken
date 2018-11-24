@@ -10,10 +10,7 @@ class House(object):
         """
         self.location = (int(x_coordinate), int(y_coordinate))
         self.max_output = float(max_output)
-        self.closest_battery = []
-        self.distance_closest_battery = []
-        self.connected_battery = []
-        self.distance_connected_battery = []
+    
         # id
         self.id = House.id
         House.id += 1

@@ -32,11 +32,13 @@ class Grid(object):
         # size of grid
         self.size = (50, 50)
 
+
     def __str__(self):
         """
         Print description
         """
         return f" GridID: {self.id} Grid size: {self.size}"
+
 
     def load_houses(self, filename):
         """
@@ -48,6 +50,7 @@ class Grid(object):
             houses = [House(row[0], row[1], row[2]) for row in csv.reader(csvfile) if row[0].isdigit()]
         return houses
 
+
     def load_batteries(self, filename):
         """
         Load batteries from .csv
@@ -57,6 +60,7 @@ class Grid(object):
             # loop over rows of csv file make battery based on data and add to battery list
             batteries = [Battery(row[0], row[1], "Normal", row[2], 5000) for row in csv.reader(csvfile) if row[0].isdigit()]
         return batteries
+        
 
     def connect(self, house_id,  battery_id):
         """
@@ -110,7 +114,11 @@ class Grid(object):
         # print leftover capacity
         print(f"capcity left on battery: {round(self.batteries[B_index].current_capacity, 2)}")
 
+
     def disconnect(self, house_id):
+        """
+        Disconnects house based on id
+        """
         # loop over routes in each battery untill we find the correct house
         for battery in self.batteries:
             for route in battery.routes:
@@ -129,15 +137,25 @@ class Grid(object):
         print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
         return
 
+
     def disconnect_all(self):
+        """
+        Disconnects all houses from batteries
+        """
         for battery in self.batteries:
             while battery.routes != []:
                 self.disconnect(battery.routes[0].house.id)
 
 
     def calculate_total_cost(self):
-        total_cost = sum([battery.calculate_routes_cost() for battery in self.batteries])
+        """
+        Calculates the total cost of the current grid
+        """
+        total_cost_routes = sum([battery.calculate_routes_cost() for battery in self.batteries])
+        total_cost_batteries = sum([battery.cost for battery in self.batteries])
+        total_cost = total_cost_routes + total_cost_batteries
         return total_cost
+
 
     def shortest_paths(self):
         """
@@ -157,6 +175,7 @@ class Grid(object):
 
         return all_shortest
 
+
     def longest_paths(self):
         """
         Finds the manhattan distance for the longest path for each house
@@ -175,12 +194,14 @@ class Grid(object):
 
         return all_longest
 
+
     def draw_grid(self, grid):
         """
         This method draw the grid itself with the houses and batteries but
         not the connections
         """
         x = 2
+
 
     def draw_route(self, house, bat):
         """
@@ -202,6 +223,7 @@ class Grid(object):
 
             plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
             plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
+
 
     def range_connected(self, battery):
         """
@@ -232,6 +254,7 @@ class Grid(object):
         range = (min_connected_houses, max_connected_houses)
         return range
 
+
     # From here algorithms only, above methods
 
     def simple(self):
@@ -243,6 +266,9 @@ class Grid(object):
                 self.connect(numb, battery.id)
 
     def random(self):
+        """
+        Randomly connects houses to batteries, solution not garanteed
+        """
         # random.shuffle(self.batteries)
         for battery in self.batteries:
 
@@ -264,6 +290,10 @@ class Grid(object):
 
 
     def greedy_alt(self):
+        """
+        Alternative greedy algorithm that connect closest house then goes to next battery
+        Currently not working
+        """
         # writ alg that connects closest house then goes to next bat
         bat_full = 0
         while self.unconnected_houses != [] and bat_full < 5:
@@ -275,9 +305,10 @@ class Grid(object):
                     bat_full +=1
 
 
-
-
     def greedy(self):
+        """
+        Connects next closest house to battery
+        """
 
         # find min and max output value
         min_out = min(house.max_output for house in self.houses)
@@ -328,10 +359,10 @@ class Grid(object):
                 self.connect(house_id_connect, battery.id)
 
 
-
-
-
     def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):
+        """
+
+        """
         # alle combinaties/kinderen genereren voor een batterij
         #
         # als de kosten boven self.simple kosten oplossing komen dan afkappen
@@ -402,6 +433,7 @@ class Grid(object):
                                         self.connect(house_two.house.id, house_one.battery_id)
                                         break
 
+
     def random_hillclimber(self, cost_bound, repeats):
         """
         Random hillclimber take a certain cost bound and an amount of repeats as input
@@ -432,12 +464,12 @@ class Grid(object):
                 self.random()
 
             # costs
-            cost = self.calculate_total_cost() + 25000
+            cost = self.calculate_total_cost()
             costs.append(cost)
 
             # run hillclimber
             self.greedy_optimized()
-            cost = self.calculate_total_cost() + 25000
+            cost = self.calculate_total_cost()
 
             # if cost of hillclimber is best solution save data for .json export
             if cost < current_lowest_cost:
