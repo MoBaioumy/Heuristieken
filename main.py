@@ -5,14 +5,23 @@ from battery import Battery
 from route import Route
 from distance import distance
 
+
 if __name__ == "__main__":
+    wijk_naam = "wijk3"
+    grid = Grid(wijk_naam)
 
-    grid = Grid("wijk3")
+    cost_bound = 56000
+    repeats = 1
+
+    grid.random_hillclimber(cost_bound, repeats)
 
 
-    # grid.random()
-    grid.greedy()
-    grid.disconnect_all()
+
+
+
+
+
+
     # grid.greedy()
     # grid.simple()
     # x = grid.calculate_total_cost() + 25000

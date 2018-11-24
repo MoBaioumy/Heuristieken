@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 import copy
+import json
+from datetime import datetime
 
 class Grid(object):
     """
@@ -22,6 +24,7 @@ class Grid(object):
         # id
         self.id = Grid.id
         Grid.id += 1
+        self.name = wijk_N
         # load houses and batteries
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
         self.unconnected_houses = self.houses
@@ -131,9 +134,105 @@ class Grid(object):
             while battery.routes != []:
                 self.disconnect(battery.routes[0].house.id)
 
+
     def calculate_total_cost(self):
         total_cost = sum([battery.calculate_routes_cost() for battery in self.batteries])
         return total_cost
+
+    def shortest_paths(self):
+        """
+        Finds the manhattan distance for the shortest path for each house
+        Returns a list with all shortest distances
+        """
+        all_shortest = []
+        # loop over houses for each house loop over batteries
+        # find the shortest distance to a battery and append to output list
+        for house in self.houses:
+            current_house_shortest = float('inf')
+            for battery in self.batteries:
+                dist = distance(house.location, battery.location)
+                if dist < current_house_shortest:
+                    current_house_shortest = dist
+            all_shortest.append(current_house_shortest)
+
+        return all_shortest
+
+    def longest_paths(self):
+        """
+        Finds the manhattan distance for the longest path for each house
+        Returns a list with all longest distances
+        """
+        all_longest = []
+        # loop over houses for each house loop over batteries
+        # find the longest distance to a battery and append to output list
+        for house in self.houses:
+            current_house_shortest = float('-inf')
+            for battery in self.batteries:
+                dist = distance(house.location, battery.location)
+                if dist > current_house_shortest:
+                    current_house_shortest = dist
+            all_longest.append(current_house_shortest)
+
+        return all_longest
+
+    def draw_grid(self, grid):
+        """
+        This method draw the grid itself with the houses and batteries but
+        not the connections
+        """
+        x = 2
+
+    def draw_route(self, house, bat):
+        """
+        This test function draws funtion based on a non logic based
+        greedy algorithm. So the batteries can go over limit
+        """
+        # if they share a coordinate, draw a staight line
+        if (house[0] == bat[0]) or (house[1] == bat[1]):
+            plt.plot([house[0], bat[0]], [house[1], bat[1]])
+
+        else:
+            mid_points = [ [house[0], bat[1]], [bat[0], house[1]]]
+            mid_point = mid_points[random.randint(0 ,1)]
+            #print(mid_point)
+            # mid_point = [house[0], bat[1]]
+
+            colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+            color = colors[random.randint(0, len(colors) - 1)]
+
+            plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
+            plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
+
+    def range_connected(self, battery):
+        """
+        Returns absolute minimum and maximum of house that can be connected to input battery
+        """
+        # function that returns max output
+        def max_output_func(house):
+            return house.max_output
+        # sort houses from smallest max output to largest
+        self.unconnected_houses.sort(key=max_output_func)
+        # get min amount of houses able to connect
+        capacity_taken = 0
+        max_connected_houses = 0
+        for house in self.unconnected_houses:
+            if capacity_taken + house.max_output < battery.max_capacity:
+                capacity_taken += house.max_output
+                max_connected_houses += 1
+        # sort houses from largest to smallest max output
+        self.unconnected_houses.sort(reverse=True, key=max_output_func)
+        # get max amount of houses able to connect
+        capacity_taken = 0
+        min_connected_houses = 0
+        for house in self.unconnected_houses:
+            if capacity_taken + house.max_output < battery.max_capacity:
+                capacity_taken += house.max_output
+                min_connected_houses += 1
+
+        range = (min_connected_houses, max_connected_houses)
+        return range
+
+    # From here algorithms only, above methods
 
     def simple(self):
         """
@@ -144,20 +243,24 @@ class Grid(object):
                 self.connect(numb, battery.id)
 
     def random(self):
-
+        # random.shuffle(self.batteries)
         for battery in self.batteries:
 
+
             min_out = min(house.max_output for house in self.unconnected_houses)
+
 
             while battery.current_capacity > min_out:
 
                 idx = random.randint(0, len(self.unconnected_houses) - 1)
                 house_id = self.unconnected_houses[idx].id
 
-                # idx = random.randint(0, len(self.batteries) - 1)
-                # battery_id = self.batteries[idx].id
-
                 self.connect(house_id, battery.id)
+
+                if self.unconnected_houses == []:
+                    break
+                else:
+                    min_out = min(house.max_output for house in self.unconnected_houses)
 
     def greedy(self):
 
@@ -212,35 +315,6 @@ class Grid(object):
 
 
 
-    def range_connected(self, battery):
-        """
-        Returns absolute minimum and maximum of house that can be connected to input battery
-        """
-        # function that returns max output
-        def max_output_func(house):
-            return house.max_output
-        # sort houses from smallest max output to largest
-        self.unconnected_houses.sort(key=max_output_func)
-        # get min amount of houses able to connect
-        capacity_taken = 0
-        max_connected_houses = 0
-        for house in self.unconnected_houses:
-            if capacity_taken + house.max_output < battery.max_capacity:
-                capacity_taken += house.max_output
-                max_connected_houses += 1
-        # sort houses from largest to smallest max output
-        self.unconnected_houses.sort(reverse=True, key=max_output_func)
-        # get max amount of houses able to connect
-        capacity_taken = 0
-        min_connected_houses = 0
-        for house in self.unconnected_houses:
-            if capacity_taken + house.max_output < battery.max_capacity:
-                capacity_taken += house.max_output
-                min_connected_houses += 1
-
-        range = (min_connected_houses, max_connected_houses)
-        return range
-
 
     def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):
         # alle combinaties/kinderen genereren voor een batterij
@@ -280,74 +354,11 @@ class Grid(object):
         #     for i in new_houses:
         #         print(i)
 
-    def draw_grid(self, grid):
-        """
-        This method draw the grid itself with the houses and batteries but
-        not the connections
-        """
-        x = 2
 
 
-
-
-    def draw_route(self, house, bat):
-        """
-        This test function draws funtion based on a non logic based
-        greedy algorithm. So the batteries can go over limit
-        """
-        # if they share a coordinate, draw a staight line
-        if (house[0] == bat[0]) or (house[1] == bat[1]):
-            plt.plot([house[0], bat[0]], [house[1], bat[1]])
-
-        else:
-            mid_points = [ [house[0], bat[1]], [bat[0], house[1]]]
-            mid_point = mid_points[random.randint(0 ,1)]
-            #print(mid_point)
-            # mid_point = [house[0], bat[1]]
-
-            colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
-            color = colors[random.randint(0, len(colors) - 1)]
-
-            plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
-            plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
-
-    def shortest_paths(self):
-        """
-        Finds the manhattan distance for the shortest path for each house
-        Returns a list with all shortest distances
-        """
-        all_shortest = []
-        # loop over houses for each house loop over batteries
-        # find the shortest distance to a battery and append to output list
-        for house in self.houses:
-            current_house_shortest = float('inf')
-            for battery in self.batteries:
-                dist = distance(house.location, battery.location)
-                if dist < current_house_shortest:
-                    current_house_shortest = dist
-            all_shortest.append(current_house_shortest)
-
-        return all_shortest
-
-    def longest_paths(self):
-        """
-        Finds the manhattan distance for the longest path for each house
-        Returns a list with all longest distances
-        """
-        all_longest = []
-        # loop over houses for each house loop over batteries
-        # find the longest distance to a battery and append to output list
-        for house in self.houses:
-            current_house_shortest = float('-inf')
-            for battery in self.batteries:
-                dist = distance(house.location, battery.location)
-                if dist > current_house_shortest:
-                    current_house_shortest = dist
-            all_longest.append(current_house_shortest)
-
-        return all_longest
 
     def greedy_optimized(self):
+        # please comment
 
         counter = 1
 
@@ -378,3 +389,59 @@ class Grid(object):
                                         self.connect(house_one.house.id, house_two.battery_id)
                                         self.connect(house_two.house.id, house_one.battery_id)
                                         break
+
+    def random_hillclimber(self, cost_bound, repeats):
+
+        # initiate
+        counter = 0
+        costs = [999999, 999999]
+        costs_optimal = []
+        current_lowest_cost =  float('inf')
+        combination = {}
+
+        # loop untill repeats is reached or untill combination under lower bound is found
+        while min(costs) > cost_bound and counter < repeats:
+
+            # get random solution
+            self.random()
+
+            # if solution did not connect all houses get new solution untill all house are connected
+            while self.unconnected_houses != []:
+                self.disconnect_all()
+                self.random()
+
+            # costs
+            cost = self.calculate_total_cost() + 25000
+            costs.append(cost)
+
+            # run hillclimber
+            self.greedy_optimized()
+            cost = self.calculate_total_cost() + 25000
+
+            # if cost of hillclimber is best solution save data for .json export
+            if cost < current_lowest_cost:
+                current_lowest_cost = cost
+                current_combi = {}
+                for battery in self.batteries:
+                    house_ids = []
+                    for route in battery.routes:
+                        house_id = route.house.id
+                        house_ids.append(house_id)
+                    current_combi[f'{battery.id}'] = house_ids
+                current_combi["Costs"] = cost
+                combination = current_combi
+
+            # save hillclimber cost
+            costs_optimal.append(cost)
+
+            # disconnect for new iteration
+            self.disconnect_all()
+            counter += 1
+
+        # get current datetime in string
+        dt = datetime.now()
+        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+
+        # dump data of best found solution to .json file
+        with open(f'Results/{self.name}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
+            json.dump(combination, f,indent=4)
