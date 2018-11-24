@@ -128,6 +128,10 @@ De batterijen worden één voor één gevuld met huizen m.b.v. de find_closest_h
 
 De greedy hill climber pakt de input van het greedy algortime, en gaat per huis af of er andere huizen zijn bij andere batterijen die kunnen wisselen van plek (dus de capaciteit wordt niet overschreden), en berekent vervolgens of de totale afstand van beide huizen minder wordt als er wordt gewisseld. Als dit zo is dan worden de huizen gewisseld, dit gaat zo lang door tot er geen wissel meer kan worden gemaakt, we zitten hier dan in een lokaal minimum.
 
+#### Random hill climber:
+De random hill climber runt het random algoritme totdat deze een oplossing geeft. Vervolgens run hij de hillclimber op deze oplossing.
+Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of tot dat een oplossing onder de gegeven bound is gevonden.
+
 #### State space probleem A + B
 
 Met de constraint relaxation dat batterijen geen maximum capaciteit hebben en alle huizen aan één batterij kunnen worden verbonden is de state space 5 ^ 150 ofwel 7.0e+104.
@@ -165,7 +169,7 @@ Wijk 3:
 * Simple: **69271**
 * Greedy normaal: **50371**
 * Greedy hillclimber: **44125**
-* Random hillclimber best: **43891**
+* Random hillclimber best: **43891** (na 1500 repeats)
 
 #### Upper bound probleem A + B
 
@@ -186,6 +190,10 @@ Nu is het zo, dat de batterijen misschien niet op de best mogelijke plaatsen sta
 #### State space probleem C
 
 2500 plekken - 150 huizen = 2350 plekken om de batterij te plaatsen. 2350 x 2349 x 2348 x 2347 x 2346 = 7.14e16. Dit is met heel weinig constraints (alleen huizen en batterijen mogen niet op elkaar staan).
+
+#### Lower bound probleem C
+
+#### Upper bound probleem C
 
 ### Probleem D
 
