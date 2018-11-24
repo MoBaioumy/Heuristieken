@@ -7,13 +7,20 @@ from distance import distance
 
 
 if __name__ == "__main__":
-    wijk_naam = "wijk2"
+
+    i = 3
+    wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
+    # grid.simple()
+    print(grid.range_connected(grid.batteries[0]))
+
+
+    # wijk_naam = "wijk3"
     # cost_bound = 43890
     # repeats = 1500
     # grid.random_hillclimber(cost_bound, repeats)
 
-    grid.greedy_alt()
+    # grid.greedy_alt()
 
 
 

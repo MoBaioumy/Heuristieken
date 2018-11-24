@@ -1,7 +1,7 @@
 # Heuristieken
 
-## Smart Grid
-### Mohamed Baioumy, Thomas Hoedeman, Philip Oosterholt
+## **Smart Grid**
+##### Mohamed Baioumy, Thomas Hoedeman, Philip Oosterholt #####
 
 This repository is for the course *'Heuristieken'* of fall 2018. Our project is about [Smart Grids](http://heuristieken.nl/wiki/index.php?title=SmartGrid).
 
@@ -130,7 +130,12 @@ De greedy hill climber pakt de input van het greedy algortime, en gaat per huis 
 
 #### State space probleem A + B
 
-Met de constraint satisfaction dat batterijen geen maximum capaciteit hebben en alle huizen aan één batterij kunnen worden verbonden is de state space 5 ^ 150 ofwel 7.0e+104.
+Met de constraint relaxation dat batterijen geen maximum capaciteit hebben en alle huizen aan één batterij kunnen worden verbonden is de state space 5 ^ 150 ofwel 7.0e+104.
+
+Range (min - max) van huizen dat aan een batterij kan verbonden worden:
+* Wijk 1: 21 - 45
+* Wijk 2: 24 - 39
+* Wijk 3: 28 - 32
 
 #### Lower bound probleem A + B
 
@@ -142,33 +147,37 @@ Wijk 1: 3132 * 9 + 5000 * 5 = 53188
 Wijk 2: 2252 * 9 + 5000 * 5 = 45268
 Wijk 3: 1973 * 9 + 5000 * 5 = 42757
 
-Tussenstand
+**Tussenstand**
 
 Wijk 1:
-Simple:76642
-Greedy normaal = 60586
-Greedy hillclimber = 56536
-Random hillclimber
+* Simple: **76642**
+* Greedy normaal: **60586**
+* Greedy hillclimber: **56536**
+* Random hillclimber best:
 
 Wijk 2:
-Simple: 66679
-Greedy normaal = 49138
-Greedy hillclimber = 46258
+* Simple: **66679**
+* Greedy normaal: **49138**
+* Greedy hillclimber: **46258**
+* Random hillclimber best:
 
 Wijk 3:
-Simple = 69271
-Greedy normaal: geen oplossing
-Greedy hillclimber = 43927
+* Simple: **69271**
+* Greedy normaal: **geen oplossing**
+* Greedy hillclimber: **43927**
+* Random hillclimber best: **43891**
 
 #### Upper bound probleem A + B
 
 De maximale kosten zijn de kosten van wanneer alle huizen aan de verste batterij zijn verbonden plus de kosten van de batterijen.
 
+Hiervoor gaan we er vanuit dat men wel altijd de korste Manhattan route van een huis naar een batterij neemt.
+
 De implementatie is te zien grid.py method longest_paths.
 
-Wijk 1: 8670 * 9 + 5000 * 5 = 103030
-Wijk 2: 7917 * 9 + 5000 * 5 = 96253
-Wijk 3: 8499 * 9 + 5000 * 5 = 101491
+* Wijk 1: 8670 x 9 + 5000 * 5 = 103030
+* Wijk 2: 7917 x 9 + 5000 * 5 = 96253
+* Wijk 3: 8499 x 9 + 5000 * 5 = 101491
 
 ### Probleem C
 
@@ -176,7 +185,7 @@ Nu is het zo, dat de batterijen misschien niet op de best mogelijke plaatsen sta
 
 #### State space probleem C
 
-2500 plekken - 150 huizen = 2350 plekken om de batterij te plaatsen. 2350 * 2349 * 2348 * 2347 * 2346 = 7.14e16. Dit is met heel weinig constraints (alleen huizen en batterijen mogen niet op elkaar staan).
+2500 plekken - 150 huizen = 2350 plekken om de batterij te plaatsen. 2350 x 2349 x 2348 x 2347 x 2346 = 7.14e16. Dit is met heel weinig constraints (alleen huizen en batterijen mogen niet op elkaar staan).
 
 ### Probleem D
 
