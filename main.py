@@ -7,14 +7,13 @@ from distance import distance
 
 
 if __name__ == "__main__":
-    wijk_naam = "wijk3"
+    wijk_naam = "wijk2"
     grid = Grid(wijk_naam)
+    # cost_bound = 43890
+    # repeats = 1500
+    # grid.random_hillclimber(cost_bound, repeats)
 
-    cost_bound = 56000
-    repeats = 1
-
-    grid.random_hillclimber(cost_bound, repeats)
-
+    grid.greedy_alt()
 
 
 

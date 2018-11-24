@@ -262,6 +262,21 @@ class Grid(object):
                 else:
                     min_out = min(house.max_output for house in self.unconnected_houses)
 
+
+    def greedy_alt(self):
+        # writ alg that connects closest house then goes to next bat
+        bat_full = 0
+        while self.unconnected_houses != [] and bat_full < 5:
+            for battery in self.batteries:
+                closest_house = battery.find_closest_house(self.unconnected_houses)
+                if closest_house != None:
+                    self.connect(closest_house.id, battery.id)
+                else:
+                    bat_full +=1
+
+
+
+
     def greedy(self):
 
         # find min and max output value
@@ -354,9 +369,6 @@ class Grid(object):
         #     for i in new_houses:
         #         print(i)
 
-
-
-
     def greedy_optimized(self):
         # please comment
 
@@ -391,16 +403,25 @@ class Grid(object):
                                         break
 
     def random_hillclimber(self, cost_bound, repeats):
+        """
+        Random hillclimber take a certain cost bound and an amount of repeats as input
+        The algorithm first finds a random solution for connecting all houses
+        Then it runs a hillclimber to find the local mamximum
+        It will repeat untill a solution is found under the cost bound
+        Or untill amount of repeats is reached
+        House combinations for best solution will be saved in .json
+        Cost results for random and hillclimbers are saved aswell
+        """
 
         # initiate
         counter = 0
-        costs = [999999, 999999]
-        costs_optimal = []
+        costs = [999999, 999998]
+        costs_optimal = [999999, 999998]
         current_lowest_cost =  float('inf')
         combination = {}
 
         # loop untill repeats is reached or untill combination under lower bound is found
-        while min(costs) > cost_bound and counter < repeats:
+        while min(costs_optimal) > cost_bound and counter < repeats:
 
             # get random solution
             self.random()
@@ -428,7 +449,7 @@ class Grid(object):
                         house_id = route.house.id
                         house_ids.append(house_id)
                     current_combi[f'{battery.id}'] = house_ids
-                current_combi["Costs"] = cost
+                current_combi["Costs best solution"] = cost
                 combination = current_combi
 
             # save hillclimber cost
@@ -438,10 +459,14 @@ class Grid(object):
             self.disconnect_all()
             counter += 1
 
+        # save all results in dict aswell
+        combination["All random results"] = costs
+        combination["All optimized results"] = costs_optimal
+
         # get current datetime in string
         dt = datetime.now()
         stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
 
         # dump data of best found solution to .json file
-        with open(f'Results/{self.name}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
+        with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
             json.dump(combination, f,indent=4)
