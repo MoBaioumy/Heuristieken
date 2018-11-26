@@ -19,6 +19,7 @@ class Grid(object):
     # initiate id to 1
     id = 1
     counter = 0
+
     def __init__(self, wijk_N):
         """
         Initialize a grid"""
@@ -226,6 +227,20 @@ class Grid(object):
             plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
             plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
 
+    def draw_routes(self):
+        colors = ['b', 'g', 'r', 'm', 'k']
+        for idx, battery in enumerate(self.batteries):
+            color = colors[idx]
+            plt.plot(battery.location[0], battery.location[1], color + '8', markersize = 12)
+            for route in battery.routes:
+                x = [loc[0] for loc in route.grid_route]
+                y = [loc[1] for loc in route.grid_route]
+                plt.plot(x, y, color)
+                plt.plot(route.house.location[0], route.house.location[1], color + '8', markersize = 5)
+        plt.show()
+
+
+
     def draw_all(self):
         """
         Draws all routes
@@ -234,7 +249,6 @@ class Grid(object):
             plt.plot(battery.location[0], battery.location[1], 'ro', markersize=12)
             for house in self.houses:
                 self.draw_route(house.location, battery.location)
-
 
 
     def range_connected(self, battery):
@@ -265,6 +279,7 @@ class Grid(object):
 
         range = (min_connected_houses, max_connected_houses)
         return range
+
 
     def move_batteries_random(self):
         """
@@ -306,6 +321,7 @@ class Grid(object):
         for battery in self.batteries:
             for numb in range(150, 0, -1):
                 self.connect(numb, battery.id)
+
 
     def random(self):
         """
@@ -412,28 +428,6 @@ class Grid(object):
 
                 # print(house_id_connect)
                 self.connect(house_id_connect, battery.id)
-
-        # if self.unconnected_houses != []:
-        #     # leftover_house = self.unconnected_houses[0]
-        #     for idx in range(len(self.unconnected_houses)):
-        #         leftover_house = self.unconnected_houses[idx]
-        #         # print(leftover_house.id)
-        #         for battery in self.batteries:
-        #             for route in battery.routes:
-        #                  cap_without_current_house = battery.current_capacity + route.house.max_output
-        #                  # print(cap_without_current_house)
-        #                  # print(cap_without_current_house - leftover_house.max_output)
-        #                  # print(battery.current_capacity)
-        #                  if  cap_without_current_house - leftover_house.max_output < battery.current_capacity:
-        #                      self.disconnect(route.house.id)
-        #                      self.connect(leftover_house.id, battery.id)
-        #                      leftover_house = self.unconnected_houses[idx]
-        #     print(leftover_house)
-        #
-        #     for i in self.batteries:
-        #         print(i.current_capacity)
-
-
 
 
     def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):

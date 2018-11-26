@@ -39,7 +39,7 @@ class Route(object):
         Plan a grid route by first moving all spaces on x axis then on y axis
         """
         # initiate empty list to append to and return at end
-        grid_route = list()
+        grid_route = [self.house.location]
         # calculate the distance between x locations
         distance_x = self.house.location[0] - self.battery_location[0]
         # calculate the distance between y locations

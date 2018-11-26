@@ -4,16 +4,42 @@ from house import House
 from battery import Battery
 from route import Route
 from distance import distance
-
+import random
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
 
+    # grid.greedy()
+    # grid.random_move_greedy_hillclimber(10)
+    grid.move_batteries_random()
     grid.greedy()
+    # grid.draw_routes()
     grid.hillclimber()
-    print(grid.calculate_total_cost())
+    grid.draw_routes()
+    # info = {}
+    # for i in range(2):
+    #     grid.move_batteries_random()
+    #     grid.greedy()
+    #     grid.hillclimber()
+    #     cost = grid.calculate_total_cost()
+    #     info[i+1] = {'Cost':cost, 'Location': [battery.location for battery in grid.batteries]}
+    #     grid.disconnect_all()
+    #
+    # print(info)
+    #
+    # grid.draw_all()
+    # plt.show()
+
+
+
+
+
+    # grid.greedy()
+    # grid.hillclimber()
+    # print(grid.calculate_total_cost())
 
     # for house in grid.houses:
     #     print(house.max_output)
