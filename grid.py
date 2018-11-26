@@ -198,14 +198,6 @@ class Grid(object):
         return all_longest
 
 
-    def draw_grid(self, grid):
-        """
-        This method draw the grid itself with the houses and batteries but
-        not the connections
-        """
-        x = 2
-
-
     def draw_route(self, house, bat):
         """
         This test function draws funtion based on a non logic based
@@ -227,16 +219,46 @@ class Grid(object):
             plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
             plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
 
-    def draw_routes(self):
-        colors = ['b', 'g', 'r', 'm', 'k']
+
+    def draw_grid(self):
+        """
+        Alternative way to draw routes using the grid_route property of the routes
+        """
+
+        # draw grid
+        size = [x for x in range(51)]
+
+        for x in range(51):
+            y = [x for i in range(51)]
+            plt.plot(size, y, 'k', linewidth=0.2)
+
+        for y in range(51):
+            x = [y for i in range(51)]
+            plt.plot(x, size, 'k', linewidth=0.2)
+
+        # set potential colors for batteries
+        colors = ['b', 'g', 'r', 'm', 'c', 'y']
+
+        # plot all houses and batteries, house has color of battery it is connected to
+        # for each route in each battery plot the grid_routes in the same color as the battery
         for idx, battery in enumerate(self.batteries):
             color = colors[idx]
+            # plot battery
             plt.plot(battery.location[0], battery.location[1], color + '8', markersize = 12)
+
             for route in battery.routes:
                 x = [loc[0] for loc in route.grid_route]
                 y = [loc[1] for loc in route.grid_route]
+
+                # plot route
                 plt.plot(x, y, color)
+
+                # plot house
                 plt.plot(route.house.location[0], route.house.location[1], color + '8', markersize = 5)
+
+        for house in self.unconnected_houses:
+            plt.plot(house.location[0], house.location[1], 'k8', markersize = 5)
+
         plt.show()
 
 
