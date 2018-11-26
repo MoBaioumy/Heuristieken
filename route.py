@@ -4,35 +4,42 @@ class Route(object):
     """
     # initiate id to 1
     id = 1
+
     def __init__(self, house, battery_id, battery_location):
         # route id
         self.id = Route.id
         Route.id += 1
+
         # def house and battery connected by route
         self.house = house
         self.battery_id = battery_id
         self.battery_location = battery_location
+
         # calculate manhattan distance
         self.length = abs(self.house.location[0] - self.battery_location[0]) + abs(self.house.location[1] - self.battery_location[1])
+
         # calculate cost
-        cost_gridline = 9
-        self.cost = self.length * cost_gridline
+        self.cost_gridline = 9
+        self.cost = self.length * self.cost_gridline
+
         # set route
         self.grid_route = list()
-        self.grid_route = self.plan_grid_route()
+        self.grid_route = self.plan_manhattan_grid_route()
+
 
     def __str__(self):
         """
         Print description
         """
-        return f"this route (ID = {self.id}) connects house: {self.house.id} and battery: {self.battery_id}"
+        return f"this route (ID = {self.id}) connects house: {self.house.id} with battery: {self.battery_id}"
 
-    def plan_grid_route(self):
+
+    def plan_manhattan_grid_route(self):
         """
         Plan a grid route by first moving all spaces on x axis then on y axis
         """
         # initiate empty list to append to and return at end
-        grid_route = list()
+        grid_route = [self.house.location]
         # calculate the distance between x locations
         distance_x = self.house.location[0] - self.battery_location[0]
         # calculate the distance between y locations
@@ -58,6 +65,6 @@ class Route(object):
             elif distance_y < 0:
                 current_location = (current_location[0], current_location[1] + 1)
                 grid_route.append(current_location)
-        # return list of coordinates of grid_route
+        # return list of coordinates of grid_route and print length
         print(f"length route:{self.length}")
         return grid_route
