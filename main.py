@@ -8,17 +8,20 @@ import random
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
-    i = 1
+    i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
 
     # grid.draw_grid()
     # grid.greedy()
     # grid.random_move_greedy_hillclimber(10)
-    grid.move_batteries_random()
+    # grid.move_batteries_random()
     grid.greedy()
+    # grid.draw_grid()
     grid.hillclimber()
-    grid.draw_grid()
+    # grid.draw_grid()
+    cost = grid.calculate_total_cost()
+    print(cost)
     # grid.hillclimber()
     # grid.draw_routes()
     # info = {}

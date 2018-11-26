@@ -224,17 +224,14 @@ class Grid(object):
         """
         Alternative way to draw routes using the grid_route property of the routes
         """
+        plt.figure()
 
         # draw grid
         size = [x for x in range(51)]
-
         for x in range(51):
-            y = [x for i in range(51)]
-            plt.plot(size, y, 'k', linewidth=0.2)
-
-        for y in range(51):
-            x = [y for i in range(51)]
-            plt.plot(x, size, 'k', linewidth=0.2)
+            current = [x for i in range(51)]
+            plt.plot(size, current, 'k', linewidth=0.2)
+            plt.plot(current, size, 'k', linewidth=0.2)
 
         # set potential colors for batteries
         colors = ['b', 'g', 'r', 'm', 'c', 'y']
@@ -256,11 +253,11 @@ class Grid(object):
                 # plot house
                 plt.plot(route.house.location[0], route.house.location[1], color + '8', markersize = 5)
 
+        # plot all unconnected houses in black
         for house in self.unconnected_houses:
             plt.plot(house.location[0], house.location[1], 'k8', markersize = 5)
 
         plt.show()
-
 
 
     def draw_all(self):
@@ -392,9 +389,14 @@ class Grid(object):
         # random.shuffle(self.batteries)
 
         # find min and max output value
-        min_out = min(house.max_output for house in self.houses)
-        max_out = max(house.max_output for house in self.houses)
+        all_outputs = [house.max_output for house in self.houses]
+        min_out = min(all_outputs)
+        max_out = max(all_outputs)
 
+        # calculate factor, this represent the average amount allowed leftover capacity
+        leftover_when_all_connected = sum(battery.max_capacity for battery in self.batteries) - sum(all_outputs)
+        factor = leftover_when_all_connected / len(self.batteries)
+        
         # algoritm does not work for third wijk because range of output is very low
         # the smallest house is left over when connecting via greedy,
         # therefore for this wijk we connect this house first to the first battery
@@ -423,7 +425,7 @@ class Grid(object):
                 # leftover capcity after adding current house that will be connected
                 leftover_cap = battery.current_capacity - closest_house.max_output
 
-                if  max_out > leftover_cap > 5:
+                if  max_out > leftover_cap > factor:
                     # find better option to connect if present
                     for house in self.unconnected_houses:
                         # difference of current loop house
@@ -435,12 +437,12 @@ class Grid(object):
                             leftover_cap = battery.current_capacity - house.max_output
 
 
-                if leftover_cap > 5:
+                if leftover_cap > factor * 2:
                     current_best = float('inf')
                     for house1 in self.unconnected_houses:
                         for house2 in self.unconnected_houses:
                             combi = house1.max_output + house2.max_output - battery.current_capacity
-                            if 0 < combi < 5 and combi < current_best:
+                            if 0 < combi < factor and combi < current_best:
                                 house_id_connect = house1.id
                                 current_best = combi
                                 print('x')
@@ -454,6 +456,7 @@ class Grid(object):
 
     def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):
         """
+        Werk niet
 
         """
         # alle combinaties/kinderen genereren voor een batterij
