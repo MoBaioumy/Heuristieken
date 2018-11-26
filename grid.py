@@ -10,6 +10,7 @@ import random
 import copy
 import json
 from datetime import datetime
+import copy
 
 class Grid(object):
     """
@@ -27,7 +28,7 @@ class Grid(object):
         self.name = wijk_N
         # load houses and batteries
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
-        self.unconnected_houses = self.houses
+        self.unconnected_houses = copy.deepcopy(self.houses)
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
         # size of grid
         self.size = (50, 50)
@@ -225,6 +226,16 @@ class Grid(object):
             plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
             plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
 
+    def draw_all(self):
+        """
+        Draws all routes
+        """
+        for battery in self.batteries:
+            plt.plot(battery.location[0], battery.location[1], 'ro', markersize=12)
+            for house in self.houses:
+                self.draw_route(house.location, battery.location)
+
+
 
     def range_connected(self, battery):
         """
@@ -254,6 +265,36 @@ class Grid(object):
 
         range = (min_connected_houses, max_connected_houses)
         return range
+
+    def move_batteries_random(self):
+        """
+        Moves all batteries to a random new location
+        """
+        # for each battery
+        for battery in self.batteries:
+
+            location_taken = True
+
+            # keep generating random locations untill location is not taken by a house or battery (including current battery)
+            while location_taken == True:
+                location = (random.randint(0,51), random.randint(0,51))
+
+                for house in self.houses:
+                    if house.location == location:
+                        location_taken = True
+                        continue
+                    else:
+                        location_taken = False
+
+                for bat in self.batteries:
+                    if bat.location ==  location:
+                        location_taken = True
+                        continue
+                    else:
+                        location_taken = False
+
+            # move battery
+            battery.move(location)
 
 
     # From here algorithms only, above methods
@@ -469,6 +510,10 @@ class Grid(object):
                                         self.connect(house_two.house.id, house_one.battery_id)
                                         break
 
+    def simulated_annealing(self):
+        """
+        Simulated annealing
+        """
 
     def random_hillclimber(self, cost_bound, repeats):
         """
@@ -538,3 +583,34 @@ class Grid(object):
         # dump data of best found solution to .json file
         with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
             json.dump(combination, f,indent=4)
+
+    def random_move_greedy_hillclimber(self, repeats):
+        """
+        Repeats the following:
+        Randomly moves the batteries then runs a greedy algortim and hillclimber
+        Saves results
+        """
+        # .json output dict
+        info = {}
+        best = float('inf')
+
+        # for input repeats move batteries to random location run greedy and hillclimbers
+        # calculate cost and save battery location and costs results to output dict
+        for idx in range(repeats):
+            self.move_batteries_random()
+            self.greedy()
+            self.hillclimber()
+            cost = self.calculate_total_cost()
+            if cost < best:
+                best = cost
+            locations = [battery.location for battery in self.batteries]
+            info[idx] = {'Cost':cost, 'Location':locations}
+            self.disconnect_all()
+
+        # get current datetime in string
+        dt = datetime.now()
+        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+
+        # dump results to .json file
+        with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
+            json.dump(info, f,indent=4)

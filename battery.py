@@ -38,12 +38,12 @@ class Battery(object):
         return f"id: {self.id} type: {self.type} x: {self.location[0]} y: {self.location[1]} capacity: {self.max_capacity}"
 
 
-    def move(self, new_x, new_y):
+    def move(self, location):
         """
         Move battery to new x/y location
         """
         # new location
-        self.location = (new_x, new_y)
+        self.location = location
 
         # update routes
         for route in self.routes:
@@ -55,6 +55,8 @@ class Battery(object):
 
         # update cost of routes
         self.cost_routes = self.calculate_routes_cost()
+
+        print(f"Moved battery {self.id} to {self.location}")
 
 
     def find_closest_house(self, houses):
