@@ -347,23 +347,25 @@ class Grid(object):
         Randomly connects houses to batteries, solution not garanteed
         """
         # random.shuffle(self.batteries)
-        for battery in self.batteries:
+        while self.unconnected_houses != []:
+            self.disconnect_all()
+            for battery in self.batteries:
 
 
-            min_out = min(house.max_output for house in self.unconnected_houses)
+                min_out = min(house.max_output for house in self.unconnected_houses)
 
 
-            while battery.current_capacity > min_out:
+                while battery.current_capacity > min_out:
 
-                idx = random.randint(0, len(self.unconnected_houses) - 1)
-                house_id = self.unconnected_houses[idx].id
+                    idx = random.randint(0, len(self.unconnected_houses) - 1)
+                    house_id = self.unconnected_houses[idx].id
 
-                self.connect(house_id, battery.id)
+                    self.connect(house_id, battery.id)
 
-                if self.unconnected_houses == []:
-                    break
-                else:
-                    min_out = min(house.max_output for house in self.unconnected_houses)
+                    if self.unconnected_houses == []:
+                        break
+                    else:
+                        min_out = min(house.max_output for house in self.unconnected_houses)
 
 
     def greedy_alt(self):
@@ -396,7 +398,7 @@ class Grid(object):
         # calculate factor, this represent the average amount allowed leftover capacity
         leftover_when_all_connected = sum(battery.max_capacity for battery in self.batteries) - sum(all_outputs)
         factor = leftover_when_all_connected / len(self.batteries)
-        
+
         # algoritm does not work for third wijk because range of output is very low
         # the smallest house is left over when connecting via greedy,
         # therefore for this wijk we connect this house first to the first battery
@@ -453,48 +455,6 @@ class Grid(object):
                 # print(house_id_connect)
                 self.connect(house_id_connect, battery.id)
 
-
-    def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):
-        """
-        Werk niet
-
-        """
-        # alle combinaties/kinderen genereren voor een batterij
-        #
-        # als de kosten boven self.simple kosten oplossing komen dan afkappen
-        # Dubbele combinaties?
-        # volgorde maakt niet uit, dus het gaat om combinaties --> uitrekene min en max aantal huizen per batterij,
-        # dus eerst sorteren en dan kijken hoeveel van de kleinste er in passen en hoeveel van de grootse er in passen
-        # of kosten van een oplossing opslaan en zodra je er onder komt afkappen
-        # als capaciteit is bereikt afpakken
-        if sum_houses_capacity > battery.max_capacity:
-            print("cap reached")
-            return
-        if sum_houses_distance > 500:
-            print("longer route")
-            return
-        Grid.counter += 1
-
-        new_houses = copy.deepcopy(houses)
-        for house in new_houses:
-            print(house)
-            new_houses.remove(house)
-            self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
-
-        # for house in houses:
-        #     new_houses = copy.deepcopy(houses)
-        #     print(house)
-        #     for i in new_houses:
-        #         print(i)
-        #         if i.id == house.id:
-        #             sum_houses_capacity += i.max_output
-        #             dist =  distance(i.location, battery.location)
-        #             sum_houses_distance += dist
-        #         new_houses.remove(i)
-        #     print(Grid.counter)
-        #     self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
-        #     for i in new_houses:
-        #         print(i)
 
     def hillclimber(self):
         # please comment
@@ -557,11 +517,6 @@ class Grid(object):
 
             # get random solution
             self.random()
-
-            # if solution did not connect all houses get new solution untill all house are connected
-            while self.unconnected_houses != []:
-                self.disconnect_all()
-                self.random()
 
             # costs
             cost = self.calculate_total_cost()
