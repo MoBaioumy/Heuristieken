@@ -13,6 +13,7 @@ from datetime import datetime
 import copy
 import pandas as pd
 
+
 class Grid(object):
     """
     Representation of a grid in the SmartGrid assignment
@@ -225,7 +226,6 @@ class Grid(object):
         """
         Alternative way to draw routes using the grid_route property of the routes
         """
-        plt.figure()
 
         # draw grid
         size = [x for x in range(51)]
@@ -257,6 +257,10 @@ class Grid(object):
         # plot all unconnected houses in black
         for house in self.unconnected_houses:
             plt.plot(house.location[0], house.location[1], 'k8', markersize = 5)
+
+        #
+        cost = self.calculate_total_cost()
+        plt.title(f"{self.name} costs: {cost}")
 
         plt.show()
 
@@ -594,10 +598,12 @@ class Grid(object):
                                         self.connect(house_two.house.id, house_one.battery_id)
                                         break
 
+
     def simulated_annealing(self):
         """
         Simulated annealing
         """
+
 
     def random_hillclimber(self, cost_bound, repeats):
         """
@@ -663,6 +669,7 @@ class Grid(object):
         with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
             json.dump(combination, f,indent=4)
 
+
     def random_move_greedy_hillclimber(self, repeats):
         """
         Repeats the following:
@@ -693,3 +700,75 @@ class Grid(object):
         # dump results to .json file
         with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
             json.dump(info, f,indent=4)
+
+
+    def move_calc(self):
+        # generate tuple's of all coordinates
+        coordinates = list()
+        for x in range (0, 51):
+            for y in range (0, 51):
+                coordinates.append((x, y))
+
+        # create representation of grid in dict
+        grid_locations = {}
+        for loc in coordinates:
+            grid_locations[loc] = set([0])
+
+        # place house max output values on location
+        for house in self.unconnected_houses:
+            grid_locations[house.location] = set([house.max_output])
+
+        counter = 0
+
+        max = self.batteries[0].max_capacity
+
+        finished_locations = list()
+
+        for i in range(15):
+            # make structure to hold new values
+            new_grid_locations = {}
+            for location in coordinates:
+                new_grid_locations[location] = set([0])
+
+            # loop over grid locations
+            for loc in grid_locations:
+                # initiate
+                up, down, left, right = None, None, None, None
+
+
+                # up
+                # if up exists
+                if loc[1] < 50:
+                    # make up location
+                    up = (loc[0], loc[1] + 1)
+                    # if it is smaller than max cap battery
+                    temp = grid_locations[loc]|grid_locations[up]
+
+
+                # down
+                if loc[1] > 0:
+                    down = (loc[0], loc[1] - 1)
+                    temp = temp|grid_locations[down]
+
+
+
+                # left
+                if loc[0] > 0:
+                    left = (loc[0] - 1, loc[1])
+                    temp = temp|grid_locations[left]
+
+
+
+                # right
+                if loc[0] < 50:
+                    right = (loc[0] + 1, loc[1])
+                    temp = temp|grid_locations[right]
+
+
+                new_grid_locations[loc] = temp
+            del grid_locations
+            grid_locations = copy.deepcopy(new_grid_locations)
+
+        for i in grid_locations:
+            if  sum(grid_locations[i]) > max:
+                print(i)

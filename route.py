@@ -68,3 +68,4 @@ class Route(object):
         # return list of coordinates of grid_route and print length
         print(f"length route:{self.length}")
         return grid_route
+        
