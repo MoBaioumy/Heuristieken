@@ -96,7 +96,7 @@ Eigenschappen
 Methods
 * Plan Manhattan grid route: plant de fysieke route op de grid en plaatst alle coordinaten in de Grid route lijst
 
-#### House
+#### Huis
 
 Eigenschappen
 
