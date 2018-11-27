@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 import random
+import csv
 
 x_huizen = []
 y_huizen = []
