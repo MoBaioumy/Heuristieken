@@ -11,6 +11,7 @@ import copy
 import json
 from datetime import datetime
 import copy
+import time
 
 
 class Grid(object):
@@ -110,13 +111,13 @@ class Grid(object):
         self.batteries[B_index].routes.append(route)
 
         # print connection made
-        print(f"connected house {H.id} with battery {B.id}")
+        # print(f"connected house {H.id} with battery {B.id}")
 
         # recalculate battery current capacity
         self.batteries[B_index].current_capacity -= H.max_output
 
         # print leftover capacity
-        print(f"capcity left on battery: {round(self.batteries[B_index].current_capacity, 2)}")
+        # print(f"capcity left on battery: {round(self.batteries[B_index].current_capacity, 2)}")
 
 
     def disconnect(self, house_id):
@@ -135,7 +136,7 @@ class Grid(object):
                     self.unconnected_houses.append(route.house)
                     # remove route
                     self.batteries[battery_idx].routes.remove(route)
-                    print(f"house {house_id} disconnected")
+                    # print(f"house {house_id} disconnected")
                     return
         # if house id not found print error message
         print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
@@ -221,11 +222,10 @@ class Grid(object):
             plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
 
 
-    def draw_grid(self):
+    def draw_grid(self, info):
         """
         Alternative way to draw routes using the grid_route property of the routes
         """
-
         # draw grid
         size = [x for x in range(51)]
         for x in range(51):
@@ -244,6 +244,8 @@ class Grid(object):
             plt.plot(battery.location[0], battery.location[1], color + '8', markersize = 12)
 
             for route in battery.routes:
+
+                # get x and y
                 x = [loc[0] for loc in route.grid_route]
                 y = [loc[1] for loc in route.grid_route]
 
@@ -257,9 +259,9 @@ class Grid(object):
         for house in self.unconnected_houses:
             plt.plot(house.location[0], house.location[1], 'k8', markersize = 5)
 
-        #
+        # costs and wijk name in title
         cost = self.calculate_total_cost()
-        plt.title(f"{self.name} costs: {cost}")
+        plt.title(f"{self.name} costs: {cost} {info}")
 
         plt.show()
 
@@ -374,18 +376,55 @@ class Grid(object):
 
     def greedy_alt(self):
         """
-        Alternative greedy algorithm that connect closest house then goes to next battery
+        Alternative greedy algorithm that connects houses in order of output (high to low)
         Currently not working
         """
-        # writ alg that connects closest house then goes to next bat
-        bat_full = 0
-        while self.unconnected_houses != [] and bat_full < 5:
-            for battery in self.batteries:
-                closest_house = battery.find_closest_house(self.unconnected_houses)
-                if closest_house != None:
-                    self.connect(closest_house.id, battery.id)
-                else:
-                    bat_full +=1
+        # function that returns max output
+        def max_output_func(house):
+            return house.max_output
+        # sort houses from smallest max output to largest
+        self.unconnected_houses.sort(key=max_output_func, reverse=True)
+
+        counter = 0
+        while self.unconnected_houses != []:
+            for house in self.unconnected_houses:
+                smallest_dist = float('inf')
+                closest_battery_id = None
+                for battery in self.batteries:
+                    dist = distance(house.location, battery.location)
+                    if dist < smallest_dist and battery.current_capacity > house.max_output:
+                        closest_battery_id =  battery.id
+                        smallest_dist = dist
+                self.connect(house.id, closest_battery_id)
+
+                # exit after many repeats
+                counter += 1
+                if counter > 1000:
+                    return
+        if self.unconnected_houses != []:
+            print("x")
+
+
+    def greed(self):
+        counter = 0
+        while self.unconnected_houses != []:
+            best_dist = float('inf')
+            for house in self.unconnected_houses:
+                lowest_dist_house = float('inf')
+                for battery in self.batteries:
+                    dist = distance(house.location, battery.location)
+                    if dist < lowest_dist_house and battery.current_capacity > house.max_output:
+                        bat_id = battery.id
+                        house_id = house.id
+                        lowest_dist_house = dist
+                if lowest_dist_house < best_dist:
+                    connect_bat_id = bat_id
+                    connect_house_id = house_id
+                    best_dist =  lowest_dist_house
+            self.connect(connect_house_id, connect_bat_id)
+            counter += 1
+            if counter > 1000:
+                return
 
 
     def greedy(self):
@@ -511,30 +550,46 @@ class Grid(object):
         Cost results for random and hillclimbers are saved aswell
         """
 
+
         # initiate
         counter = 0
-        costs = [999999, 999998]
-        costs_optimal = [999999, 999998]
+        costs_random = [999999, 999998]
+        times_random =  []
+        costs_hillclimber = [999999, 999998]
+        times_hillclimber = []
         current_lowest_cost =  float('inf')
         combination = {}
 
         # loop untill repeats is reached or untill combination under lower bound is found
-        while min(costs_optimal) > cost_bound and counter < repeats:
+        while min(costs_hillclimber) > cost_bound and counter < repeats:
 
-            # get random solution
+
+            # get random solution save time and costs
+            random_start = time.time()
             self.random()
+            random_stop = time.time()
 
-            # costs
-            cost = self.calculate_total_cost()
-            costs.append(cost)
+            times_random.append(random_stop - random_start)
 
-            # run hillclimber
+            cost_r = self.calculate_total_cost()
+            costs_random.append(cost_r)
+
+
+            # run hillclimber save time and costs
+            hill_start = time.time()
             self.hillclimber()
-            cost = self.calculate_total_cost()
+            hill_stop = time.time()
+
+            times_hillclimber.append(hill_stop - hill_start)
+
+            cost_h = self.calculate_total_cost()
+            costs_hillclimber.append(cost_h)
+
+
 
             # if cost of hillclimber is best solution save data for .json export
-            if cost < current_lowest_cost:
-                current_lowest_cost = cost
+            if cost_h < current_lowest_cost:
+                current_lowest_cost = cost_h
                 current_combi = {}
                 for battery in self.batteries:
                     house_ids = []
@@ -542,19 +597,18 @@ class Grid(object):
                         house_id = route.house.id
                         house_ids.append(house_id)
                     current_combi[f'{battery.id}'] = house_ids
-                current_combi["Costs best solution"] = cost
+                current_combi["Costs best solution"] = cost_h
                 combination = current_combi
-
-            # save hillclimber cost
-            costs_optimal.append(cost)
 
             # disconnect for new iteration
             self.disconnect_all()
             counter += 1
 
         # save all results in dict aswell
-        combination["All random results"] = costs
-        combination["All hillclimber results"] = costs_optimal
+        combination["All random results"] = costs_random
+        combination["All hillclimber results"] = costs_hillclimber
+        combination["Random times"] = times_random
+        combination["Hillclimber times "] = times_hillclimber
 
         # get current datetime in string
         dt = datetime.now()
