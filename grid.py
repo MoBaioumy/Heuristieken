@@ -11,12 +11,8 @@ import copy
 import json
 from datetime import datetime
 import copy
-<<<<<<< HEAD
-=======
-import pandas as pd
-import time
 
->>>>>>> bd3b3bb215fdef41de9e87c1c39c4633bce13a59
+ test
 
 class Grid(object):
     """
@@ -208,11 +204,8 @@ class Grid(object):
         """
         Alternative way to draw routes using the grid_route property of the routes
         """
-<<<<<<< HEAD
         plt.figure()
 
-=======
->>>>>>> bd3b3bb215fdef41de9e87c1c39c4633bce13a59
         # draw grid
         size = [x for x in range(51)]
         for x in range(51):
@@ -246,21 +239,6 @@ class Grid(object):
         for house in self.unconnected_houses:
             plt.plot(house.location[0], house.location[1], 'k8', markersize = 5)
 
-<<<<<<< HEAD
-        plt.show()
-
-
-    def draw_all(self):
-        """
-        Draws all routes
-        """
-        for battery in self.batteries:
-            plt.plot(battery.location[0], battery.location[1], 'ro', markersize=12)
-            for house in self.houses:
-                self.draw_route(house.location, battery.location)
-
-
-=======
         # costs and wijk name in title
         cost = self.calculate_total_cost()
         plt.title(f"{self.name} costs: {cost} {info}")
@@ -268,7 +246,6 @@ class Grid(object):
         plt.show()
 
 
->>>>>>> bd3b3bb215fdef41de9e87c1c39c4633bce13a59
     def range_connected(self, battery):
         """
         Returns absolute minimum and maximum of house that can be connected to input battery
@@ -632,21 +609,10 @@ class Grid(object):
             self.random()
             random_stop = time.time()
 
-<<<<<<< HEAD
-            # if solution did not connect all houses get new solution untill all house are connected
-            while self.unconnected_houses != []:
-                self.disconnect_all()
-                self.random()
-
-            # costs
-            cost = self.calculate_total_cost()
-            costs.append(cost)
-=======
             times_random.append(random_stop - random_start)
 
             cost_r = self.calculate_total_cost()
             costs_random.append(cost_r)
->>>>>>> bd3b3bb215fdef41de9e87c1c39c4633bce13a59
 
 
             # run hillclimber save time and costs
@@ -722,8 +688,6 @@ class Grid(object):
         # dump results to .json file
         with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
             json.dump(info, f,indent=4)
-<<<<<<< HEAD
-=======
 
 
     def k_means(self, k):
@@ -900,4 +864,3 @@ class Grid(object):
         for i in grid_locations:
             if  sum(grid_locations[i]) > max:
                 print(i)
->>>>>>> bd3b3bb215fdef41de9e87c1c39c4633bce13a59
