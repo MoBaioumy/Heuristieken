@@ -11,9 +11,8 @@ import copy
 import json
 from datetime import datetime
 import copy
-import pandas as pd
-import time
 
+ test
 
 class Grid(object):
     """
@@ -205,6 +204,8 @@ class Grid(object):
         """
         Alternative way to draw routes using the grid_route property of the routes
         """
+        plt.figure()
+
         # draw grid
         size = [x for x in range(51)]
         for x in range(51):
@@ -322,25 +323,23 @@ class Grid(object):
         Randomly connects houses to batteries, solution not garanteed
         """
         # random.shuffle(self.batteries)
-        while self.unconnected_houses != []:
-            self.disconnect_all()
-            for battery in self.batteries:
+        for battery in self.batteries:
 
 
-                min_out = min(house.max_output for house in self.unconnected_houses)
+            min_out = min(house.max_output for house in self.unconnected_houses)
 
 
-                while battery.current_capacity > min_out:
+            while battery.current_capacity > min_out:
 
-                    idx = random.randint(0, len(self.unconnected_houses) - 1)
-                    house_id = self.unconnected_houses[idx].id
+                idx = random.randint(0, len(self.unconnected_houses) - 1)
+                house_id = self.unconnected_houses[idx].id
 
-                    self.connect(house_id, battery.id)
+                self.connect(house_id, battery.id)
 
-                    if self.unconnected_houses == []:
-                        break
-                    else:
-                        min_out = min(house.max_output for house in self.unconnected_houses)
+                if self.unconnected_houses == []:
+                    break
+                else:
+                    min_out = min(house.max_output for house in self.unconnected_houses)
 
 
     def greedy_alt(self):
@@ -467,45 +466,117 @@ class Grid(object):
                 self.connect(house_id_connect, battery.id)
 
 
+    def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):
+        """
+        Werk niet
+
+        """
+        # alle combinaties/kinderen genereren voor een batterij
+        #
+        # als de kosten boven self.simple kosten oplossing komen dan afkappen
+        # Dubbele combinaties?
+        # volgorde maakt niet uit, dus het gaat om combinaties --> uitrekene min en max aantal huizen per batterij,
+        # dus eerst sorteren en dan kijken hoeveel van de kleinste er in passen en hoeveel van de grootse er in passen
+        # of kosten van een oplossing opslaan en zodra je er onder komt afkappen
+        # als capaciteit is bereikt afpakken
+        if sum_houses_capacity > battery.max_capacity:
+            print("cap reached")
+            return
+        if sum_houses_distance > 500:
+            print("longer route")
+            return
+        Grid.counter += 1
+
+        new_houses = copy.deepcopy(houses)
+        for house in new_houses:
+            print(house)
+            new_houses.remove(house)
+            self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
+
+        # for house in houses:
+        #     new_houses = copy.deepcopy(houses)
+        #     print(house)
+        #     for i in new_houses:
+        #         print(i)
+        #         if i.id == house.id:
+        #             sum_houses_capacity += i.max_output
+        #             dist =  distance(i.location, battery.location)
+        #             sum_houses_distance += dist
+        #         new_houses.remove(i)
+        #     print(Grid.counter)
+        #     self.find_best_option(new_houses, battery, sum_houses_capacity, sum_houses_distance)
+        #     for i in new_houses:
+        #         print(i)
+
+    def swap(self, house1, house2, battery1, battery2):
+
+        # disconnect houses
+        self.disconnect(house1)
+        self.disconnect(house2)
+        # swap connections
+        self.connect(house1, battery2)
+        self.connect(house2, battery1)
+        swap = True
+
+        return swap
+
     def hillclimber(self):
-        # please comment
+        """
+        This hillclimber algoritm checks if a swap between two houses can be made,
+        and if so, if the swap would shorten the length of the path, if this is
+        the case, the swap is made.
+        """
 
-        counter = 1
+        # set swap to true to start the loop
+        swap = True
 
-        while counter == 1:
-            counter = 0
-            for batteries_one in self.batteries:
-                for house_one in batteries_one.routes:
-                    for batteries_two in self.batteries:
-                        for house_two in batteries_two.routes:
+        # loops until no swaps can be made
+        while swap == True:
+            # sets swap to false
+            swap = False
+            # loops through the batteries
+            for batteries1 in self.batteries:
+                # loops through the houses in the batteries
+                for house1 in batteries1.routes:
+                    # loops through the batteries
+                    for batteries2 in self.batteries:
+                        # loops through the houses in the batteries
+                        for house2 in batteries2.routes:
+                            # checks if a swap between two houses can be made
+                            if house1.house.max_output < house2.house.max_output + batteries2.current_capacity and house2.house.max_output < house1.house.max_output + batteries1.current_capacity:
+                                    # calculate is the swap improves the length of the connections
+                                    lengte_new = distance(house1.house.location, self.batteries[house2.battery_id - 1].location) + distance(house2.house.location, self.batteries[house1.battery_id - 1].location)
+                                    lengte_old = house1.length + house2.length
 
-                            total_one = house_one.house.max_output + batteries_one.current_capacity
-                            total_two = house_two.house.max_output + batteries_two.current_capacity
-
-                            if house_one.house.max_output < total_two and house_two.house.max_output < total_one:
-
-                                    lengte_new = distance(house_one.house.location, self.batteries[house_two.battery_id - 1].location) + distance(house_two.house.location, self.batteries[house_one.battery_id - 1].location)
-
-                                    lengte_old = house_one.length + house_two.length
-
-                                    if counter < 1 and lengte_new < lengte_old and house_one.house.id != house_two.house.id:
-
-                                        counter += 1
-                                        # disconnect houses
-                                        self.disconnect(house_one.house.id)
-                                        self.disconnect(house_two.house.id)
-
-                                        # switch connections
-                                        self.connect(house_one.house.id, house_two.battery_id)
-                                        self.connect(house_two.house.id, house_one.battery_id)
+                                    # makes the swap if the length is improved
+                                    if swap == False and lengte_new < lengte_old and house1.house.id != house2.house.id:
+                                        swap = self.swap(house1.house.id, house2.house.id, house1.battery_id, house2.battery_id)
+                                        print(house2.battery_id)
                                         break
+
+    def hillclimber_double(self):
+        """
+        This hillclimber algoritm checks if a swap between two houses can be made,
+        and if so, if the swap would shorten the length of the path, if this is
+        the case, the swap is made.
+        """
+        # loops until no swaps can be made
+        while swap == True:
+            # sets swap to false
+            swap = False
+            # loops through the batteries
+            for batteries1 in self.batteries:
+                # loops through the houses in the batteries
+                for house1 in batteries1.routes:
+                    # loops through the batteries
+                        for house2 in self.grid.batteries[house1.battery_id]:
+                            print('test')
 
 
     def simulated_annealing(self):
         """
         Simulated annealing
         """
-
 
     def random_hillclimber(self, cost_bound, repeats):
         """
@@ -585,7 +656,6 @@ class Grid(object):
         # dump data of best found solution to .json file
         with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
             json.dump(combination, f,indent=4)
-
 
     def random_move_greedy_hillclimber(self, repeats):
         """
