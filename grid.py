@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 import copy
 import pandas as pd
-import time 
+import time
 
 
 class Grid(object):
@@ -201,28 +201,6 @@ class Grid(object):
         return all_longest
 
 
-    def draw_route(self, house, bat):
-        """
-        This test function draws funtion based on a non logic based
-        greedy algorithm. So the batteries can go over limit
-        """
-        # if they share a coordinate, draw a staight line
-        if (house[0] == bat[0]) or (house[1] == bat[1]):
-            plt.plot([house[0], bat[0]], [house[1], bat[1]])
-
-        else:
-            mid_points = [ [house[0], bat[1]], [bat[0], house[1]]]
-            mid_point = mid_points[random.randint(0 ,1)]
-            #print(mid_point)
-            # mid_point = [house[0], bat[1]]
-
-            colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
-            color = colors[random.randint(0, len(colors) - 1)]
-
-            plt.plot([house[0], mid_point[0]], [house[1], mid_point[1]], f'{color}')
-            plt.plot([bat[0], mid_point[0]], [bat[1], mid_point[1]], f'{color}')
-
-
     def draw_grid(self, info):
         """
         Alternative way to draw routes using the grid_route property of the routes
@@ -264,120 +242,6 @@ class Grid(object):
         cost = self.calculate_total_cost()
         plt.title(f"{self.name} costs: {cost} {info}")
 
-        plt.show()
-
-
-    def draw_all(self):
-        """
-        Draws all routes
-        """
-        for battery in self.batteries:
-            plt.plot(battery.location[0], battery.location[1], 'ro', markersize=12)
-            for house in self.houses:
-                self.draw_route(house.location, battery.location)
-
-
-    def k_means(self, x_houses, y_houses, k):
-        """
-        As input (3 inputs) you need an array with the x coordiantes of all the houses
-        and another with y coordinates and the third input the number of
-        clusters you want (so number of batteries).
-        """
-        df = pd.DataFrame({'x': x_houses,'y': x_houses})
-
-
-        np.random.seed(200)
-        k = k
-        # centroids[i] = [x, y]
-        centroids = {
-            i+1: [random.randint(0, 50), random.randint(0, 50)]
-            for i in range(k)
-        }
-
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color='k')
-        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
-
-        def assignment(df, centroids):
-            for i in centroids.keys():
-                # sqrt((x1 - x2)^2 - (y1 - y2)^2)
-                df['distance_from_{}'.format(i)] = (
-                    np.sqrt(
-                        (df['x'] - centroids[i][0]) ** 2
-                        + (df['y'] - centroids[i][1]) ** 2
-                    )
-                )
-            centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
-            df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
-            df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
-            df['color'] = df['closest'].map(lambda x: colmap[x])
-            return df
-
-        df = assignment(df, centroids)
-        # print(df.head())
-
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
-
-        old_centroids = copy.deepcopy(centroids)
-
-        def update(k):
-            for i in centroids.keys():
-                centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
-                centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
-            return k
-
-        centroids = update(centroids)
-
-        fig = plt.figure(figsize=(5, 5))
-        ax = plt.axes()
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        for i in old_centroids.keys():
-            old_x = old_centroids[i][0]
-            old_y = old_centroids[i][1]
-            dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
-            dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
-            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
-        plt.show()
-
-        df = assignment(df, centroids)
-
-        # Plot results
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
-
-        while True:
-            closest_centroids = df['closest'].copy(deep=True)
-            centroids = update(centroids)
-            df = assignment(df, centroids)
-            if closest_centroids.equals(df['closest']):
-                break
-
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
         plt.show()
 
 
@@ -754,6 +618,110 @@ class Grid(object):
         # dump results to .json file
         with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
             json.dump(info, f,indent=4)
+
+
+    def k_means(self, k):
+        """
+        Input the number of clusters you want (so number of batteries).
+        """
+
+        x_houses = [house.location[0] for house in self.houses]
+        y_houses = [house.location[1] for house in self.houses]
+        df = pd.DataFrame({'x': x_houses,'y': y_houses})
+
+        ## Please comment
+        np.random.seed(200)
+        # centroids[i] = [x, y]
+        centroids = {
+            i+1: [random.randint(0, 50), random.randint(0, 50)]
+            for i in range(k)
+        }
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color='k')
+        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        def assignment(df, centroids):
+            for i in centroids.keys():
+                # sqrt((x1 - x2)^2 - (y1 - y2)^2)
+                df['distance_from_{}'.format(i)] = (
+                    np.sqrt(
+                        (df['x'] - centroids[i][0]) ** 2
+                        + (df['y'] - centroids[i][1]) ** 2
+                    )
+                )
+            centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
+            df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
+            df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
+            df['color'] = df['closest'].map(lambda x: colmap[x])
+            return df
+
+        df = assignment(df, centroids)
+        # print(df.head())
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        old_centroids = copy.deepcopy(centroids)
+
+        def update(k):
+            for i in centroids.keys():
+                centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
+                centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
+            return k
+
+        centroids = update(centroids)
+
+        fig = plt.figure(figsize=(5, 5))
+        ax = plt.axes()
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        for i in old_centroids.keys():
+            old_x = old_centroids[i][0]
+            old_y = old_centroids[i][1]
+            dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
+            dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
+            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
+        plt.show()
+
+        df = assignment(df, centroids)
+
+        # Plot results
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        while True:
+            closest_centroids = df['closest'].copy(deep=True)
+            centroids = update(centroids)
+            df = assignment(df, centroids)
+            if closest_centroids.equals(df['closest']):
+                break
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
 
 
     def move_calc(self):
