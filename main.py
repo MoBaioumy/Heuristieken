@@ -12,4 +12,4 @@ if __name__ == "__main__":
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
 
-    grid.random_hillclimber(0, 100)
+    grid.k_means(5)

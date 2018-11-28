@@ -98,7 +98,7 @@ class Grid(object):
 
         # if house max_output exceeds battery capacity return and print error message
         if B.current_capacity < H.max_output:
-            print(f"Battery capacity ({round(B.current_capacity, 2)}) is not sufficient")
+            # print(f"Battery capacity ({round(B.current_capacity, 2)}) is not sufficient")
             return
 
         # remove house from unconnected list
@@ -370,8 +370,7 @@ class Grid(object):
                 counter += 1
                 if counter > 1000:
                     return
-        if self.unconnected_houses != []:
-            print("x")
+
 
 
     def greed(self):
@@ -431,7 +430,7 @@ class Grid(object):
 
                 # input check
                 if closest_house == None:
-                    print("No house to connect")
+                    # print("No house to connect")
                     break
 
                 house_id_connect = closest_house.id
@@ -459,7 +458,7 @@ class Grid(object):
                             if 0 < combi < factor and combi < current_best:
                                 house_id_connect = house1.id
                                 current_best = combi
-                                print('x')
+
 
 
 

@@ -18,14 +18,14 @@ if __name__ == "__main__":
     grid.greedy()
     stop = time.time()
     diff = stop - start
-    grid.draw_grid( "Time: " + str(round(diff, 2)) )
+    grid.draw_grid( "Greedy, Time: " + str(round(diff, 2)) )
 
 
     start = time.time()
     grid.hillclimber()
     stop = time.time()
     diff = stop - start
-    grid.draw_grid( "Time: " + str(round(diff, 2)) )
+    grid.draw_grid( "Hillclimber, Time: " + str(round(diff, 2)) )
 
 
     grid.disconnect_all()
@@ -35,11 +35,11 @@ if __name__ == "__main__":
     grid.random()
     stop = time.time()
     diff = stop - start
-    grid.draw_grid( "Time: " + str(round(diff, 2)))
+    grid.draw_grid( "Random Time: " + str(round(diff, 2)))
 
 
     start = time.time()
     grid.hillclimber()
     stop = time.time()
     diff = stop - start
-    grid.draw_grid( "Time: " + str(round(diff, 2)) )
+    grid.draw_grid( "Hillclimber Time: " + str(round(diff, 2)) )
