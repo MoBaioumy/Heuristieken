@@ -378,6 +378,7 @@ class Grid(object):
         plt.ylim(-5, 55)
         plt.show()
 
+
         
     def range_connected(self, battery):
         """

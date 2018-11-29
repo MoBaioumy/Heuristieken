@@ -96,7 +96,7 @@ Eigenschappen
 Methods
 * Plan Manhattan grid route: plant de fysieke route op de grid en plaatst alle coordinaten in de Grid route lijst
 
-#### Huis
+#### House
 
 Eigenschappen
 
@@ -137,9 +137,10 @@ Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of 
 Met de constraint relaxation dat batterijen geen maximum capaciteit hebben en alle huizen aan één batterij kunnen worden verbonden is de state space 5 ^ 150 ofwel 7.0e+104.
 
 Range (min - max) van huizen dat aan een batterij kan verbonden worden:
-* Wijk 1: 21 - 45
-* Wijk 2: 24 - 39
-* Wijk 3: 28 - 32
+
+| Wijk 1  | Wijk 2  | Wijk 3  |
+| ------- | ------- | ------- |
+| 21 - 45 | 24 - 39 | 28 - 32 |
 
 #### Lower bound probleem A + B
 
@@ -147,29 +148,20 @@ De minimale kosten zijn de kosten van wanneer alle huizen aan de dichtstbijzijnd
 
 De implementatie is te zien grid.py method shortest_paths.
 
-Wijk 1: 3132 * 9 + 5000 * 5 = 53188
-Wijk 2: 2252 * 9 + 5000 * 5 = 45268
-Wijk 3: 1973 * 9 + 5000 * 5 = 42757
+| Wijk 1                        | Wijk 2                        | Wijk 3                        |
+| ----------------------------- | ----------------------------- | ----------------------------- |
+| $3132 * 9 + 5000 * 5 = 53188$ | $2252 * 9 + 5000 * 5 = 45268$ | $1973 * 9 + 5000 * 5 = 42757$ |
 
 **Tussenstand**
 
-Wijk 1:
-* Simple: **76642**
-* Greedy normaal: **60586**
-* Greedy hillclimber: **56536**
-* Random hillclimber best: **56392**
+|                    | Wijk 1    | Wijk 2    | Wijk 3     |
+| ------------------ | --------- | --------- | ---------- |
+| Simple             | **76642** | **66679** | **69271**  |
+| Greedy Normaal     | **60586** | **49138** | **50371**  |
+| Greedy HillClimber | **56536** | **46258** | **44125**  |
+| Random hillclimber | **56392** | **45736** | **43891^** |
 
-Wijk 2:
-* Simple: **66679**
-* Greedy normaal: **49138**
-* Greedy hillclimber: **46258**
-* Random hillclimber best: **45736**
-
-Wijk 3:
-* Simple: **69271**
-* Greedy normaal: **50371**
-* Greedy hillclimber: **44125**
-* Random hillclimber best: **43891** (na 1500 repeats)
+​									***^ Na 1500 repeats***
 
 #### Upper bound probleem A + B
 
@@ -179,9 +171,9 @@ Hiervoor gaan we er vanuit dat men wel altijd de korste Manhattan route van een 
 
 De implementatie is te zien grid.py method longest_paths.
 
-* Wijk 1: 8670 x 9 + 5000 * 5 = 103030
-* Wijk 2: 7917 x 9 + 5000 * 5 = 96253
-* Wijk 3: 8499 x 9 + 5000 * 5 = 101491
+| Wijk 1                         | Wijk 2                        | Wijk 3                         |
+| ------------------------------ | ----------------------------- | ------------------------------ |
+| $8670 * 9 + 5000 * 5 = 103030$ | $7917 * 9 + 5000 * 5 = 96253$ | $8499 * 9 + 5000 * 5 = 101491$ |
 
 ### Probleem C
 
