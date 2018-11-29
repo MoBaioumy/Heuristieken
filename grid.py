@@ -508,14 +508,14 @@ class Grid(object):
         #     for i in new_houses:
         #         print(i)
 
-    def swap(self, house1, house2, battery1, battery2):
+    def swap(self, h1, h2):
 
         # disconnect houses
-        self.disconnect(house1)
-        self.disconnect(house2)
+        self.disconnect(h1.house.id)
+        self.disconnect(h2.house.id,)
         # swap connections
-        self.connect(house1, battery2)
-        self.connect(house2, battery1)
+        self.connect(h1.house.id, h2.battery_id)
+        self.connect(h2.house.id, h1.battery_id)
         swap = True
 
         return swap
@@ -535,43 +535,84 @@ class Grid(object):
             # sets swap to false
             swap = False
             # loops through the batteries
-            for batteries1 in self.batteries:
+            for b1 in self.batteries:
                 # loops through the houses in the batteries
-                for house1 in batteries1.routes:
+                for h1 in b1.routes:
                     # loops through the batteries
-                    for batteries2 in self.batteries:
+                    for b2 in self.batteries:
                         # loops through the houses in the batteries
-                        for house2 in batteries2.routes:
+                        for h2 in b2.routes:
+                            h1cap = h1.house.max_output + b1.current_capacity
+                            h2cap = h2.house.max_output + b2.current_capacity
                             # checks if a swap between two houses can be made
-                            if house1.house.max_output < house2.house.max_output + batteries2.current_capacity and house2.house.max_output < house1.house.max_output + batteries1.current_capacity:
+                            if h1.house.max_output < h2cap and h2.house.max_output < h1cap:
                                     # calculate is the swap improves the length of the connections
-                                    lengte_new = distance(house1.house.location, self.batteries[house2.battery_id - 1].location) + distance(house2.house.location, self.batteries[house1.battery_id - 1].location)
-                                    lengte_old = house1.length + house2.length
+                                    h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
+                                    h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
+                                    lengte_new =  h1len + h2len
+                                    lengte_old = h1.length + h2.length
 
                                     # makes the swap if the length is improved
-                                    if swap == False and lengte_new < lengte_old and house1.house.id != house2.house.id:
-                                        swap = self.swap(house1.house.id, house2.house.id, house1.battery_id, house2.battery_id)
-                                        print(house2.battery_id)
+                                    if swap == False and lengte_new < lengte_old and h1.house.id != h2.house.id:
+                                        swap = self.swap(h1, h2)
                                         break
 
     def hillclimber_double(self):
         """
-        This hillclimber algoritm checks if a swap between two houses can be made,
+        This hillclimber algoritm checks if a swap between pairs of two houses can be made,
         and if so, if the swap would shorten the length of the path, if this is
         the case, the swap is made.
         """
+        swap = True
         # loops until no swaps can be made
         while swap == True:
             # sets swap to false
             swap = False
+            self.hillclimber()
+            print(self.calculate_total_cost())
             # loops through the batteries
-            for batteries1 in self.batteries:
-                # loops through the houses in the batteries
-                for house1 in batteries1.routes:
-                    # loops through the batteries
-                        for house2 in self.grid.batteries[house1.battery_id]:
-                            print('test')
+            for b1 in self.batteries:
+                for h1 in b1.routes:
+                    for h2 in b1.routes:
+                        for b2 in self.batteries:
+                            for h3 in b2.routes:
+                                for h4 in b2.routes:
 
+                                    # MAKE FUNCTION OF THIS
+                                    h1h2 = h1.house.max_output + h2.house.max_output
+                                    h3h4 = h3.house.max_output + h4.house.max_output
+
+                                    cap1 = h1h2 + b1.current_capacity
+                                    cap2 = h3h4 + b2.current_capacity
+
+                                    if h1 != h2 and h3 != h4 and h1h2 < cap2 and h3h4 < cap1:
+
+                                        len_old = h1.length + h2.length + h3.length + h4.length
+
+                                        d1 = distance(h1.house.location, self.batteries[h3.battery_id - 1].location)
+                                        d2 = distance(h2.house.location, self.batteries[h3.battery_id - 1].location)
+                                        d3 = distance(h3.house.location, self.batteries[h1.battery_id - 1].location)
+                                        d4 = distance(h4.house.location, self.batteries[h1.battery_id - 1].location)
+
+                                        len_new = d1 + d2 + d3 + d4
+
+                                        # makes the swap if the length is improved
+                                        if swap == False and len_new < len_old:
+
+                                            # disconnect houses
+                                            self.disconnect(h1.house.id)
+                                            self.disconnect(h2.house.id)
+                                            self.disconnect(h3.house.id)
+                                            self.disconnect(h4.house.id)
+
+                                            # swap connections
+                                            self.connect(h1.house.id, h3.battery_id)
+                                            self.connect(h2.house.id, h3.battery_id)
+                                            self.connect(h3.house.id, h1.battery_id)
+                                            self.connect(h4.house.id, h1.battery_id)
+                                            swap = True
+
+                                            break
 
     def simulated_annealing(self):
         """
