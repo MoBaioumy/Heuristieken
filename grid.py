@@ -12,7 +12,6 @@ import json
 from datetime import datetime
 import copy
 
- test
 
 class Grid(object):
     """
@@ -613,11 +612,22 @@ class Grid(object):
                                             swap = True
 
                                             break
+    def re_arrange(self):
+        """
+        Re-arrange for simulated_annealing
+        """
+
+
+
 
     def simulated_annealing(self):
         """
         Simulated annealing
         """
+
+
+
+
 
     def random_hillclimber(self, cost_bound, repeats):
         """
