@@ -11,99 +11,34 @@ if __name__ == "__main__":
     num_houses = 150
     num_batteries = 5
 
-    # load load_batteries
-    batteries = grid.batteries
+    for i in range(1,50):
 
-    batteries = [i for i in grid.batteries]
+        r1 = random.randint(1,150)
 
-    batteries = []
-    for i in range(len(grid.batteries)):
-         batteries.append(grid.batteries[i])
-
-    # load houses
-    houses = []
-    for i in range(len(grid.houses)):
-        houses.append(grid.houses[i])
-
-    # calculate distance to every house per battery
-    distances = []
-    for i in range(num_houses):
-
-        # obtain location of the house
-        x_house = houses[i].location[0]
-        y_house = houses[i].location[1]
-
-        x_dif = []
-        y_dif = []
-
-        # calculate distances per x and y
-        for i in range(num_batteries):
-            x_dif.append(abs(x_house - batteries[i].location[0]))
-            y_dif.append(abs(y_house - batteries[i].location[1]))
-
-        # calculate overall distance
-        man_distance = list(map(add, x_dif, y_dif))
-        distances.append(man_distance)
-
-    # set connected to false
-    connections = [[], [], [], [], []]
-    capacity_batteries = []
-    for i in num_batteries:
-        capacity_batteries.append(grid.batteries[i].capacity)
-    # capacity_batteries =
-
-    for i in range(150):
-
-        min_house = distances.index(min(distances))
-        min_bat = distances[min_house].index(min(distances[min_house]))
-
-        distances[min_house] = [999]
-        connections[min_bat].append(min_house)
-
-    print(connections[1])
+        for b in grid.batteries:
+            for h in b.routes:
+                if h.id == r1:
+                    h1 = h
+                    b1 = b
+                    max1 = h1.house.max_output + b1.current_capacity
+                    r2 = random.randint(1,150)
+                    break
 
 
-# man_distance = list(map(add, x_dif, y_dif))
-# shortest = man_distance.index(min(man_distance))
-
-    #     distances.append(distance)
-    #
-    # # if battery is full, select other battery
-    # # find closest house
-    # # update capacitiy
-    # # next battery
-    #
-    #
-    # batteries = []
-    #
-    # house = grid.houses[0].location
-    #
-    # size = len(grid.batteries)
-    #
-    # for i in range(size):
-    #     batteries.append(grid.batteries[i].location)
-    #
-    # x_house = house[0]
-    # y_house = house[1]
-    #
-    # x_battery = []
-    # y_battery = []
-    # #
-    # for i in range(len(houses)):
-    #     for i in range(size):
-    #         x_battery.append(batteries[i][0])
-    #         y_battery.append(batteries[i][1])
-    #
-    #     for i in range(size):
-    #         x_dif.append(abs(x_house - x_battery[i]))
-    #         y_dif.append(abs(y_house - y_battery[i]))
-
-    #
-    #
-    # x_dif = []
-    # y_dif = []
-    #
-    #
-    #
-    # man_distance = list(map(add, x_dif, y_dif))
-    # shortest = man_distance.index(min(man_distance))
+        for b in grid.batteries:
+            for h in b.routes:
+                if h.id == r2:
+                    h2 = h
+                    b2 = b
+                    max2 = h2.house.max_output + b.current_capacity
+                    if h1.house.max_output < max2 and h2.house.max_output < max1:
+                        len_old = h1.length + h2.length
+                        # calculate is the swap improves the length of the connections
+                        h1len = distance(h1.house.location, grid.batteries[h2.battery_id - 1].location)
+                        h2len = distance(h2.house.location, grid.batteries[h1.battery_id - 1].location)
+                        len_new =  h1len + h2len
+                        if len_old > len_new:
+                            print('better')
+                        else:
+                            print('worse')
+                        grid.swap(h1, h2)

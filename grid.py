@@ -260,6 +260,121 @@ class Grid(object):
         plt.show()
 
 
+    def draw_all(self):
+        """
+        Draws all routes
+        """
+        for battery in self.batteries:
+            plt.plot(battery.location[0], battery.location[1], 'ro', markersize=12)
+            for house in self.houses:
+                self.draw_route(house.location, battery.location)
+
+
+    def k_means(self, x_houses, y_houses, k):
+        """
+        As input (3 inputs) you need an array with the x coordiantes of all the houses
+        and another with y coordinates and the third input the number of
+        clusters you want (so number of batteries).
+        """
+        df = pd.DataFrame({'x': x_houses,'y': x_houses})
+
+
+        np.random.seed(200)
+        k = k
+        # centroids[i] = [x, y]
+        centroids = {
+            i+1: [random.randint(0, 50), random.randint(0, 50)]
+            for i in range(k)
+        }
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color='k')
+        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        def assignment(df, centroids):
+            for i in centroids.keys():
+                # sqrt((x1 - x2)^2 - (y1 - y2)^2)
+                df['distance_from_{}'.format(i)] = (
+                    np.sqrt(
+                        (df['x'] - centroids[i][0]) ** 2
+                        + (df['y'] - centroids[i][1]) ** 2
+                    )
+                )
+            centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
+            df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
+            df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
+            df['color'] = df['closest'].map(lambda x: colmap[x])
+            return df
+
+        df = assignment(df, centroids)
+        # print(df.head())
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        old_centroids = copy.deepcopy(centroids)
+
+        def update(k):
+            for i in centroids.keys():
+                centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
+                centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
+            return k
+
+        centroids = update(centroids)
+
+        fig = plt.figure(figsize=(5, 5))
+        ax = plt.axes()
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        for i in old_centroids.keys():
+            old_x = old_centroids[i][0]
+            old_y = old_centroids[i][1]
+            dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
+            dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
+            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
+        plt.show()
+
+        df = assignment(df, centroids)
+
+        # Plot results
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        while True:
+            closest_centroids = df['closest'].copy(deep=True)
+            centroids = update(centroids)
+            df = assignment(df, centroids)
+            if closest_centroids.equals(df['closest']):
+                break
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+
+
     def range_connected(self, battery):
         """
         Returns absolute minimum and maximum of house that can be connected to input battery
@@ -594,18 +709,22 @@ class Grid(object):
             # sets swap to false
             swap = False
             # loops through the batteries
-            for batteries1 in self.batteries:
+            for b1 in self.batteries:
                 # loops through the houses in the batteries
-                for house1 in batteries1.routes:
+                for h1 in b1.routes:
                     # loops through the batteries
-                    for batteries2 in self.batteries:
+                    for b2 in self.batteries:
                         # loops through the houses in the batteries
-                        for house2 in batteries2.routes:
+                        for h2 in b2.routes:
+                            h1cap = h1.house.max_output + b1.current_capacity
+                            h2cap = h2.house.max_output + b2.current_capacity
                             # checks if a swap between two houses can be made
-                            if house1.house.max_output < house2.house.max_output + batteries2.current_capacity and house2.house.max_output < house1.house.max_output + batteries1.current_capacity:
+                            if h1.house.max_output < h2cap and h2.house.max_output < h1cap:
                                     # calculate is the swap improves the length of the connections
-                                    lengte_new = distance(house1.house.location, self.batteries[house2.battery_id - 1].location) + distance(house2.house.location, self.batteries[house1.battery_id - 1].location)
-                                    lengte_old = house1.length + house2.length
+                                    h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
+                                    h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
+                                    lengte_new =  h1len + h2len
+                                    lengte_old = h1.length + h2.length
 
                                     # makes the swap if the length is improved
                                     if swap == False and lengte_new < lengte_old and house1.house.id != house2.house.id:
@@ -615,21 +734,66 @@ class Grid(object):
 
     def hillclimber_double(self):
         """
-        This hillclimber algoritm checks if a swap between two houses can be made,
+        This hillclimber algoritm checks if a swap between pairs of two houses can be made,
         and if so, if the swap would shorten the length of the path, if this is
         the case, the swap is made.
         """
+        swap = True
         # loops until no swaps can be made
         while swap == True:
             # sets swap to false
             swap = False
+            self.hillclimber()
+            print(self.calculate_total_cost())
             # loops through the batteries
-            for batteries1 in self.batteries:
-                # loops through the houses in the batteries
-                for house1 in batteries1.routes:
-                    # loops through the batteries
-                        for house2 in self.grid.batteries[house1.battery_id]:
-                            print('test')
+            for b1 in self.batteries:
+                for h1 in b1.routes:
+                    for h2 in b1.routes:
+                        for b2 in self.batteries:
+                            for h3 in b2.routes:
+                                for h4 in b2.routes:
+
+                                    # MAKE FUNCTION OF THIS
+                                    h1h2 = h1.house.max_output + h2.house.max_output
+                                    h3h4 = h3.house.max_output + h4.house.max_output
+
+                                    cap1 = h1h2 + b1.current_capacity
+                                    cap2 = h3h4 + b2.current_capacity
+
+                                    if h1 != h2 and h3 != h4 and h1h2 < cap2 and h3h4 < cap1:
+
+                                        len_old = h1.length + h2.length + h3.length + h4.length
+
+                                        d1 = distance(h1.house.location, self.batteries[h3.battery_id - 1].location)
+                                        d2 = distance(h2.house.location, self.batteries[h3.battery_id - 1].location)
+                                        d3 = distance(h3.house.location, self.batteries[h1.battery_id - 1].location)
+                                        d4 = distance(h4.house.location, self.batteries[h1.battery_id - 1].location)
+
+                                        len_new = d1 + d2 + d3 + d4
+
+                                        # makes the swap if the length is improved
+                                        if swap == False and len_new < len_old:
+
+                                            # disconnect houses
+                                            self.disconnect(h1.house.id)
+                                            self.disconnect(h2.house.id)
+                                            self.disconnect(h3.house.id)
+                                            self.disconnect(h4.house.id)
+
+                                            # swap connections
+                                            self.connect(h1.house.id, h3.battery_id)
+                                            self.connect(h2.house.id, h3.battery_id)
+                                            self.connect(h3.house.id, h1.battery_id)
+                                            self.connect(h4.house.id, h1.battery_id)
+                                            swap = True
+
+                                            break
+    def re_arrange(self):
+        """
+        Re-arrange for simulated_annealing
+        """
+
+
 
 
     def simulated_annealing(self):

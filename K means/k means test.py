@@ -24,24 +24,35 @@ with open('wijk1_huizen.csv', newline='') as csvfile:
             hello = 4
 
 df = pd.DataFrame({
-    'x': x_huizen,
-    'y': y_huizen
+    'x': x_huizen[0: 50],
+    'y': y_huizen[0: 50]
 })
 
 
 np.random.seed(200)
 k = 5
+
+plt_size = 7
 # centroids[i] = [x, y]
 centroids = {
     i+1: [random.randint(0, 50), random.randint(0, 50)]
     for i in range(k)
 }
     
-fig = plt.figure(figsize=(5, 5))
+fig = plt.figure(figsize=(plt_size + 3, plt_size))
+plt.scatter(df['x'], df['y'], color='k')
+colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
+#for i in centroids.keys():
+#    plt.scatter(*centroids[i], color=colmap[i], marker = 'D', s = 200)
+plt.xlim(-5, 55)
+plt.ylim(-5, 55)
+plt.show()
+
+fig = plt.figure(figsize=(plt_size + 3, plt_size))
 plt.scatter(df['x'], df['y'], color='k')
 colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
 for i in centroids.keys():
-    plt.scatter(*centroids[i], color=colmap[i])
+    plt.scatter(*centroids[i], color=colmap[i], marker = 'D', s = 200)
 plt.xlim(-5, 55)
 plt.ylim(-5, 55)
 plt.show()
@@ -64,10 +75,10 @@ def assignment(df, centroids):
 df = assignment(df, centroids)
 # print(df.head())
 
-fig = plt.figure(figsize=(5, 5))
-plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+fig = plt.figure(figsize=(plt_size + 3, plt_size))
+plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.8)
 for i in centroids.keys():
-    plt.scatter(*centroids[i], color=colmap[i])
+    plt.scatter(*centroids[i], color=colmap[i], marker = 'D', s = 200)
 plt.xlim(-5, 55)
 plt.ylim(-5, 55)
 plt.show()
@@ -82,11 +93,11 @@ def update(k):
 
 centroids = update(centroids)
     
-fig = plt.figure(figsize=(5, 5))
+fig = plt.figure(figsize=(plt_size + 3, plt_size))
 ax = plt.axes()
-plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.8)
 for i in centroids.keys():
-    plt.scatter(*centroids[i], color=colmap[i])
+    plt.scatter(*centroids[i], color=colmap[i], marker = 'D', s = 200)
 plt.xlim(-5, 55)
 plt.ylim(-5, 55)
 for i in old_centroids.keys():
@@ -100,10 +111,10 @@ plt.show()
 df = assignment(df, centroids)
 
 # Plot results
-fig = plt.figure(figsize=(5, 5))
-plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+fig = plt.figure(figsize=(plt_size + 3, plt_size))
+plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.8)
 for i in centroids.keys():
-    plt.scatter(*centroids[i], color=colmap[i])
+    plt.scatter(*centroids[i], color=colmap[i], marker = 'D', s = 200)
 plt.xlim(-5, 55)
 plt.ylim(-5, 55)
 plt.show()
@@ -115,10 +126,10 @@ while True:
     if closest_centroids.equals(df['closest']):
         break
 
-fig = plt.figure(figsize=(5, 5))
-plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+fig = plt.figure(figsize=(plt_size + 3, plt_size))
+plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.8)
 for i in centroids.keys():
-    plt.scatter(*centroids[i], color=colmap[i])
+    plt.scatter(*centroids[i], color=colmap[i], marker = 'D', s = 200)
 plt.xlim(-5, 55)
 plt.ylim(-5, 55)
 plt.show()
