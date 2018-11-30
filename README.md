@@ -163,7 +163,7 @@ Wijk 2:
 * Simple: **66679**
 * Greedy normaal: **49138**
 * Greedy hillclimber: **46258**
-* Random hillclimber best: **45736**
+* Random hillclimber best: **45628**
 
 Wijk 3:
 * Simple: **69271**
