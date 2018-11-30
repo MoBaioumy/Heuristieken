@@ -8,28 +8,9 @@ import random
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
+
     i = 2
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-
-    # grid.greedy()
-    # grid.draw_grid()
-    # grid.hillclimber()
-    # grid.draw_grid()
-    # grid.disconnect_all()
-    # grid.random()
-    # grid.draw_grid()
-    # grid.hillclimber()
-    # grid.draw_grid()
-    grid.draw_grid()
-    grid.move_batteries_random()
-    grid.draw_grid()
-    grid.greedy()
-    grid.draw_grid()
-    grid.hillclimber()
-    grid.draw_grid()
-    grid.disconnect_all()
     grid.random()
-    grid.draw_grid()
-    grid.hillclimber()
-    grid.draw_grid()
+    # grid.random_hillclimber(0, 100)
