@@ -153,14 +153,14 @@ class Grid(object):
                 self.disconnect(battery.routes[0].house.id)
 
 
-    def swap(self, house1, house2, battery1, battery2):
+    def swap(self, h1, h2):
 
         # disconnect houses
-        self.disconnect(house1)
-        self.disconnect(house2)
+        self.disconnect(h1.house.id)
+        self.disconnect(h2.house.id,)
         # swap connections
-        self.connect(house1, battery2)
-        self.connect(house2, battery1)
+        self.connect(h1.house.id, h2.battery_id)
+        self.connect(h2.house.id, h1.battery_id)
         swap = True
 
         return swap
@@ -727,8 +727,8 @@ class Grid(object):
                                     lengte_old = h1.length + h2.length
 
                                     # makes the swap if the length is improved
-                                    if swap == False and lengte_new < lengte_old and house1.house.id != house2.house.id:
-                                        swap = self.swap(house1.house.id, house2.house.id, house1.battery_id, house2.battery_id)
+                                    if swap == False and lengte_new < lengte_old and h1.house.id != h2.house.id:
+                                        swap = self.swap(h1, h2)
                                         break
 
 

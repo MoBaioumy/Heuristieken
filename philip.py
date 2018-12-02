@@ -15,88 +15,42 @@ def re_arrange(grid):
     """
 
     found = False
-
+    house1 = False
     while found == False:
 
-        r1 = random.randint(1,150)
+        r2 = random.randint(1,150)
+
+        while house1 == False:
+            r1 = random.randint(1,150)
+            for batteries in grid.batteries:
+                for house in batteries.routes:
+                    if house.id == r1:
+                        h1 = house
+                        b1 = batteries
+                        max1 = h1.house.max_output + b1.current_capacity
+                        house1 = True
+                        break
 
         for batteries in grid.batteries:
             for house in batteries.routes:
-                print(house.id)
-                if house.id == r1:
+                if house.id == r2:
+                    h2 = house
+                    b2 = batteries
+                    max2 = h2.house.max_output + b2.current_capacity
+                    if h1.house.max_output < max2 and h2.house.max_output < max1:
 
-                    print('Found')
-                    found = True
-                    break
+                        proposed = copy.deepcopy(grid)
+                        proposed.swap(h1, h2)
+                        found = True
 
-                    # h1 = h
-                    # b1 = b
-                    # max1 = h1.house.max_output + b1.current_capacity
-                    # break
+                        break
 
-        # for b in grid.batteries:
-        #     for h in b.routes:
-        #         if h.id == r2:
-        #             h2 = h
-        #             b2 = b
-        #             max2 = h2.house.max_output + b.current_capacity
-        #             if h1.house.max_output < max2 and h2.house.max_output < max1:
-        #                 hit = True
-        #                 len_old = h1.length + h2.length
-        #                 # calculate is the swap improves the length of the connections
-        #                 h1len = distance(h1.house.location, grid.batteries[h2.battery_id - 1].location)
-        #                 h2len = distance(h2.house.location, grid.batteries[h1.battery_id - 1].location)
-        #                 len_new =  h1len + h2len
-        #                 proposed = [h1, h2]
-        #                 proposed_change = len_old - len_new
-        #                 print(proposed)
-        #                 print(proposed_change)
-        #                 return proposed_change, h1, h2
+        r1 = random.randint(1,150)
+        r2 = random.randint(1,150)
 
-#
-# def re_arrange(grid):
-#
-#     hit = False
-#     r1 = random.randint(1,150)
-#     r2 = random.randint(1,150)
-#
-#     while hit == False:
-#
-#         for b in grid.batteries:
-#             for h in b.routes:
-#                 if h.id == r1:
-#
-#                     h1 = h
-#                     b1 = b
-#                     max1 = h1.house.max_output + b1.current_capacity
-#                     print(h1)
-#
-#                     for b2 in grid.batteries:
-#                         for h2 in b2.routes:
-#                             if h2.id == r2:
-#
-#
-#                                 h2 = h2
-#                                 b2 = b2
-#
-#                                 max2 = h2.house.max_output + b2.current_capacity
-#
-#                                 if h1.house.max_output < max2 and h2.house.max_output < max1:
-#
-#                                     hit = True
-#                                     len_old = h1.length + h2.length
-#                                     # calculate is the swap improves the length of the connections
-#                                     h1len = distance(h1.house.location, grid.batteries[h2.battery_id - 1].location)
-#                                     h2len = distance(h2.house.location, grid.batteries[h1.battery_id - 1].location)
-#                                     len_new =  h1len + h2len
-#                                     current = grid.calculate_total_cost()
-#                                     proposed_change = len_old - len_new
-#                                     proposed = current + proposed_change
-#                                     break
-#
-#
-#             r1 = random.randint(1,150)
-#             r2 = random.randint(1,150)
+
+
+    return proposed, h1, h2
 
 def simulated_annealing(grid, N):
 
@@ -106,23 +60,26 @@ def simulated_annealing(grid, N):
     best_possible = 35200
     best_cost = best_version.calculate_total_cost()
     fitness = []
-    print('test')
 
     for i in range(N):
 
-        proposed, current, h1, h2 = re_arrange(grid)
-        proposed -= best_possible
-        current -= best_possible
+        proposed, h1, h2 = re_arrange(grid)
+        curr = grid.calculate_total_cost() - best_possible
+        prop = proposed.calculate_total_cost() - best_possible
+        probability = max(0, min(1, np.exp(-(prop - curr) / temperature)))
 
-        probability = max(0, min(1, np.exp(-(proposed - current) / temperature)))
-
-        if (current - proposed) > 0:
+        if (curr - prop) > 0:
             probability = 1
+            print("improvement ", curr - prop)
+
+        cost = grid.calculate_total_cost()
 
         if np.random.rand() < probability:
-            grid.swap(h1, h2)
+            print('switch')
+            grid = proposed
 
-        temperature = 0.99 * temperature
+        temperature = 0.95 * temperature
+        print(temperature)
         cost = grid.calculate_total_cost()
 
         if cost < best_cost:
@@ -130,7 +87,8 @@ def simulated_annealing(grid, N):
             best_cost = best_version.calculate_total_cost()
 
         fitness.append(best_cost)
-        print(grid.unconnected_houses)
+
+        print(cost)
 
     return best_version, best_cost
 
@@ -138,7 +96,8 @@ def simulated_annealing(grid, N):
 if __name__ == "__main__":
 
     grid = Grid("wijk2")
-    grid.random()
-    print(grid.unconnected_houses)
-
+    grid.greedy()
+    grid.hillclimber()
+    print(grid.calculate_total_cost())
     re_arrange(grid)
+    simulated_annealing(grid, 100)
