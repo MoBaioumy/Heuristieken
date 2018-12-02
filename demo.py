@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import time
 
 if __name__ == "__main__":
-    i = 1
+    i = 2
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
 
@@ -35,11 +35,11 @@ if __name__ == "__main__":
     grid.random()
     stop = time.time()
     diff = stop - start
-    grid.draw_grid( "Random Time: " + str(round(diff, 2)))
+    grid.draw_grid( "Random, Time: " + str(round(diff, 2)))
 
 
     start = time.time()
     grid.hillclimber()
     stop = time.time()
     diff = stop - start
-    grid.draw_grid( "Hillclimber Time: " + str(round(diff, 2)) )
+    grid.draw_grid( "Hillclimber, Time: " + str(round(diff, 2)) )

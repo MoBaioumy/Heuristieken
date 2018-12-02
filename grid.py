@@ -11,6 +11,8 @@ import copy
 import json
 from datetime import datetime
 import copy
+import itertools
+import time
 
 
 class Grid(object):
@@ -151,6 +153,19 @@ class Grid(object):
                 self.disconnect(battery.routes[0].house.id)
 
 
+    def swap(self, house1, house2, battery1, battery2):
+
+        # disconnect houses
+        self.disconnect(house1)
+        self.disconnect(house2)
+        # swap connections
+        self.connect(house1, battery2)
+        self.connect(house2, battery1)
+        swap = True
+
+        return swap
+
+
     def calculate_total_cost(self):
         """
         Calculates the total cost of the current grid
@@ -245,6 +260,121 @@ class Grid(object):
         plt.show()
 
 
+    def draw_all(self):
+        """
+        Draws all routes
+        """
+        for battery in self.batteries:
+            plt.plot(battery.location[0], battery.location[1], 'ro', markersize=12)
+            for house in self.houses:
+                self.draw_route(house.location, battery.location)
+
+
+    def k_means(self, x_houses, y_houses, k):
+        """
+        As input (3 inputs) you need an array with the x coordiantes of all the houses
+        and another with y coordinates and the third input the number of
+        clusters you want (so number of batteries).
+        """
+        df = pd.DataFrame({'x': x_houses,'y': x_houses})
+
+
+        np.random.seed(200)
+        k = k
+        # centroids[i] = [x, y]
+        centroids = {
+            i+1: [random.randint(0, 50), random.randint(0, 50)]
+            for i in range(k)
+        }
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color='k')
+        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        def assignment(df, centroids):
+            for i in centroids.keys():
+                # sqrt((x1 - x2)^2 - (y1 - y2)^2)
+                df['distance_from_{}'.format(i)] = (
+                    np.sqrt(
+                        (df['x'] - centroids[i][0]) ** 2
+                        + (df['y'] - centroids[i][1]) ** 2
+                    )
+                )
+            centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
+            df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
+            df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
+            df['color'] = df['closest'].map(lambda x: colmap[x])
+            return df
+
+        df = assignment(df, centroids)
+        # print(df.head())
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        old_centroids = copy.deepcopy(centroids)
+
+        def update(k):
+            for i in centroids.keys():
+                centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
+                centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
+            return k
+
+        centroids = update(centroids)
+
+        fig = plt.figure(figsize=(5, 5))
+        ax = plt.axes()
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        for i in old_centroids.keys():
+            old_x = old_centroids[i][0]
+            old_y = old_centroids[i][1]
+            dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
+            dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
+            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
+        plt.show()
+
+        df = assignment(df, centroids)
+
+        # Plot results
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+        while True:
+            closest_centroids = df['closest'].copy(deep=True)
+            centroids = update(centroids)
+            df = assignment(df, centroids)
+            if closest_centroids.equals(df['closest']):
+                break
+
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i])
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
+
+
+
     def range_connected(self, battery):
         """
         Returns absolute minimum and maximum of house that can be connected to input battery
@@ -258,7 +388,7 @@ class Grid(object):
         capacity_taken = 0
         max_connected_houses = 0
         for house in self.unconnected_houses:
-            if capacity_taken + house.max_output < battery.max_capacity:
+            if capacity_taken + house.max_output < battery.current_capacity:
                 capacity_taken += house.max_output
                 max_connected_houses += 1
         # sort houses from largest to smallest max output
@@ -267,7 +397,7 @@ class Grid(object):
         capacity_taken = 0
         min_connected_houses = 0
         for house in self.unconnected_houses:
-            if capacity_taken + house.max_output < battery.max_capacity:
+            if capacity_taken + house.max_output < battery.current_capacity:
                 capacity_taken += house.max_output
                 min_connected_houses += 1
 
@@ -322,23 +452,26 @@ class Grid(object):
         Randomly connects houses to batteries, solution not garanteed
         """
         # random.shuffle(self.batteries)
-        for battery in self.batteries:
+        while self.unconnected_houses != []:
+            for battery in self.batteries:
 
 
-            min_out = min(house.max_output for house in self.unconnected_houses)
+                min_out = min(house.max_output for house in self.unconnected_houses)
 
 
-            while battery.current_capacity > min_out:
+                while battery.current_capacity > min_out:
 
-                idx = random.randint(0, len(self.unconnected_houses) - 1)
-                house_id = self.unconnected_houses[idx].id
+                    idx = random.randint(0, len(self.unconnected_houses) - 1)
+                    house_id = self.unconnected_houses[idx].id
 
-                self.connect(house_id, battery.id)
+                    self.connect(house_id, battery.id)
 
-                if self.unconnected_houses == []:
-                    break
-                else:
-                    min_out = min(house.max_output for house in self.unconnected_houses)
+                    if self.unconnected_houses == []:
+                        break
+                    else:
+                        min_out = min(house.max_output for house in self.unconnected_houses)
+            if self.unconnected_houses != []:
+                self.disconnect_all()
 
 
     def greedy_alt(self):
@@ -370,6 +503,46 @@ class Grid(object):
                     return
 
 
+    def look(self, battery):
+        r = self.range_connected(battery)
+        print(r)
+        lowest =  [0, 0]
+        outputs = [house.max_output for house in self.unconnected_houses]
+        best_dist = float('inf')
+        out_houses = []
+        for i in range(r[1]):
+             x = itertools.combinations(outputs, i)
+             print("progress!")
+             for j in x:
+                 # print(sum(j) - battery.current_capacity)
+                 if 0 < battery.current_capacity - sum(j)  < battery.current_capacity - sum(lowest) and battery.current_capacity - sum(j) < 7 :
+                     houses = []
+                     for i in j:
+                         for house in self.unconnected_houses:
+                             if house.max_output == i:
+                                 houses.append(house)
+                     total_dist = 0
+                     for h in houses:
+                         total_dist += distance(h.location, battery.location)
+                     if total_dist < best_dist:
+                         best_dist = total_dist
+                         lowest = j
+                         out_houses = houses
+                     # print(sum(j) - battery.current_capacity)
+        houses = []
+        if sum(lowest) < battery.current_capacity and sum(j) - battery.current_capacity < 7:
+            for i in lowest:
+                for house in self.unconnected_houses:
+                    if house.max_output == i:
+                        houses.append(house)
+
+        return houses
+
+
+
+
+
+
 
     def greed(self):
         counter = 0
@@ -379,18 +552,31 @@ class Grid(object):
                 lowest_dist_house = float('inf')
                 for battery in self.batteries:
                     dist = distance(house.location, battery.location)
-                    if dist < lowest_dist_house and battery.current_capacity > house.max_output:
+                    if dist < lowest_dist_house and battery.current_capacity > house.max_output and battery.current_capacity > 330:
                         bat_id = battery.id
                         house_id = house.id
                         lowest_dist_house = dist
+                    elif 50 < battery.current_capacity < 330:
+                        if self.range_connected(battery)[1] < 9:
+                            houses = self.look(battery)
+                            for h in houses:
+                                self.connect(h.id, battery.id)
+
                 if lowest_dist_house < best_dist:
                     connect_bat_id = bat_id
                     connect_house_id = house_id
                     best_dist =  lowest_dist_house
             self.connect(connect_house_id, connect_bat_id)
             counter += 1
-            if counter > 1000:
+            print(counter)
+            if counter > 200:
                 return
+        if self.unconnected_houses != []:
+            for house in self.unconnected_houses:
+                print(house.max_output)
+            for battery in self.batteries:
+                print(battery.current_capacity)
+
 
 
     def greedy(self):
@@ -507,17 +693,6 @@ class Grid(object):
         #     for i in new_houses:
         #         print(i)
 
-    def swap(self, h1, h2):
-
-        # disconnect houses
-        self.disconnect(h1.house.id)
-        self.disconnect(h2.house.id,)
-        # swap connections
-        self.connect(h1.house.id, h2.battery_id)
-        self.connect(h2.house.id, h1.battery_id)
-        swap = True
-
-        return swap
 
     def hillclimber(self):
         """
@@ -552,9 +727,10 @@ class Grid(object):
                                     lengte_old = h1.length + h2.length
 
                                     # makes the swap if the length is improved
-                                    if swap == False and lengte_new < lengte_old and h1.house.id != h2.house.id:
-                                        swap = self.swap(h1, h2)
+                                    if swap == False and lengte_new < lengte_old and house1.house.id != house2.house.id:
+                                        swap = self.swap(house1.house.id, house2.house.id, house1.battery_id, house2.battery_id)
                                         break
+
 
     def hillclimber_double(self):
         """
@@ -626,9 +802,6 @@ class Grid(object):
         """
 
 
-
-
-
     def random_hillclimber(self, cost_bound, repeats):
         """
         Random hillclimber take a certain cost bound and an amount of repeats as input
@@ -693,6 +866,7 @@ class Grid(object):
             # disconnect for new iteration
             self.disconnect_all()
             counter += 1
+            print(counter)
 
         # save all results in dict aswell
         combination["All random results"] = costs_random
@@ -707,6 +881,7 @@ class Grid(object):
         # dump data of best found solution to .json file
         with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
             json.dump(combination, f,indent=4)
+
 
     def random_move_greedy_hillclimber(self, repeats):
         """
@@ -874,9 +1049,9 @@ class Grid(object):
 
             # loop over grid locations
             for loc in grid_locations:
+
                 # initiate
                 up, down, left, right = None, None, None, None
-
 
                 # up
                 # if up exists
@@ -886,26 +1061,20 @@ class Grid(object):
                     # if it is smaller than max cap battery
                     temp = grid_locations[loc]|grid_locations[up]
 
-
                 # down
                 if loc[1] > 0:
                     down = (loc[0], loc[1] - 1)
                     temp = temp|grid_locations[down]
-
-
 
                 # left
                 if loc[0] > 0:
                     left = (loc[0] - 1, loc[1])
                     temp = temp|grid_locations[left]
 
-
-
                 # right
                 if loc[0] < 50:
                     right = (loc[0] + 1, loc[1])
                     temp = temp|grid_locations[right]
-
 
                 new_grid_locations[loc] = temp
             del grid_locations
