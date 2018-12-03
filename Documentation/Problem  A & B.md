@@ -2,13 +2,11 @@ Delen A en B van het problem zijn erg met elkaar verbonden en dus worden ze same
 
 ### Probleem A
 
-Verbind alle huizen in de drie wijken aan een batterij. De maximumcapaciteit van de huizen mag die van de batterijen uiteraard niet overschrijden.
-
-
+*Verbind alle huizen in de drie wijken aan een batterij. De maximumcapaciteit van de huizen mag die van de batterijen uiteraard niet overschrijden.*
 
 ### Probleem B
 
-De batterijen kosten 5000 per stuk. De kabels kosten 9 per grid-segment. De kabels liggen op de gridlijnen, mogen ook gridpunten met een huis passeren, en de afstand van een huis tot een batterij wordt berekend volgens de manhattan distance. Bereken de kosten voor de in a) geconfigureerde wijk. Probeer je SmartGrid te optimaliseren en vind een zo goed mogelijke configuratie van kabels.
+*De batterijen kosten 5000 per stuk. De kabels kosten 9 per grid-segment. De kabels liggen op de gridlijnen, mogen ook gridpunten met een huis passeren, en de afstand van een huis tot een batterij wordt berekend volgens de manhattan distance. Bereken de kosten voor de in a) geconfigureerde wijk. Probeer je SmartGrid te optimaliseren en vind een zo goed mogelijke configuratie van kabels.*
 
 
 
@@ -72,6 +70,12 @@ De batterijen worden één voor één gevuld met huizen m.b.v. de find_closest_h
 
 De hill climber pakt een oplossing van een ander algortime, en gaat per huis af of er andere huizen zijn bij andere batterijen die kunnen wisselen van plek (dus de capaciteit wordt niet overschreden), en berekent vervolgens of de totale afstand van beide huizen minder wordt als er wordt gewisseld. Als dit zo is dan worden de huizen gewisseld, dit gaat zo lang door tot er geen wissel meer kan worden gemaakt, we zitten hier dan in een lokaal minimum.
 
+
+
+#### Double Hill Climber
+
+Dit werkt erg vergeijkbaar met de Hill Climber. Het verschil is dat we 2 sets van 2 huizen verwisselen in plaats van 2 sets van 1 huis. 
+
 #### Random hill climber:
 
 De random hill climber runt het random algoritme totdat deze een oplossing geeft. Vervolgens run hij de hillclimber op deze oplossing.
@@ -90,3 +94,16 @@ Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of 
 
 ​									***^ Na 1500 repeats***
 
+
+
+Een Vergelijking van de algorithmes is gedaan en gevisualizeerd in de volgende figuur.
+
+![Solution Comparison](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/Solutions_comparison.png)
+
+De oranje normaale verdeling geeft de set van random oplossingen aan. De blauwe verdeling heeft de random oplossingen aan nadat ze getransformeerd zijn met een Hill Climber. 
+
+Zoals aan de figuur te zien is, een random oplossing gecombineerd met Hill Climber geeft vaak een betere oplossing dat een Greedy Algorithme (Verticale gele lijn). Echter is een Greedy algorithme gecombineerd met een Hill Climber beter dan de meeste random oplossingen met een Hill Climber. 
+
+
+
+De oplossing die het best voor ons werkte in de Double Hill Climber. Dit houdt in dat we 2 sets van 2 huizen verwisselen in plaats van 2 sets van 1 huis. De oplossing is ook erg dicht bij de lower bound van de oplossing.
