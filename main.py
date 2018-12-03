@@ -9,16 +9,16 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
 
-    i = 2
+    i = 1
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-    grid.draw_grid("No connections")
+    # grid.draw_grid("No connections")
     # grid.random_hillclimber(0, 5)
-    # grid.greed()
-    # grid.greedy()
-    # for house in grid.unconnected_houses:
-    #     print(house)
-    # for battery in grid.batteries:
-    #     print(battery.current_capacity)
-    # grid.hillclimber()
-    # grid.draw_grid("")
+    grid.greed()
+    grid.greedy()
+    for house in grid.unconnected_houses:
+        print(house)
+    for battery in grid.batteries:
+        print(battery.current_capacity)
+    grid.hillclimber()
+    grid.draw_grid("")

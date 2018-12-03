@@ -552,11 +552,11 @@ class Grid(object):
                 lowest_dist_house = float('inf')
                 for battery in self.batteries:
                     dist = distance(house.location, battery.location)
-                    if dist < lowest_dist_house and battery.current_capacity > house.max_output and battery.current_capacity > 330:
+                    if dist < lowest_dist_house and battery.current_capacity > house.max_output and battery.current_capacity > 280:
                         bat_id = battery.id
                         house_id = house.id
                         lowest_dist_house = dist
-                    elif 50 < battery.current_capacity < 330:
+                    elif 50 < battery.current_capacity < 280:
                         if self.range_connected(battery)[1] < 9:
                             houses = self.look(battery)
                             for h in houses:
@@ -727,8 +727,8 @@ class Grid(object):
                                     lengte_old = h1.length + h2.length
 
                                     # makes the swap if the length is improved
-                                    if swap == False and lengte_new < lengte_old and house1.house.id != house2.house.id:
-                                        swap = self.swap(house1.house.id, house2.house.id, house1.battery_id, house2.battery_id)
+                                    if swap == False and lengte_new < lengte_old and h1.house.id != h2.house.id:
+                                        swap = self.swap(h1.house.id, h2.house.id, h1.battery_id, h2.battery_id)
                                         break
 
 
