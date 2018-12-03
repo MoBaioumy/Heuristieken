@@ -11,11 +11,12 @@ Groene energie is de energie van de toekomst, en zelf produceren is de mode van 
 
 Voor een feasibility study zijn drie dummy-woonwijken opgesteld, met daarin vijf batterijen. De huizen hebben zonnepanelen met een maximale output, de batterijen hebben een maximale capaciteit.
 
-### Probleem A
-
-Verbind alle huizen in de drie wijken aan een batterij. De maximumcapaciteit van de huizen mag die van de batterijen uiteraard niet overschrijden.
-
-### Probleem B
-
-De batterijen kosten 5000 per stuk. De kabels kosten 9 per grid-segment. De kabels liggen op de gridlijnen, mogen ook gridpunten met een huis passeren, en de afstand van een huis tot een batterij wordt berekend volgens de manhattan distance. Bereken de kosten voor de in a) geconfigureerde wijk. Probeer je SmartGrid te optimaliseren en vind een zo goed mogelijke configuratie van kabels.
+Zie de volgende links voor alle deeldocumentatie:
+- [Date structuur](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Data%20Structure.md)
+- [Deel A & B](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20%20A%20%26%20B.md) 
+- [Deel C](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20C.md)
+- [Deel D](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20D.md)
+- [Deel E](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20E.md)
+- [Deel F](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20F.md)
+- [Acknowledgement](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/acknowledgement.md)
 
