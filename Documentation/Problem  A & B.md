@@ -87,6 +87,9 @@ Dit is een variatie op de hill climber. Het verschil is dat we 2 sets van 2 huiz
 De random hill climber runt het random algoritme totdat deze een oplossing geeft. Vervolgens run hij de hillclimber op deze oplossing.
 Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of tot dat een oplossing onder de gegeven bound is gevonden. Random hill climber is een stochastisch algoritme, het geeft dus elke keer een andere oplossing. Dit zorgt ervoor dat we meer plekken in de state space kunnen exploreren dan de greedy hill climber. Met genoeg iteraties geeft dit ons ook de beste resultaten, alleen gemiddeld gezien zijn de resultaten minder goed dan de greedy hill climber. 
 
+#### Simulated annealing
+
+**Werkt nog niet helemaal.**. Simulated annealing is een algoritme om lokale optima te vermijden door oplossingen te accepteren die minder zijn dan de vorige. Dit zorgt ervoor dat je in de state space naar andere plekken gaat waar wellicht een betere oplossing ligt. 
 
 
 **Tussenstand**
