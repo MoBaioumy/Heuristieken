@@ -13,6 +13,8 @@ from datetime import datetime
 import copy
 import itertools
 import time
+import pandas as pd
+
 
 
 class Grid(object):
@@ -153,14 +155,14 @@ class Grid(object):
                 self.disconnect(battery.routes[0].house.id)
 
 
-    def swap(self, house1, house2, battery1, battery2):
+    def swap(self, h1, h2):
 
         # disconnect houses
-        self.disconnect(house1)
-        self.disconnect(house2)
+        self.disconnect(h1.house.id)
+        self.disconnect(h2.house.id,)
         # swap connections
-        self.connect(house1, battery2)
-        self.connect(house2, battery1)
+        self.connect(h1.house.id, h2.battery_id)
+        self.connect(h2.house.id, h1.battery_id)
         swap = True
 
         return swap
@@ -270,7 +272,7 @@ class Grid(object):
                 self.draw_route(house.location, battery.location)
 
 
-    def k_means(self, x_houses, y_houses, k):
+    def k_means2(self, x_houses, y_houses, k):
         """
         As input (3 inputs) you need an array with the x coordiantes of all the houses
         and another with y coordinates and the third input the number of
@@ -287,14 +289,14 @@ class Grid(object):
             for i in range(k)
         }
 
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color='k')
-        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+#        fig = plt.figure(figsize=(5, 5))
+#        plt.scatter(df['x'], df['y'], color='k')
+#        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
+#        plt.show()
 
         def assignment(df, centroids):
             for i in centroids.keys():
@@ -314,13 +316,13 @@ class Grid(object):
         df = assignment(df, centroids)
         # print(df.head())
 
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+#        fig = plt.figure(figsize=(5, 5))
+#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
+#        plt.show()
 
         old_centroids = copy.deepcopy(centroids)
 
@@ -332,31 +334,31 @@ class Grid(object):
 
         centroids = update(centroids)
 
-        fig = plt.figure(figsize=(5, 5))
-        ax = plt.axes()
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
+#        fig = plt.figure(figsize=(5, 5))
+#        ax = plt.axes()
+#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
         for i in old_centroids.keys():
             old_x = old_centroids[i][0]
             old_y = old_centroids[i][1]
             dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
             dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
-            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
-        plt.show()
+#            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
+#        plt.show()
 
         df = assignment(df, centroids)
 
         # Plot results
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+#        fig = plt.figure(figsize=(5, 5))
+#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
+#        plt.show()
 
         while True:
             closest_centroids = df['closest'].copy(deep=True)
@@ -365,13 +367,23 @@ class Grid(object):
             if closest_centroids.equals(df['closest']):
                 break
 
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+#        fig = plt.figure(figsize=(5, 5))
+#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
+#        plt.show()
+
+        new_locations = []
+        for i in centroids:
+            loc = (centroids[i][0], centroids[i][1])
+            new_locations.append(loc)
+
+        for i in range(len(self.batteries)):
+            bat = self.batteries[i]
+            bat.move(new_locations[i])
+            print()
 
 
 
@@ -1017,6 +1029,16 @@ class Grid(object):
         plt.xlim(-5, 55)
         plt.ylim(-5, 55)
         plt.show()
+
+        new_locations = []
+        for i in centroids:
+            loc = (int(centroids[i][0]), int(centroids[i][1]))
+            new_locations.append(loc)
+
+        for i in range(len(self.batteries)):
+            bat = self.batteries[i]
+            bat.move(new_locations[i])
+            print()
 
 
     def move_calc(self):

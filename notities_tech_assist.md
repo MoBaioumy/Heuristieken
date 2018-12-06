@@ -13,3 +13,13 @@ Testen van heurstieken die je gebruikt:
 
 
 Vergelijken van de oplossingen:
+
+
+##### 3 December 2018
+Altijd twee double hillclimber
+
+3 algortimes --> vergadering vragen.
+Als we simulated annealing hebben sowieso goed.
+
+
+Exploratie --> Meer vergelijken en verkennen van de moeilijkheid van het probleem.

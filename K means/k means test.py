@@ -133,3 +133,4 @@ for i in centroids.keys():
 plt.xlim(-5, 55)
 plt.ylim(-5, 55)
 plt.show()
+

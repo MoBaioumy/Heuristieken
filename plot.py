@@ -66,7 +66,7 @@ plt.title(f"Distribution of costs random (p={round(p_random, 3)}) and hillclimbe
 
 plot3 = plt.axvline(x=49138, color="gold", label="Greedy", linewidth=2)
 plot4 = plt.axvline(x=46258, color="red", label="Greedy/Hillclimber", linewidth=2)
-plot5 = plt.axvline(x=45520, color="green", label="Double Greedy/Hillclimber", linewidth=2)
+plot5 = plt.axvline(x=45520, color="green", label="Greedy/Double Hillclimber", linewidth=2)
 plot6 = plt.axvline(x=45268, color="black", label="Lower bound", linewidth=2)
 plt.legend()
 plt.show()
