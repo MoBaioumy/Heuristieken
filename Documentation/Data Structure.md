@@ -42,8 +42,14 @@ Algoritmes --  voor een beschrijving zie het kopje algortime hieronder
 - Greedy_alt
 - Greedy
 - Find_best_option
-- Greedy_optimized
-- Random_hillclimber
+- Hillclimber first best 
+- Hillclimber best first
+- Hillclimber double first best
+- Variaties van begin hillclimber:
+  - Greedy / Hillclimber (deterministisch)
+  - Random / Hillclimber (stochastisch)
+ - K means (zie beschrijving bij opdracht C)
+
 
 #### Batterij
 
