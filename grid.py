@@ -927,7 +927,7 @@ class Grid(object):
             json.dump(info, f,indent=4)
 
 
-    def k_means(self, k):
+    def verplaat_batterij_met_k_means(self, k):
         """
         Input the number of clusters you want (so number of batteries).
         """
@@ -940,7 +940,7 @@ class Grid(object):
         np.random.seed(200)
         # centroids[i] = [x, y]
         centroids = {
-            i+1: [random.randint(0, 50), random.randint(0, 50)]
+            i+1: [np.random.randint(0, 50), np.random.randint(0, 50)]
             for i in range(k)
         }
 
