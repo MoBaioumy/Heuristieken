@@ -46,7 +46,7 @@ De implementatie is te zien grid.py method shortest_paths.
 
 
 
-### Algoritmes
+### Algoritmes gebruikt voor A en B
 
 #### Simple algortime
 
@@ -68,18 +68,24 @@ De batterijen worden één voor één gevuld met huizen m.b.v. de find_closest_h
 
 #### Hill climber:
 
-De hill climber pakt een oplossing van een ander algortime, en gaat per huis af of er andere huizen zijn bij andere batterijen die kunnen wisselen van plek (dus de capaciteit wordt niet overschreden), en berekent vervolgens of de totale afstand van beide huizen minder wordt als er wordt gewisseld. Als dit zo is dan worden de huizen gewisseld, dit gaat zo lang door tot er geen wissel meer kan worden gemaakt, we zitten hier dan in een lokaal minimum.
+De hill climber pakt een oplossing van of het greedy algoritme of het random algoritme. We hebben verschillende variaties op het hillclimber algoritme. Elke hill climber werkt in essentie hetzelfde, het gaat namelijk iteratief opzoek naar een verbetering en past deze verbetering toe. Dit gaat door tot dat er geen verbeteringen meer te vinden zijn. Hieronder staat per variatie beschreven wat de specifieke hill climbers doen.
 
+#### Single Hill Climber First Best
 
+De single hill climber gaat per huis af of er andere huizen bij andere batterijen die kunnen wisselen van plek (dus de capaciteit wordt niet overschreden), en berekent vervolgens of de totale afstand van beide huizen minder wordt als er wordt gewisseld. Als dit zo is dan worden de huizen **direct** gewisseld, dit gaat zo lang door tot er geen wissel meer kan worden gemaakt, we zitten hier dan in een lokaal minimum.
+
+#### Single Hill Climber Best First
+
+Het Best First algoritme is een variatie op de hill climber waar eerst alle mogelijke verwisselingen worden gezocht en vervolgens wordt de beste optie daarvan uitgevoerd. In de praktijk betekent dit dat er minder iteraties nodig zijn om tot het lokale minimum te komen. Voor wijk 2 zijn er bijvoorbeeld maar 25 iteraties nodig om tot het lokale minimum te komen met dit algoritme, terwijl er 134 iteraties zijn bij het first best algortime. De gemiddelde scores zijn echter lager dan het first best algoritme (zie tabel)
 
 #### Double Hill Climber
 
-Dit werkt erg vergeijkbaar met de Hill Climber. Het verschil is dat we 2 sets van 2 huizen verwisselen in plaats van 2 sets van 1 huis. 
+Dit is een variatie op de hill climber. Het verschil is dat we 2 sets van 2 huizen verwisselen in plaats van 2 sets van 1 huis. Dit algoritme runt eerst op de normale hill climber. Dit algoritme runt aanzienlijk slomer, want het moet heel veel meer combinaties vergelijken per iteratie, namelijk maximaal (150 * 149 * 148 * 147) i.p.v. (150 * 149). Het geeft doordat het de eerst de normale hillclimber runt altijd een even goede of een betere oplossing. Alleen in wijk 2 zien we een kleine verbetering van de oplossing.
 
 #### Random hill climber:
 
 De random hill climber runt het random algoritme totdat deze een oplossing geeft. Vervolgens run hij de hillclimber op deze oplossing.
-Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of tot dat een oplossing onder de gegeven bound is gevonden.
+Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of tot dat een oplossing onder de gegeven bound is gevonden. Random hill climber is een stochastisch algoritme, het geeft dus elke keer een andere oplossing. Dit zorgt ervoor dat we meer plekken in de state space kunnen exploreren dan de greedy hill climber. Met genoeg iteraties geeft dit ons ook de beste resultaten, alleen gemiddeld gezien zijn de resultaten minder goed dan de greedy hill climber. 
 
 
 
@@ -103,13 +109,13 @@ Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of 
 
 
 
-Een Vergelijking van de algorithmes is gedaan en gevisualizeerd in de volgende figuur.
+Een Vergelijking van de algoritmes is gedaan en gevisualizeerd in de volgende figuur.
 
 ![Solution Comparison](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/Solutions_comparison.png)
 
 De oranje normaale verdeling geeft de set van random oplossingen aan. De blauwe verdeling heeft de random oplossingen aan nadat ze getransformeerd zijn met een Hill Climber. 
 
-Zoals aan de figuur te zien is, een random oplossing gecombineerd met Hill Climber geeft vaak een betere oplossing dat een Greedy Algorithme (Verticale gele lijn). Echter is een Greedy algorithme gecombineerd met een Hill Climber beter dan de meeste random oplossingen met een Hill Climber. 
+Zoals aan de figuur te zien is, een random oplossing gecombineerd met Hill Climber geeft vaak een betere oplossing dat een Greedy Algorithm (Verticale gele lijn). Echter is een Greedy algoritme gecombineerd met een Hill Climber beter dan de meeste random oplossingen met een Hill Climber. 
 
 
 
