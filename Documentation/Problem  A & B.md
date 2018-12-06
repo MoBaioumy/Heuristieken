@@ -97,7 +97,7 @@ Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of 
 
 |                                         | Wijk 1    | Wijk 2    | Wijk 3     |
 | --------------------------------------- | --------- | --------- | ---------- |
-|verschil lower bound en beste oplossing  | **5,41%** | **0,79%** | **5,00%    |
+|verschil lower bound en beste oplossing  | **5,41%** | **0,79%** | **5,00%**    |
 
 
 
