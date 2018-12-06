@@ -75,6 +75,7 @@ class Grid(object):
         """
         # get house
         H = [house for house in self.unconnected_houses if house.id == house_id]
+
         # error check
         if not H:
             print("House not found, try disconnecting it first")
@@ -82,6 +83,7 @@ class Grid(object):
         if len(H) > 1:
             print("Mutiple houses found, please reload grid")
             return
+
         # unlist
         H = H[0]
 
@@ -95,6 +97,7 @@ class Grid(object):
         if len(B) > 1:
             print("Mutiple batteries found, please reload grid")
             return
+
         # unlist
         B = B[0]
 
@@ -218,7 +221,7 @@ class Grid(object):
 
     def draw_grid(self, info):
         """
-        Alternative way to draw routes using the grid_route property of the routes
+        Draw routes using the grid_route property of the routes
         """
         plt.figure()
 
@@ -260,16 +263,6 @@ class Grid(object):
         plt.title(f"{self.name} costs: {cost} {info}")
 
         plt.show()
-
-
-    def draw_all(self):
-        """
-        Draws all routes
-        """
-        for battery in self.batteries:
-            plt.plot(battery.location[0], battery.location[1], 'ro', markersize=12)
-            for house in self.houses:
-                self.draw_route(house.location, battery.location)
 
 
     def k_means2(self, x_houses, y_houses, k):
@@ -384,7 +377,6 @@ class Grid(object):
             bat = self.batteries[i]
             bat.move(new_locations[i])
             print()
-
 
 
     def range_connected(self, battery):
@@ -551,11 +543,6 @@ class Grid(object):
         return houses
 
 
-
-
-
-
-
     def greed(self):
         counter = 0
         while self.unconnected_houses != []:
@@ -588,7 +575,6 @@ class Grid(object):
                 print(house.max_output)
             for battery in self.batteries:
                 print(battery.current_capacity)
-
 
 
     def greedy(self):
