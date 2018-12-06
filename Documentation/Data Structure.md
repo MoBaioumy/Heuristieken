@@ -35,20 +35,20 @@ Methods
 - draw_route: tekent een route
 - range_connected: berekent het bereik van huizen dat aan een batterij verbonden kan worden dus hoeveel minimaal en hoeveel maximaal
 
-Algoritmes --  voor een beschrijving zie het kopje algortime hieronder
+Algoritmes --  voor een beschrijving zie de documentatie van de sub vragen. 
 
-- Simple
-- Random
-- Greedy_alt
-- Greedy
+- Simple (A)
+- Random (A)
+- Greedy_alt (B)
+- Greedy (B)
 - Find_best_option
-- Hillclimber first best 
-- Hillclimber best first
-- Hillclimber double first best
+- Hillclimber first best (B)
+- Hillclimber best first (B)
+- Hillclimber double first best (B)
 - Variaties van begin hillclimber:
-  - Greedy / Hillclimber (deterministisch)
-  - Random / Hillclimber (stochastisch)
- - K means (zie beschrijving bij opdracht C)
+  - Greedy / Hillclimber (deterministisch) (B)
+  - Random / Hillclimber (stochastisch) (B)
+ - K means (C)
 
 
 #### Batterij
