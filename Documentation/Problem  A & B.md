@@ -89,10 +89,11 @@ Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of 
 | ------------------ | --------- | --------- | ---------- |
 | Simple             | **76642** | **66679** | **69271**  |
 | Greedy Normaal     | **60586** | **49138** | **50371**  |
-| Greedy HillClimber | **56536** | **46258** | **44125**  |
-| Random hillclimber | **56392** | **45736** | **43891^** |
-
-​									***^ Na 1500 repeats***
+| Greedy HillClimber | **56536** | **45799** | **44125**  |
+| Greedy Double Hill | **56536** | **45781** | **44125**  |
+| Random hillclimber | **56230** | **45628** | **43891**  |
+| Iteraties r. hill  | **65000** | **130000**| **40000**  |
+| verschil lower b   | 
 
 
 
