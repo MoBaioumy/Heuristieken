@@ -16,8 +16,6 @@
 
 
 
-#### Upper bound probleem C
-
 
 
 ### Algorithmes
