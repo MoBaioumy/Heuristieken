@@ -13,9 +13,11 @@ Er zijn een aantal factoren die bepalen hoe makkelijk het probleem aan te pakken
 
 ## De posities van de batterijen
 
-Om dit te illustreren kunnen we naar wijk 1 kijken:
+Om dit te illustreren kunnen we naar wijk 1 kijken in vergelijking met wijk 2:
 
 ![Wijk 1](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/wijk_1.png)
+![Wijk 2](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/wijk_2.png)
+
 
 In dit plaatje zijn 4 van de 5 batterijen erg bij elkaar in de buurt. Dit zorgt ervoor dat velen huizen een lange grid afstand zullen hebben en daardoor ook een hoge lower bound heeft. Om te vergelijken hoe 'handig' de batterijen geplaatst zijn kijken we naar de lower bound van de grid kosten. Vervolgens kijken we naar lower bound na dat de batterijen met K_means optimaal geplaatst zijn.
 
