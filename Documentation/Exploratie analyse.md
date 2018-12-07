@@ -51,16 +51,11 @@ De vraag blijft echter nog wel, waarom doet wijk 2 het beter dan wijk 3? Zoals j
 
 Als je huizen vergelijkbare capaciteiten hebben, heb je een kleinere marge om wissels te maken met een Hill Climber. De wijken hebben ook hele andere verdelingen voor de spreiding van de capaciteiten.
 
-Wijk 1
 ![Wijk 1](Pictures/spreading_wijk_1.PNG)
 
-Wijk 2
 ![Wijk 2](Pictures/spreading_wijk_2.PNG)
 
-Wijk 3
 ![Wijk 3](Pictures/spreading_wijk_3.PNG)
-
-
 
 Zoals als hier te zien is, wijk 3 heeft een erg smalle sprijding vergeleken met 1 en 2. De aantal stappen is ook het best voor wijk 2.
 
@@ -72,10 +67,11 @@ Zoals als hier te zien is, wijk 3 heeft een erg smalle sprijding vergeleken met 
 ### Variatie in oplossingen
 Wanneer je kijkt naar hoe de huizen zijn aangesloten tussen verschillende goede oplossingen dan zie je dat er een zeer grote variatie is tussen de oplossingen in wijk 1. In wijk 2 en vooral wijk 3 lijken de oplossingen veel meer op elkaar.
 
-Een goede oplossing is: de beste gevonden oplossing na 20000 iteraties random + hillclimber
+In deze vergelijkingen hebben we voor runs langer dan 5000 (de meeste zijn 20,000), de beste oplossing gepakt, en deze met elkaar vergeleken. 
 
 |                 | Wijk 1 | Wijk 2 | Wijk 3    |
 | --------------- | ------ | ------ | ------ |
-| Variatie | 64.66  | 10.25  | 0  |
+| Aantal vergelijkingen | 4 | 9 | 3 |
+| Variatie gemiddeld (aantal huizen) | 64.66  | 10.25  | 0  |
 
 Dit geeft aan dat wanneer de spreiding van de output van de huizen laag is er ook minder mogelijke oplossingen zijn, daarnaast lijkt het ook zo te zijn dat wanneer de batterijen niet efficient geplaatst zijn dit ook voor meer variatie in de oplossingen.
