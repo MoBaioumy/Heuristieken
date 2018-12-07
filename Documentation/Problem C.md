@@ -20,8 +20,6 @@
 
 ### Algorithmes
 
-
-
 ### K Means
 
 Het K Means algorithmes is een clustering algorithme. Er wordt een getal k (aantal clusters) gespecificeerd en vervolgens worden k clusters van de data set gemaakt. [Lees meer](https://en.wikipedia.org/wiki/K-means_clustering) 
@@ -56,14 +54,6 @@ Het recept van stap C gaat dus als volg:
 1. **Bepaal positie van batterij met K_means**
 2. **Greedy**
 3. **Hill Climber/ double Hill Climber**
-
-
-
-
-
-
-
-
 
 
 
