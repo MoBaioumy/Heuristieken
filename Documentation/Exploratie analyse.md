@@ -2,13 +2,13 @@
 Hieronder is per wijk de verdeling van de kosten van de oplossingen weergegeven. Voor de random resultaten en de hillclimber op deze resultaten zijn 20000 resultaten gegenereerd
 
 Wijk 1
-![Wijk 1](Pictures/wijk1_distribution.PNG)
+![Wijk 1](Pictures/wijk1_distribution.png)
 
 Wijk 2
-![Wijk 2](Pictures/wijk2_distribution.PNG)  
+![Wijk 2](Pictures/wijk2_distribution.png)  
 
 Wijk 3
-![Wijk 3](Pictures/wijk3_distribution.PNG)
+![Wijk 3](Pictures/wijk3_distribution.png)
 
 
 ### Vergelijking
