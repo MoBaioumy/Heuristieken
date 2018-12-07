@@ -109,11 +109,6 @@ Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of 
 |verschil lower bound en beste oplossing  | **5,41%** | **0,79%** | **5,00%**    |
 
 
-<<<<<<< HEAD
-​									
-=======
->>>>>>> 0f19fd7d60e8de2f7fb761bef5355fc858c0f682
-
 
 
 Een Vergelijking van de algoritmes is gedaan en gevisualizeerd in de volgende figuur.
@@ -122,11 +117,10 @@ Een Vergelijking van de algoritmes is gedaan en gevisualizeerd in de volgende fi
 
 De oranje normaale verdeling geeft de set van random oplossingen aan. De blauwe verdeling heeft de random oplossingen aan nadat ze getransformeerd zijn met een Hill Climber.
 
-<<<<<<< HEAD
+
 Zoals aan de figuur te zien is, een random oplossing gecombineerd met Hill Climber geeft vaak een betere oplossing dat een Greedy Algorithme (Verticale gele lijn). Echter is een Greedy algorithme gecombineerd met een Hill Climber beter dan de meeste random oplossingen met een Hill Climber.
-=======
+
 Zoals aan de figuur te zien is, een random oplossing gecombineerd met Hill Climber geeft vaak een betere oplossing dat een Greedy Algorithm (Verticale gele lijn). Echter is een Greedy algoritme gecombineerd met een Hill Climber beter dan de meeste random oplossingen met een Hill Climber.
->>>>>>> 0f19fd7d60e8de2f7fb761bef5355fc858c0f682
 
 
 
