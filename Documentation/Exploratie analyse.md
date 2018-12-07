@@ -13,13 +13,16 @@ Er zijn een aantal factoren die bepalen hoe makkelijk het probleem aan te pakken
 
 ## De posities van de batterijen
 
-Om dit te illustreren kunnen we naar wijk 1 kijken in vergelijking met wijk 2:
+Om dit te illustreren kunnen we naar wijk 1 kijken in vergelijking met wijk 2 en 3:
 
+Wijk 1:
 ![Wijk 1](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/wijk_1.png)
+Wijk 2:
 ![Wijk 2](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/wijk_2.png)
+Wijk 3:
+![Wijk 2](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/wijk_3.png)
 
-
-In dit plaatje zijn 4 van de 5 batterijen erg bij elkaar in de buurt. Dit zorgt ervoor dat velen huizen een lange grid afstand zullen hebben en daardoor ook een hoge lower bound heeft. Om te vergelijken hoe 'handig' de batterijen geplaatst zijn kijken we naar de lower bound van de grid kosten. Vervolgens kijken we naar lower bound na dat de batterijen met K_means optimaal geplaatst zijn.
+Bij wijk 1 zien we dat 4 van de 5 batterijen erg bij elkaar in de buurt. Dit zorgt ervoor dat velen huizen een lange grid afstand zullen hebben en daardoor ook een hoge lower bound heeft. Om te vergelijken hoe 'handig' de batterijen geplaatst zijn kijken we naar de lower bound van de grid kosten. Vervolgens kijken we naar lower bound na dat de batterijen met k means optimaal geplaatst zijn.
 
 |               | Wijk 1 | Wijk 2 | Wijk 3 |
 | ------------- | ------ | ------ | ------ |
@@ -27,7 +30,7 @@ In dit plaatje zijn 4 van de 5 batterijen erg bij elkaar in de buurt. Dit zorgt 
 | After K_means | 39490  | 40102  | 40615  |
 | Difference    | 25.7%  | 11.4%  | 5.0 %  |
 
-Het overduidelijk dat wijk 1 veel 'onhandigere' posities heeft voor de batterijen vergeleken met 2 en 3. 
+Het overduidelijk dat wijk 1 veel 'onhandigere' posities heeft voor de batterijen vergeleken met wijk 2 en 3. 
 
 Omdat 4 van de 5 batterijen bij elkaar liggen in een hoek, en de andere precies aan de tegenovergestelde kant ligt, zullen veel huizen die niet meer bij de ene batterij in de rechterhoek passen, waardoor ze een lange afstand moeten overbruggen naar de andere batterijen. Voor de lower bound maakt dit niets uit, want de helft van de huizen ligt het dichtsbij de batterij in de rechterhoek. Maar omdat we deze huizen niet alleemaal kunnen verbinden met deze batterij raken we ver van de lower bound verwijdert. Je kunt daarom ook wel zeggen dat onze oplossing niet per se slechter is, maar de sprijding van de huizen en batterijen het maakt dat we per definitie nooit dicht in de buurt van de lower bound kunnen komen (althans, hoe we deze nu hebben berekent). 
 
