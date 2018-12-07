@@ -1,30 +1,21 @@
-## Vergelijking effectiviteit van  algortitmes tussen wijken
-Hieronder is per wijk de verdeling van de kosten van de oplossingen weergegeven. Voor de random resultaten en de hillclimber op deze resultaten zijn 20000 resultaten gegenereerd
+# Waarom zijn sommige wijken moeilijker op te lossen dan anderen?
 
-Wijk 1
+## Vergelijking effectiviteit van algortitmes tussen wijken
+Hieronder is per wijk de verdeling van de kosten van de oplossingen weergegeven. Voor zowel de random resultaten als de hillclimber zijn 20000 resultaten gegenereerd.
+
 ![Wijk 1](Pictures/wijk1_distribution.png)
 
-Wijk 2
 ![Wijk 2](Pictures/wijk2_distribution.png)  
 
-Wijk 3
 ![Wijk 3](Pictures/wijk3_distribution.png)
 
 
 ### Vergelijking
-Zoals te zien is in de figuren zitten de oplossingen het dichtste in de buurt bij de lower bound. Dus voor deze wijk hebben we de beste oplossingen.
+Zoals te zien is in de figuren zitten de oplossingen in wijk 2 het dichtste in de buurt bij de lower bound. Het lijkt er dus op dat we voor deze wijk de beste oplossing hebben gevonden. Daarnaast lijkt het gat tussen de beste oplossing en de lower bound groot is bij wijk 1 en in mindere mate bij wijk 3. In de tabel hieronder is weergegeven wat de relatieve afstand is van de best oplossing naar de lower bound. We bespreken zo waarom we denken dat dit zo is.
 
-Daarnaast lijkt het gat tussen de laagste oplossing en de lower bound het grootste bij wijk 1.
+Verder valt het op dat voor wijk 3 er heel veel resultaten dezelfde kosten hebben (richting de 8000). Later in dit documenten bespreken we de variaties in de oplossingen.
 
-Verder valt het op dat voor wijk 3 er heel veel resultaten dezelfde kosten hebben (richting de 8000).
-Voor kunnen we niet nagaan of deze oplossingen exact hetzelfe zijn maar dit duidt er in ieder geval op dat er een beperkte hoeveelheid oplossingen zijn voor deze wijk.
-
-Onze vraag is: wat is de oorzaak van deze verschillen in de case?
-Dus welke factoren bepalen of onze algoritmes dicht in de buurt van de lowerbound kunnen komen of niet?
-
-
-
-|                 | Wijk 1 | Wijk 2 | Wij    |
+|                 | Wijk 1 | Wijk 2 | Wijk 3    |
 | --------------- | ------ | ------ | ------ |
 | Lower bound     | 53188  | 45268  | 42757  |
 | Beste oplossing | 56230  | 45628  | 43891  |
@@ -39,11 +30,8 @@ Er zijn een aantal factoren die bepalen hoe makkelijk het probleem aan te pakken
 
 Om dit te illustreren kunnen we naar wijk 1 kijken in vergelijking met wijk 2 en 3:
 
-Wijk 1:
 ![Wijk 1](Pictures/wijk1_best_random_hillclimber.png)
-Wijk 2:
 ![Wijk 2](Pictures/wijk2_best_random_hillclimber.png)
-Wijk 3:
 ![Wijk 2](Pictures/wijk3_best_random_hillclimber.png)
 
 Bij wijk 1 zien we dat 4 van de 5 batterijen erg bij elkaar in de buurt. Dit zorgt ervoor dat velen huizen een lange grid afstand zullen hebben en daardoor ook een hoge lower bound heeft. Om te vergelijken hoe 'handig' de batterijen geplaatst zijn kijken we naar de lower bound van de grid kosten. Vervolgens kijken we naar lower bound na dat de batterijen met k means optimaal geplaatst zijn.
