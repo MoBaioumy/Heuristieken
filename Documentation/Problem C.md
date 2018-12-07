@@ -46,6 +46,7 @@ Het werkt als volg in ons geval:
    ![6](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/kMeans%20-%20optimal%20result/Figure%206.png)
 
    ​
+   
 
 
 
