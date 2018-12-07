@@ -14,7 +14,7 @@ import csv
 
 x_huizen = []
 y_huizen = []
-with open('wijk1_huizen.csv', newline='') as csvfile:
+with open('wijk2_huizen.csv', newline='') as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
         try:
@@ -24,8 +24,8 @@ with open('wijk1_huizen.csv', newline='') as csvfile:
             hello = 4
 
 df = pd.DataFrame({
-    'x': x_huizen[0: 50],
-    'y': y_huizen[0: 50]
+    'x': x_huizen,
+    'y': y_huizen
 })
 
 
@@ -133,4 +133,10 @@ for i in centroids.keys():
 plt.xlim(-5, 55)
 plt.ylim(-5, 55)
 plt.show()
+
+new_locations = []
+for i in centroids:
+    loc = (int(centroids[i][0]), int(centroids[i][1]))
+    new_locations.append(loc)
+print(new_locations)
 

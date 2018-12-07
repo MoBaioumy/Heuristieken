@@ -8,7 +8,13 @@
 
 #### Lower bound probleem C
 
-#### Upper bound probleem C
+|               | Wijk 1 | Wijk 2 | Wijk 3 |
+| ------------- | ------ | ------ | ------ |
+| Before K_mean | 53188  | 45268  | 42757  |
+| After K_means | 39490  | 40102  | 40615  |
+| Difference    | 25.7%  | 11.4%  | 5.0 %  |
+
+
 
 
 

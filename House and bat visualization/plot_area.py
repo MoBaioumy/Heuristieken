@@ -8,17 +8,21 @@ Created on Thu Nov  1 11:11:39 2018
 import matplotlib.pyplot as plt
 import csv
 import random
+import numpy as np
 # import
 
 
 x_huizen = []
 y_huizen = []
-with open('wijk1_huizen.csv', newline='') as csvfile:
+cap = []
+with open('wijk3_huizen.csv', newline='') as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
         try:
             x_huizen.append(int(row[0]))
             y_huizen.append(int(row[1]))
+            cap.append(float(row[2]))
+            
         except:
             print("hi")
         # print(', '.join(row))
@@ -29,18 +33,32 @@ y = [12, 13, 3, 23, 45]
 #x_huizen.sort()
 #y_huizen.sort()
 
-plt.figure(1, figsize=(12, 10))
-plt.scatter(x, y, 300)
-plt.plot(x_huizen, y_huizen, '*r')
+#plt.figure(1, figsize=(12, 10))
+#plt.scatter(x, y, 300)
+#plt.plot(x_huizen, y_huizen, '*r')
+#
+#plt.xticks(range(0, 55, 5))
+#plt.yticks(range(0, 55, 5))
+#plt.axis([-5, 60, -5, 60])
+#plt.xlabel('X coordinates of area')
+#plt.ylabel('Y coordinates of area')
+#plt.title('Wijk 1')
+#plt.legend(['Batteries', 'Houses'])
+#plt.grid()
 
-plt.xticks(range(0, 55, 5))
-plt.yticks(range(0, 55, 5))
-plt.axis([-5, 60, -5, 60])
-plt.xlabel('X coordinates of area')
-plt.ylabel('Y coordinates of area')
-plt.title('Wijk 1')
-plt.legend(['Batteries', 'Houses'])
-plt.grid()
+
+plt.plot(cap, 'o')
+plt.xticks(range(0, 175, 25))
+plt.yticks(range(0, 100, 20))
+plt.title('Wijk 3')
+plt.axis([-5, 160, -5, 100])
+
+z = np.polyfit(list(range(150)), cap, 1)
+
+p = np.poly1d(z)
+#plt.plot(p)
+
+
 
 
 def read_homes(file_name):
@@ -67,7 +85,7 @@ def read_batteries(file_name):
             # coordinatez = row[-1]
             # print(coordinatez)
 
-read_batteries('wijk1_batterijen.txt')
+#read_batteries('wijk1_batterijen.txt')
 # , delimiter=' ', quotechar='|'
 
 def draw_route(house, bat):
@@ -109,8 +127,8 @@ def draw_route(house, bat):
 #draw_route([40, 30], [30, 40])
 #plt.plot(10, 15, '+')
 
-for i in range(len(x_huizen)):
-    draw_route([x_huizen[i], y_huizen[i]], [x[i % 5], y[i % 5]])
+#for i in range(len(x_huizen)):
+#    draw_route([x_huizen[i], y_huizen[i]], [x[i % 5], y[i % 5]])
 
 
 #draw_route([x_huizen[10], y_huizen[10]], [x[2 % 5], y[2 % 5]])
