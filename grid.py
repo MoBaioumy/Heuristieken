@@ -726,7 +726,7 @@ class Grid(object):
 
                                     # makes the swap if the length is improved
                                     if swap == False and lengte_new < lengte_old and h1.house.id != h2.house.id:
-                                        swap = self.swap(h1, h2)
+                                        swap = self.swap(h1.house.id, h2.house.id, h1.battery_id, h2.battery_id)
                                         break
 
 
@@ -786,6 +786,8 @@ class Grid(object):
                                             swap = True
 
                                             break
+
+
     def re_arrange(self):
         """
         Re-arrange for simulated_annealing

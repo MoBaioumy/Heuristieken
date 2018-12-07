@@ -1,4 +1,4 @@
-Delen A en B van het problem zijn erg met elkaar verbonden en dus worden ze samen als een geheel presenteerd. 
+Delen A en B van het problem zijn erg met elkaar verbonden en dus worden ze samen als een geheel presenteerd.
 
 ### Probleem A
 
@@ -74,7 +74,7 @@ De hill climber pakt een oplossing van een ander algortime, en gaat per huis af 
 
 #### Double Hill Climber
 
-Dit werkt erg vergeijkbaar met de Hill Climber. Het verschil is dat we 2 sets van 2 huizen verwisselen in plaats van 2 sets van 1 huis. 
+Dit werkt erg vergeijkbaar met de Hill Climber. Het verschil is dat we 2 sets van 2 huizen verwisselen in plaats van 2 sets van 1 huis.
 
 #### Random hill climber:
 
@@ -92,7 +92,7 @@ Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of 
 | Greedy HillClimber | **56536** | **46258** | **44125**  |
 | Random hillclimber | **56392** | **45736** | **43891^** |
 
-​									***^ Na 1500 repeats***
+​									
 
 
 
@@ -100,9 +100,9 @@ Een Vergelijking van de algorithmes is gedaan en gevisualizeerd in de volgende f
 
 ![Solution Comparison](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/Solutions_comparison.png)
 
-De oranje normaale verdeling geeft de set van random oplossingen aan. De blauwe verdeling heeft de random oplossingen aan nadat ze getransformeerd zijn met een Hill Climber. 
+De oranje normaale verdeling geeft de set van random oplossingen aan. De blauwe verdeling heeft de random oplossingen aan nadat ze getransformeerd zijn met een Hill Climber.
 
-Zoals aan de figuur te zien is, een random oplossing gecombineerd met Hill Climber geeft vaak een betere oplossing dat een Greedy Algorithme (Verticale gele lijn). Echter is een Greedy algorithme gecombineerd met een Hill Climber beter dan de meeste random oplossingen met een Hill Climber. 
+Zoals aan de figuur te zien is, een random oplossing gecombineerd met Hill Climber geeft vaak een betere oplossing dat een Greedy Algorithme (Verticale gele lijn). Echter is een Greedy algorithme gecombineerd met een Hill Climber beter dan de meeste random oplossingen met een Hill Climber.
 
 
 
