@@ -1,6 +1,5 @@
 Bij deel opdrachten A & B, werken onze oplossingen het best voor wijk 2 en dus minder goed voor wijken 1 en 3. Hoe kan dat? 
 
-
 |                 | Wijk 1 | Wijk 2 | Wijk 3 |
 | --------------- | ------ | ------ | ------ |
 | Lower bound     | 53188  | 45268  | 42757  |
@@ -11,7 +10,6 @@ Er zijn een aantal factoren die bepalen hoe makkelijk het probleem aan te pakken
 
 - De posities van de batterijen vergeleken met de huizen
 - De spreiding van de capaciteiten van de huizen
-
 
 ## De posities van de batterijen
 
@@ -39,7 +37,7 @@ Als je huizen vergelijkbare capaciteiten hebben, heb je een kleinere marge om wi
 
 ![Wijk 1](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/spreading_wijk_1.PNG)  ![Wijk 2](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/spreading_wijk_2.PNG)  ![Wijk 3](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/spreading_wijk_3.PNG)
 
-Zoals als hier te zien is, wijk 3 heeft een erg smalle sprijding vergeleken met 1 en 2. De aantal stappen is ook het best voor wijk 2. Dit geeft weer een verklaring waarom we het dichts bij de lower bound in wijk 2 komen; de grote spreiding in capaciteit geeft ons veel ruimte om wissels te maken, zodat we dichter bij de lower bound kunnen komen. 
+Zoals als hier te zien is, wijk 3 heeft een erg smalle sprijding vergeleken met 1 en 2. Dit zorgt ervoor dat het aantal iteraties van wijk 3 lager is dan in wijk 2 (zie tabel hieronder). Dit geeft weer een verklaring waarom we het dichts bij de lower bound in wijk 2 komen; de grote spreiding in capaciteit geeft ons veel ruimte om wissels te maken, zodat we dichter bij de lower bound kunnen komen. 
 
 |                                               | Wijk 1 | Wijk 2 | Wijk 3 |
 | --------------------------------------------- | ------ | ------ | ------ |
