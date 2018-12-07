@@ -726,7 +726,7 @@ class Grid(object):
 
                                     # makes the swap if the length is improved
                                     if swap == False and lengte_new < lengte_old and h1.house.id != h2.house.id:
-                                        swap = self.swap(h1.house.id, h2.house.id, h1.battery_id, h2.battery_id)
+                                        swap = self.swap(h1, h2)
                                         break
 
 

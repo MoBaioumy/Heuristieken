@@ -10,34 +10,43 @@ import pandas as pd
 
 if __name__ == "__main__":
 
-    i = 3
+    i = 1
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-<<<<<<< HEAD
-    grid.greed()
-    grid.draw_grid("greed")
-    grid.greedy()
-    grid.draw_grid("greedy")
-    grid.hillclimber()
-    grid.draw_grid("hillclimber")
-    # grid.random()
+    
+#    grid.greed()
+#    grid.draw_grid("greed")
+#    grid.greedy()
+#    grid.draw_grid("greedy")
+#    grid.hillclimber()
+#    grid.draw_grid("hillclimber")
+#     grid.random()
     # grid.disconnect_all()
     # grid.random()
     # grid.disconnect_all()
-    # grid.random()
+#    grid.random()
     # grid.draw_grid("h")
     # for battery in grid.batteries:
     #     for route in battery.routes:
     #         print(route.house.id)
-=======
     grid.draw_grid("No connections")
-    grid.shortest_paths()
-    print(sum(grid.shortest_paths()) * 9 + 25000)
-    
-    
-    
+    grid.greedy()
+    grid.draw_grid("")
     grid.verplaat_batterij_met_k_means(5)
-    print(sum(grid.shortest_paths()) * 9 + 25000)
+    grid.disconnect_all()
+    grid.greedy()
+    grid.draw_grid("")
+    grid.hillclimber()
+    grid.draw_grid("")
+    grid.hillclimber_double()
+    grid.draw_grid("")
+#    grid.shortest_paths()
+#    print(sum(grid.shortest_paths()) * 9 + 25000)
+#    
+#    
+#    
+#    grid.verplaat_batterij_met_k_means(5)
+#    print(sum(grid.shortest_paths()) * 9 + 25000)
 #    grid.draw_grid("No connections")
     
     
@@ -58,7 +67,7 @@ if __name__ == "__main__":
 #        
 #    grid.hillclimber()
 #    grid.hillclimber_double()
-    grid.draw_grid("")
+#    grid.draw_grid("")
 #    
 #    
 #    grid.calculate_total_cost()
@@ -78,7 +87,3 @@ if __name__ == "__main__":
 #        all_costs.append(grid.calculate_total_cost())
 #        
     
-    
-    
-    
->>>>>>> 0f19fd7d60e8de2f7fb761bef5355fc858c0f682
