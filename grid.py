@@ -788,19 +788,115 @@ class Grid(object):
                                             break
 
 
+
     def re_arrange(self):
         """
         Re-arrange for simulated_annealing
         """
 
+        found = False
+        house1 = False
+
+        while found == False:
+
+            r1 = random.randint(1,150)
+            r2 = random.randint(1,150)
+
+            while house1 == False:
+                for battery in self.batteries:
+                    for route in battery.routes:
+                        if route.house.id == r1:
+                            h1 = route
+                            b1 = battery
+                            max1 = h1.house.max_output + b1.current_capacity
+                            house1 = True
+                            break
+
+            for battery in self.batteries:
+                for route in battery.routes:
+                    if route.house.id == r2:
+
+                        h2 = route
+                        b2 = battery
+                        max2 = h2.house.max_output + b2.current_capacity
+
+                        if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
+
+                            proposed = copy.deepcopy(self)
+                            proposed.swap(h1, h2)
+                            found = True
+                            break
+
+            house1 = False
+
+        # self.proposed = proposed
+        self.h1 = h1
+        self.h2 = h2
+
+        return proposed
 
 
+    def simulated_annealing(self, N, hill = 'True', cooling = 'standard'):
 
-    def simulated_annealing(self):
         """
         Simulated annealing
         """
 
+        temperature = 100
+
+        for i in range(N):
+
+            proposed = self.re_arrange()
+            current = self.calculate_total_cost()
+            proposed = self.calculate_total_cost()
+            probability = max(0, min(1, np.exp(-(proposed - current) / temperature)))
+
+            if (current - proposed) > 0:
+                probability = 1
+
+            if np.random.rand() < probability:
+                self.swap(self.h1, self.h2)
+
+            # cooling schemes
+            if cooling == 'standard':
+                temperature = 0.999 * temperature
+            if cooling == 'linear':
+                temperature = temperature - i * ((temperature - 1) / N)
+            if cooling == 'exponential':
+                 temperature = begin_temperature * math.pow(1 / begin_temperature, i / N)
+
+        if hill == 'True':
+            self.hillclimber()
+
+    def repeat_simulated_annealing(self, N, iterations = 1000, hill = 'True', begin = 'random', bound = float('inf')):
+
+        costs = []
+        i = 0
+
+        while i < iterations:
+
+            if begin == 'random':
+                self.random()
+            if begin == 'greedy':
+                self.greedy()
+
+            if hill == 'True':
+                self.hillclimber()
+
+            cost = self.calculate_total_cost()
+
+            if cost < bound:
+                self.simulated_annealing(iterations, hill='True', cooling='linear')
+
+                cost = self.calculate_total_cost()
+                costs.append(cost)
+
+                print('Current cost: ', cost)
+                print('Best cost: ', min(costs))
+                print('Current iteration: ', i + 1)
+                i += 1
+
+            self.disconnect_all()
 
     def random_hillclimber(self, cost_bound, repeats):
         """
