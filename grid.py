@@ -842,7 +842,7 @@ class Grid(object):
 
         return proposed
 
-    def re_arrange_random(self, iterations = 10000):
+    def re_arrange_random(self, iterations = 100000):
         """
         Re-arrange for simulated_annealing
         """
@@ -918,7 +918,7 @@ class Grid(object):
 
         # parameters
         Tbegin = 100
-        Tend = 1
+        Tend = 0
         T = Tbegin
 
         best = self.calculate_total_cost()
@@ -927,14 +927,14 @@ class Grid(object):
         for i in range(N):
 
             # get a proposition for a swap
-            proposed = self.re_arrange()
+            prop = self.re_arrange()
 
             # calculate difference of options
             current = self.calculate_total_cost()
-            proposed = proposed.calculate_total_cost()
+            proposed = prop.calculate_total_cost()
 
             if proposed < best:
-                best_copy = copy.deepcopy(proposed)
+                best_copy = copy.deepcopy(prop)
                 best = proposed
 
             # calculate probability of acceptance
@@ -952,8 +952,6 @@ class Grid(object):
 
             # geman parameters
             d = 2
-
-            print(T)
 
             # cooling schemes
             # standard as a test
@@ -983,7 +981,6 @@ class Grid(object):
                 best_copy = copy.deepcopy(self)
                 best = current
 
-        print(best)
 
         return best_copy
 
@@ -995,12 +992,25 @@ class Grid(object):
 
         costs = []
         i = 0
+        costs_random = [999999, 999998]
+        times_random =  []
+        costs_sa = [999999, 999998]
+        times_sa = []
+        combination = {}
 
-        while i < iterations:
+        while i < N:
 
             # let the use pick from which point to start
             if begin == 'random':
+
+                # get random solution save time and costs
+                random_start = time.time()
                 self.random()
+                random_stop = time.time()
+                times_random.append(random_stop - random_start)
+                cost_r = self.calculate_total_cost()
+                costs_random.append(cost_r)
+
             if begin == 'greedy':
                 self.greedy()
             if hill == 'True':
@@ -1008,23 +1018,49 @@ class Grid(object):
 
             # calculate cost for bound
             cost = self.calculate_total_cost()
-            print(cost)
 
             # if the cost is acceptable, i.e. under the bound, run simulated_annealing
             if cost < bound:
 
-                best_copy = self.simulated_annealing(iterations, hill='True', cooling='linear')
+                # run simulated annealing and save time and costs
+                sa_start = time.time()
+                grid = self.simulated_annealing(iterations, hill='False', cooling='lin')
+                sa_stop = time.time()
 
-                cost = best_copy.calculate_total_cost()
-                costs.append(cost)
+                cost = grid.calculate_total_cost()
+                costs_sa.append(cost)
 
-                print('Current cost: ', cost)
-                print('Best cost: ', min(costs))
-                print('Current iteration: ', i + 1)
                 i += 1
+
+            # if cost of hillclimber is best solution save data for .json export
+            if cost == min(costs_sa):
+                current_combi = {}
+                for battery in self.batteries:
+                    house_ids = []
+                    for route in battery.routes:
+                        house_id = route.house.id
+                        house_ids.append(house_id)
+                    current_combi[f'{battery.id}'] = house_ids
+                current_combi["Costs best solution"] = min(costs_sa)
+                combination = current_combi
 
             # empty the grid
             self.disconnect_all()
+
+        # save all results in dict aswell
+        combination["All random results"] = costs_random
+        combination["All simulated annealing results"] = costs_sa
+        combination["Random times"] = times_random
+        combination["Simulated annealing times "] = times_sa
+
+        # get current datetime in string
+        dt = datetime.now()
+        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+
+        # dump data of best found solution to .json file
+        with open(f'Results/RandomSimulatedAnnealing/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_simulated_annealing_{i}_repeats_bound_{bound}.json', 'w') as f:
+            json.dump(combination, f,indent=4)
+
 
     def random_hillclimber(self, cost_bound, repeats):
         """
