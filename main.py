@@ -3,6 +3,8 @@ from grid import Grid
 from house import House
 from battery import Battery
 from route import Route
+from Algoritmes.greedy import greedy
+from Algoritmes.greedy_alt import greedy_alt
 from distance import distance
 import random
 import matplotlib.pyplot as plt
@@ -11,10 +13,14 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    i = 1
+    i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-
+    # grid.greedy()
+    grid = greedy_alt(grid)
+    grid.draw_grid("greedy_alt")
+    grid.hillclimber()
+    grid.draw_grid("hillclimber")
 #    grid.greed()
 #    grid.draw_grid("greed")
 #    grid.greedy()
@@ -30,14 +36,7 @@ if __name__ == "__main__":
     # for battery in grid.batteries:
     #     for route in battery.routes:
     #         print(route.house.id)
-    grid.draw_grid("No connections")
-    grid.greedy()
-    grid.draw_grid("")
-    grid.verplaat_batterij_met_k_means(5)
-    grid.disconnect_all()
-    grid.greedy()
-    grid.draw_grid("")
-    # grid.hillclimber()
+
     # grid.draw_grid("")
     # grid.hillclimber_double()
     # grid.draw_grid("")

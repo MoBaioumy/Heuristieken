@@ -143,10 +143,10 @@ class Grid(object):
                     # remove route
                     self.batteries[battery_idx].routes.remove(route)
                     # print(f"house {house_id} disconnected")
-                    return
+                    return True
         # if house id not found print error message
-        print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
-        return
+        # print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
+        return False
 
 
     def disconnect_all(self):
@@ -160,6 +160,11 @@ class Grid(object):
 
     def swap(self, h1, h2, h3 = False, h4 = False):
 
+        print(h1.house.id)
+        print(h2.house.id)
+        print(h1.battery_id)
+
+        print(h2.battery_id)
         if h3 == False:
             # disconnect houses
             self.disconnect(h1.house.id)
@@ -465,7 +470,7 @@ class Grid(object):
 
     def random(self):
         """
-        Randomly connects houses to batteries, solution not garanteed
+        Randomly connects houses to batteries, if no solution, disconnect_all and repeat
         """
         # random.shuffle(self.batteries)
         while self.unconnected_houses != []:
@@ -785,7 +790,6 @@ class Grid(object):
                                             break
 
 
-
     def re_arrange(self):
         """
         Re-arrange for simulated_annealing
@@ -840,6 +844,7 @@ class Grid(object):
         self.h2 = h2
 
         return proposed
+
 
     def simulated_annealing(self, N, hill = 'True', accept = 'std', cooling = 'std'):
 
@@ -916,6 +921,7 @@ class Grid(object):
 
         return best_copy
 
+
     def repeat_simulated_annealing(self, N, iterations = 1000, hill = 'True', begin = 'random', bound = float('inf')):
 
         """
@@ -954,6 +960,7 @@ class Grid(object):
 
             # empty the grid
             self.disconnect_all()
+
 
     def random_hillclimber(self, cost_bound, repeats):
         """
