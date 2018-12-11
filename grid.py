@@ -751,10 +751,8 @@ class Grid(object):
                             for h3 in b2.routes:
                                 for h4 in b2.routes:
 
-                                    # MAKE FUNCTION OF THIS
                                     h1h2 = h1.house.max_output + h2.house.max_output
                                     h3h4 = h3.house.max_output + h4.house.max_output
-
                                     cap1 = h1h2 + b1.current_capacity
                                     cap2 = h3h4 + b2.current_capacity
 
@@ -844,14 +842,16 @@ class Grid(object):
         return proposed
 
 
-    def simulated_annealing(self, N, hill = 'True', cooling = 'standard'):
+    def simulated_annealing(self, N, hill = 'True', cooling = 'std'):
 
         """
         Simulated annealing
         """
 
-        begin_temperature = 100
-        temperature = begin_temperature
+        # parameters
+        T0 = 100
+        Tn = 1
+        T = T0
 
         for i in range(N):
 
@@ -863,7 +863,7 @@ class Grid(object):
             proposed = self.calculate_total_cost()
 
             # calculate probability of acceptance
-            probability = max(0, min(1, np.exp(-(proposed - current) / temperature)))
+            probability = max(0, min(1, np.exp(-(proposed - current) / T)))
 
             # if the proposed option is better than current, accept it
             if (current - proposed) > 0:
@@ -874,13 +874,25 @@ class Grid(object):
             if np.random.rand() < probability:
                 self.swap(self.h1, self.h2)
 
+            # geman parameters
+            d = 1
+            c = 1
+
             # cooling schemes
-            if cooling == 'standard':
-                temperature = 0.999 * temperature
-            if cooling == 'linear':
-                temperature = temperature - i * ((temperature - 1) / N)
-            if cooling == 'exponential':
-                 temperature = begin_temperature * math.pow(1 / begin_temperature, i / N)
+            # standard as a test
+            if cooling == 'std':
+                T = 0.999 * T
+            # linear
+            if cooling == 'lin':
+                T = T - i * ((T0 - Tn) / N)
+            # exponential
+            if cooling == 'exp':
+                 T = T0 * math.pow(Tn / T0, i / N)
+            # sigmodial
+            if cooling == 'sig':
+                T = Tn + (T0 - Tn) / (1 / + exp(0.3(i - N / 2)))
+            if cooling == 'geman':
+                T = c / (log(i) + d)
 
         # end simulated_annealing with a hillclimber, to make sure there are no
         # more ways to improve the grid
