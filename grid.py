@@ -14,6 +14,7 @@ import copy
 import itertools
 import time
 import pandas as pd
+import math
 
 
 
@@ -532,21 +533,22 @@ class Grid(object):
         best_dist = float('inf')
         out_houses = []
         for i in range(r[1]):
-             combinations = itertools.combinations(outputs, i)
+             x = itertools.combinations(outputs, i)
              print("progress!")
-             for combination in combinations:
-                 if 0 < battery.current_capacity - sum(combination)  < battery.current_capacity - sum(lowest) and battery.current_capacity - sum(combination) < 7 :
+             for j in x:
+                 # print(sum(j) - battery.current_capacity)
+                 if 0 < battery.current_capacity - sum(j)  < battery.current_capacity - sum(lowest) and battery.current_capacity - sum(j) < 7 :
                      houses = []
-                     for combi in combination:
+                     for i in j:
                          for house in self.unconnected_houses:
-                             if house.max_output == combi:
+                             if house.max_output == i:
                                  houses.append(house)
                      total_dist = 0
                      for h in houses:
                          total_dist += distance(h.location, battery.location)
                      if total_dist < best_dist:
                          best_dist = total_dist
-                         lowest = combi
+                         lowest = j
                          out_houses = houses
                      # print(sum(j) - battery.current_capacity)
         houses = []
@@ -845,6 +847,73 @@ class Grid(object):
 
         return proposed
 
+    def re_arrange_random(self, iterations = 100000):
+        """
+        Re-arrange for simulated_annealing
+        """
+
+        house1 = False
+        i = 0
+        swap = 0
+
+        while i < iterations:
+
+            found = False
+            house1 = False
+
+            while found == False:
+
+                # get random house_ids
+                r1 = random.randint(1,150)
+                r2 = random.randint(1,150)
+
+                # find house 1
+                while house1 == False:
+                    for battery in self.batteries:
+                        for route in battery.routes:
+                            if route.house.id == r1:
+                                h1 = route
+                                b1 = battery
+                                max1 = h1.house.max_output + b1.current_capacity
+                                house1 = True
+                                break
+
+                # find house 2
+                for battery in self.batteries:
+                    for route in battery.routes:
+                        if route.house.id == r2:
+
+                            h2 = route
+                            b2 = battery
+                            max2 = h2.house.max_output + b2.current_capacity
+
+                            # if swap is possible, swap
+                            if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
+
+                                i += 1
+                                print(i)
+
+                                # calculate is the swap improves the length of the connections
+                                h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
+                                h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
+                                lengte_new =  h1len + h2len
+                                lengte_old = h1.length + h2.length
+
+                                if lengte_new < lengte_old:
+                                    self.swap(h1, h2)
+                                    swap = swap + 1
+
+                                # stop while loop
+                                found = True
+                                break
+
+                # in case we cannot find a house to swap with house 1, we need to reset the loop
+                # without this you might get stuck in a loop
+                house1 = False
+
+        print(self.calculate_total_cost())
+        print('Swaps: ', swap)
+
 
     def simulated_annealing(self, N, hill = 'True', accept = 'std', cooling = 'std'):
 
@@ -853,9 +922,9 @@ class Grid(object):
         """
 
         # parameters
-        T0 = 100
-        Tn = 1
-        T = T0
+        Tbegin = 100
+        Tend = 0
+        T = Tbegin
 
         best = self.calculate_total_cost()
         best_copy = copy.deepcopy(self)
@@ -863,20 +932,19 @@ class Grid(object):
         for i in range(N):
 
             # get a proposition for a swap
-            proposed = self.re_arrange()
+            prop = self.re_arrange()
 
             # calculate difference of options
             current = self.calculate_total_cost()
-            proposed = self.calculate_total_cost()
+            proposed = prop.calculate_total_cost()
 
             if proposed < best:
-                best_copy = copy.deepcopy(proposed)
+                best_copy = copy.deepcopy(prop)
                 best = proposed
 
             # calculate probability of acceptance
             if accept == 'std':
                 probability = max(0, min(1, np.exp(-(proposed - current) / T)))
-            # if accept == ''
 
             # if the proposed option is better than current, accept it
             if (current - proposed) > 0:
@@ -888,8 +956,7 @@ class Grid(object):
                 self.swap(self.h1, self.h2)
 
             # geman parameters
-            d = 1
-            c = 1
+            d = 2
 
             # cooling schemes
             # standard as a test
@@ -897,16 +964,16 @@ class Grid(object):
                 T = 0.999 * T
             # linear
             if cooling == 'lin':
-                T = T - i * ((T0 - Tn) / N)
+                T = Tbegin - i * (Tbegin - Tend) / N
             # exponential
             if cooling == 'exp':
-                 T = T0 * math.pow(Tn / T0, i / N)
+                 T = Tbegin * math.pow(Tend / Tbegin, i / N)
             # sigmodial
             if cooling == 'sig':
-                T = Tn + (T0 - Tn) / (1 / + exp(0.3(i - N / 2)))
+                T = Tend + (Tbegin - Tend) / (1 + np.exp(0.3 * (i - N / 2)))
             # geman and geman
             if cooling == 'geman':
-                T = c / (log(i) + d)
+                T = Tbegin / (np.log(i + d))
 
         # end simulated_annealing with a hillclimber, to make sure there are no
         # more ways to improve the grid
@@ -919,6 +986,7 @@ class Grid(object):
                 best_copy = copy.deepcopy(self)
                 best = current
 
+
         return best_copy
 
 
@@ -930,12 +998,25 @@ class Grid(object):
 
         costs = []
         i = 0
+        costs_random = [999999, 999998]
+        times_random =  []
+        costs_sa = [999999, 999998]
+        times_sa = []
+        combination = {}
 
-        while i < iterations:
+        while i < N:
 
             # let the use pick from which point to start
             if begin == 'random':
+
+                # get random solution save time and costs
+                random_start = time.time()
                 self.random()
+                random_stop = time.time()
+                times_random.append(random_stop - random_start)
+                cost_r = self.calculate_total_cost()
+                costs_random.append(cost_r)
+
             if begin == 'greedy':
                 self.greedy()
             if hill == 'True':
@@ -943,23 +1024,48 @@ class Grid(object):
 
             # calculate cost for bound
             cost = self.calculate_total_cost()
-            print(cost)
 
             # if the cost is acceptable, i.e. under the bound, run simulated_annealing
             if cost < bound:
 
-                best_copy = self.simulated_annealing(iterations, hill='True', cooling='linear')
+                # run simulated annealing and save time and costs
+                sa_start = time.time()
+                grid = self.simulated_annealing(iterations, hill='False', cooling='lin')
+                sa_stop = time.time()
 
-                cost = best_copy.calculate_total_cost()
-                costs.append(cost)
+                cost = grid.calculate_total_cost()
+                costs_sa.append(cost)
 
-                print('Current cost: ', cost)
-                print('Best cost: ', min(costs))
-                print('Current iteration: ', i + 1)
                 i += 1
+
+            # if cost of hillclimber is best solution save data for .json export
+            if cost == min(costs_sa):
+                current_combi = {}
+                for battery in self.batteries:
+                    house_ids = []
+                    for route in battery.routes:
+                        house_id = route.house.id
+                        house_ids.append(house_id)
+                    current_combi[f'{battery.id}'] = house_ids
+                current_combi["Costs best solution"] = min(costs_sa)
+                combination = current_combi
 
             # empty the grid
             self.disconnect_all()
+
+        # save all results in dict aswell
+        combination["All random results"] = costs_random
+        combination["All simulated annealing results"] = costs_sa
+        combination["Random times"] = times_random
+        combination["Simulated annealing times "] = times_sa
+
+        # get current datetime in string
+        dt = datetime.now()
+        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+
+        # dump data of best found solution to .json file
+        with open(f'Results/RandomSimulatedAnnealing/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_simulated_annealing_{i}_repeats_bound_{bound}.json', 'w') as f:
+            json.dump(combination, f,indent=4)
 
 
     def random_hillclimber(self, cost_bound, repeats):
