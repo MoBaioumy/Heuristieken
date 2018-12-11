@@ -3,8 +3,7 @@ from grid import Grid
 from house import House
 from battery import Battery
 from route import Route
-from Algoritmes.greedy import greedy
-from Algoritmes.greedy_alt import greedy_alt
+from Algoritmes import greedy, greedy_alt, greedy_lookahead, random_connect, hillclimber
 from distance import distance
 import random
 import matplotlib.pyplot as plt
@@ -13,14 +12,40 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    i = 3
+    i = 1
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-    # grid.greedy()
-    grid = greedy_alt(grid)
-    grid.draw_grid("greedy_alt")
-    grid.hillclimber()
-    grid.draw_grid("hillclimber")
+
+
+    grid = greedy_lookahead(grid)
+    grid.draw_grid("")
+    #
+    grid = greedy(grid)
+    grid = hillclimber(grid)
+    grid.draw_grid("")
+    # # costsGreedy = []
+    # costsAlt = []
+    # costsHillGreedy = []
+    # costsHillAlt = []
+    # for i in range(150):
+    #     grid = greedy(grid)
+    #     costsGreedy.append(grid.calculate_total_cost())
+    #     grid = hillclimber(grid)
+    #     costsHillGreedy.append(grid.calculate_total_cost())
+    #     grid.disconnect_all()
+    #     grid = greedy_alt(grid)
+    #     costsAlt.append(grid.calculate_total_cost())
+    #     grid = hillclimber(grid)
+    #     costsHillAlt.append(grid.calculate_total_cost())
+    #     grid.disconnect_all()
+    #     print(f"Next!                  {i}                          Next!")
+    #
+    # print(f"Greedy, Min: {min(costsGreedy)} Max: {max(costsGreedy)} Mean: {np.mean(costsGreedy)}")
+    # print(f"Alt Min: {min(costsAlt)} Max: {max(costsAlt)} Mean: {np.mean(costsAlt)}")
+    # print(f"Hill --> Greedy, Min: {min(costsHillGreedy)} Max: {max(costsHillGreedy)} Mean: {np.mean(costsHillGreedy)}")
+    # print(f"Hill --> Alt Min: {min(costsHillAlt)} Max: {max(costsHillAlt)} Mean: {np.mean(costsHillAlt)}")
+
+
 #    grid.greed()
 #    grid.draw_grid("greed")
 #    grid.greedy()

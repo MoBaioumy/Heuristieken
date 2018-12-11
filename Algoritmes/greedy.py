@@ -10,16 +10,17 @@ def greedy(grid):
     """
     Loops over batteries and connects closest house to battery
     """
-    #
+    # repeat untill all houses are connected meaning a solution is found
     while grid.unconnected_houses != []:
+        # disconnect 3 random houses if solution is not found, prevents that no solution will be found, makes outcome worse
         if len(grid.unconnected_houses) < 3:
             for i in range(3):
                 grid.disconnect(random.randint(0, 150))
 
-        # shuffle battery order otherwise you always get the same solution with this algoritm
+        # shuffle battery order otherwise you always get the same solution with this algoritm, we want to explore all possible solutions
         random.shuffle(grid.batteries)
 
-        # find min and max output value
+        # find min and max output value of all houses
         all_outputs = [house.max_output for house in grid.houses]
         min_out = min(all_outputs)
         max_out = max(all_outputs)
@@ -39,7 +40,7 @@ def greedy(grid):
 
                 # input check
                 if closest_house == None:
-                    # print("No house to connect")
+                    print("No house to connect")
                     break
 
                 house_id_connect = closest_house.id
@@ -68,6 +69,7 @@ def greedy(grid):
                                 house_id_connect = house1.id
                                 current_best = combi
 
+                # connect house that is best option according to heursitics
                 grid.connect(house_id_connect, battery.id)
 
     return grid

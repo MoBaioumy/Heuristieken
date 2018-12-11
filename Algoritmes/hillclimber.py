@@ -19,24 +19,23 @@ def hillclimber(grid):
         # sets swap to false
         swap = False
         # loops through the batteries
-        for b1 in grid.batteries:
+        for battery1 in grid.batteries:
             # loops through the houses in the batteries
-            for h1 in b1.routes:
+            for route1 in battery1.routes:
                 # loops through the batteries
-                for b2 in grid.batteries:
+                for battery2 in grid.batteries:
                     # loops through the houses in the batteries
-                    for h2 in b2.routes:
-                        h1cap = h1.house.max_output + b1.current_capacity
-                        h2cap = h2.house.max_output + b2.current_capacity
+                    for route2 in battery2.routes:
+                        battery1cap = route1.house.max_output + battery1.current_capacity
+                        battery2cap = route2.house.max_output + battery2.current_capacity
                         # checks if a swap between two houses can be made
-                        if h1.house.max_output < h2cap and h2.house.max_output < h1cap:
+                        if route1.house.max_output < battery2cap and route2.house.max_output < battery1cap:
                                 # calculate is the swap improves the length of the connections
-                                h1len = distance(h1.house.location, grid.batteries[h2.battery_id - 1].location)
-                                h2len = distance(h2.house.location, grid.batteries[h1.battery_id - 1].location)
-                                lengte_new =  h1len + h2len
-                                lengte_old = h1.length + h2.length
+                                lengte_new =  distance(route1.house.location, battery2.location) + distance(route2.house.location, battery1.location)
+                                lengte_old = route1.length + route2.length
 
                                 # makes the swap if the length is improved
-                                if swap == False and lengte_new < lengte_old and h1.house.id != h2.house.id and :
-                                    swap = grid.swap(h1, h2)
+                                if swap == False and lengte_new < lengte_old and route1.house.id != route2.house.id:
+                                    swap = grid.swap(route1, route2)
                                     break
+    return grid
