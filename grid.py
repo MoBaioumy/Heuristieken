@@ -515,22 +515,21 @@ class Grid(object):
         best_dist = float('inf')
         out_houses = []
         for i in range(r[1]):
-             x = itertools.combinations(outputs, i)
+             combinations = itertools.combinations(outputs, i)
              print("progress!")
-             for j in x:
-                 # print(sum(j) - battery.current_capacity)
-                 if 0 < battery.current_capacity - sum(j)  < battery.current_capacity - sum(lowest) and battery.current_capacity - sum(j) < 7 :
+             for combination in combinations:
+                 if 0 < battery.current_capacity - sum(combination)  < battery.current_capacity - sum(lowest) and battery.current_capacity - sum(combination) < 7 :
                      houses = []
-                     for i in j:
+                     for combi in combination:
                          for house in self.unconnected_houses:
-                             if house.max_output == i:
+                             if house.max_output == combi:
                                  houses.append(house)
                      total_dist = 0
                      for h in houses:
                          total_dist += distance(h.location, battery.location)
                      if total_dist < best_dist:
                          best_dist = total_dist
-                         lowest = j
+                         lowest = combi
                          out_houses = houses
                      # print(sum(j) - battery.current_capacity)
         houses = []
