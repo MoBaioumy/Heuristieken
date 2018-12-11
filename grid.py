@@ -839,10 +839,10 @@ class Grid(object):
         # return all the necessary information
         self.h1 = h1
         self.h2 = h2
+
         return proposed
 
-
-    def simulated_annealing(self, N, hill = 'True', cooling = 'std'):
+    def simulated_annealing(self, N, hill = 'True', accept = 'std', cooling = 'std'):
 
         """
         Simulated annealing
@@ -853,6 +853,9 @@ class Grid(object):
         Tn = 1
         T = T0
 
+        best = self.calculate_total_cost()
+        best_copy = copy.deepcopy(self)
+
         for i in range(N):
 
             # get a proposition for a swap
@@ -862,8 +865,14 @@ class Grid(object):
             current = self.calculate_total_cost()
             proposed = self.calculate_total_cost()
 
+            if proposed < best:
+                best_copy = copy.deepcopy(proposed)
+                best = proposed
+
             # calculate probability of acceptance
-            probability = max(0, min(1, np.exp(-(proposed - current) / T)))
+            if accept == 'std':
+                probability = max(0, min(1, np.exp(-(proposed - current) / T)))
+            # if accept == ''
 
             # if the proposed option is better than current, accept it
             if (current - proposed) > 0:
@@ -899,8 +908,15 @@ class Grid(object):
         if hill == 'True':
             self.hillclimber()
 
-    def repeat_simulated_annealing(self, N, iterations = 1000, hill = 'True', begin = 'random', bound = float('inf')):
+        current = self.calculate_total_cost()
 
+        if current < best:
+            best_copy = copy.deepcopy(self)
+            best = current
+
+        return best_copy
+
+    def repeat_simulated_annealing(self, N, iterations = 1000, hill = 'True', begin = 'random', bound = float('inf')):
 
         """
         Repeats simulated annealing for a x number of times with different options.
@@ -925,9 +941,10 @@ class Grid(object):
 
             # if the cost is acceptable, i.e. under the bound, run simulated_annealing
             if cost < bound:
-                self.simulated_annealing(iterations, hill='True', cooling='linear')
 
-                cost = self.calculate_total_cost()
+                best_copy = self.simulated_annealing(iterations, hill='True', cooling='linear')
+
+                cost = best_copy.calculate_total_cost()
                 costs.append(cost)
 
                 print('Current cost: ', cost)
