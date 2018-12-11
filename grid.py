@@ -158,16 +158,28 @@ class Grid(object):
                 self.disconnect(battery.routes[0].house.id)
 
 
-    def swap(self, h1, h2):
+    def swap(self, h1, h2, h3 = False, h4 = False):
 
-        # disconnect houses
-        self.disconnect(h1.house.id)
-        self.disconnect(h2.house.id,)
-        # swap connections
-        self.connect(h1.house.id, h2.battery_id)
-        self.connect(h2.house.id, h1.battery_id)
-        swap = True
-
+        if h3 == False:
+            # disconnect houses
+            self.disconnect(h1.house.id)
+            self.disconnect(h2.house.id)
+            # swap connections
+            self.connect(h1.house.id, h2.battery_id)
+            self.connect(h2.house.id, h1.battery_id)
+            swap = True
+        else:
+            # disconnect houses
+            self.disconnect(h1.house.id)
+            self.disconnect(h2.house.id)
+            self.disconnect(h3.house.id)
+            self.disconnect(h4.house.id)
+            # swap connections
+            self.connect(h1.house.id, h3.battery_id)
+            self.connect(h2.house.id, h3.battery_id)
+            self.connect(h3.house.id, h1.battery_id)
+            self.connect(h4.house.id, h1.battery_id)
+            swap = True
         return swap
 
 
@@ -770,19 +782,7 @@ class Grid(object):
                                         # makes the swap if the length is improved
                                         if swap == False and len_new < len_old:
 
-                                            # disconnect houses
-                                            self.disconnect(h1.house.id)
-                                            self.disconnect(h2.house.id)
-                                            self.disconnect(h3.house.id)
-                                            self.disconnect(h4.house.id)
-
-                                            # swap connections
-                                            self.connect(h1.house.id, h3.battery_id)
-                                            self.connect(h2.house.id, h3.battery_id)
-                                            self.connect(h3.house.id, h1.battery_id)
-                                            self.connect(h4.house.id, h1.battery_id)
-                                            swap = True
-
+                                            swap = swap(h1, h2, h3, h4)
                                             break
 
 
@@ -900,6 +900,7 @@ class Grid(object):
             # sigmodial
             if cooling == 'sig':
                 T = Tn + (T0 - Tn) / (1 / + exp(0.3(i - N / 2)))
+            # geman and geman
             if cooling == 'geman':
                 T = c / (log(i) + d)
 
@@ -908,11 +909,11 @@ class Grid(object):
         if hill == 'True':
             self.hillclimber()
 
-        current = self.calculate_total_cost()
-
-        if current < best:
-            best_copy = copy.deepcopy(self)
-            best = current
+            # check if current version is the best version
+            current = self.calculate_total_cost()
+            if current < best:
+                best_copy = copy.deepcopy(self)
+                best = current
 
         return best_copy
 
