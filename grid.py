@@ -799,9 +799,11 @@ class Grid(object):
 
         while found == False:
 
+            # get random house_ids
             r1 = random.randint(1,150)
             r2 = random.randint(1,150)
 
+            # find house 1
             while house1 == False:
                 for battery in self.batteries:
                     for route in battery.routes:
@@ -812,6 +814,7 @@ class Grid(object):
                             house1 = True
                             break
 
+            # find house 2
             for battery in self.batteries:
                 for route in battery.routes:
                     if route.house.id == r2:
@@ -820,19 +823,24 @@ class Grid(object):
                         b2 = battery
                         max2 = h2.house.max_output + b2.current_capacity
 
+                        # if swap is possible, swap
                         if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
 
+                            # copy grid and make the swap
                             proposed = copy.deepcopy(self)
                             proposed.swap(h1, h2)
+
+                            # stop while loop
                             found = True
                             break
 
+            # in case we cannot find a house to swap with house 1, we need to reset the loop
+            # without this you might get stuck in a loop
             house1 = False
 
-        # self.proposed = proposed
+        # return all the necessary information
         self.h1 = h1
         self.h2 = h2
-
         return proposed
 
 
@@ -842,18 +850,27 @@ class Grid(object):
         Simulated annealing
         """
 
-        temperature = 100
+        begin_temperature = 100
+        temperature = begin_temperature
 
         for i in range(N):
 
+            # get a proposition for a swap
             proposed = self.re_arrange()
+
+            # calculate difference of options
             current = self.calculate_total_cost()
             proposed = self.calculate_total_cost()
+
+            # calculate probability of acceptance
             probability = max(0, min(1, np.exp(-(proposed - current) / temperature)))
 
+            # if the proposed option is better than current, accept it
             if (current - proposed) > 0:
                 probability = 1
 
+            # if option is worse, generate a random number between 0 and 1, if that
+            # number is lower than the probability, make the swap
             if np.random.rand() < probability:
                 self.swap(self.h1, self.h2)
 
@@ -865,26 +882,36 @@ class Grid(object):
             if cooling == 'exponential':
                  temperature = begin_temperature * math.pow(1 / begin_temperature, i / N)
 
+        # end simulated_annealing with a hillclimber, to make sure there are no
+        # more ways to improve the grid
         if hill == 'True':
             self.hillclimber()
 
     def repeat_simulated_annealing(self, N, iterations = 1000, hill = 'True', begin = 'random', bound = float('inf')):
+
+
+        """
+        Repeats simulated annealing for a x number of times with different options.
+        """
 
         costs = []
         i = 0
 
         while i < iterations:
 
+            # let the use pick from which point to start
             if begin == 'random':
                 self.random()
             if begin == 'greedy':
                 self.greedy()
-
             if hill == 'True':
                 self.hillclimber()
 
+            # calculate cost for bound
             cost = self.calculate_total_cost()
+            print(cost)
 
+            # if the cost is acceptable, i.e. under the bound, run simulated_annealing
             if cost < bound:
                 self.simulated_annealing(iterations, hill='True', cooling='linear')
 
@@ -896,6 +923,7 @@ class Grid(object):
                 print('Current iteration: ', i + 1)
                 i += 1
 
+            # empty the grid
             self.disconnect_all()
 
     def random_hillclimber(self, cost_bound, repeats):

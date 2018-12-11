@@ -93,4 +93,4 @@ if __name__ == "__main__":
 
     grid = Grid("wijk2")
 
-    grid.repeat_simulated_annealing(10,1000, begin = 'greedy', bound = 47000)
+    grid.repeat_simulated_annealing(1000,1000, begin = 'random', bound = 46000)
