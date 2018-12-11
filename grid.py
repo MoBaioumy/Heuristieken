@@ -842,60 +842,73 @@ class Grid(object):
 
         return proposed
 
-# def re_arrange_random(self):
-#     """
-#     Re-arrange for simulated_annealing
-#     """
-#
-#     found = False
-#     house1 = False
-#
-#     while found == False:
-#
-#         # get random house_ids
-#         r1 = random.randint(1,150)
-#         r2 = random.randint(1,150)
-#
-#         # find house 1
-#         while house1 == False:
-#             for battery in self.batteries:
-#                 for route in battery.routes:
-#                     if route.house.id == r1:
-#                         h1 = route
-#                         b1 = battery
-#                         max1 = h1.house.max_output + b1.current_capacity
-#                         house1 = True
-#                         break
-#
-#         # find house 2
-#         for battery in self.batteries:
-#             for route in battery.routes:
-#                 if route.house.id == r2:
-#
-#                     h2 = route
-#                     b2 = battery
-#                     max2 = h2.house.max_output + b2.current_capacity
-#
-#                     # if swap is possible, swap
-#                     if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
-#
-#                         # copy grid and make the swap
-#                         proposed = copy.deepcopy(self)
-#                         proposed.swap(h1, h2)
-#
-#                         # stop while loop
-#                         found = True
-#                         break
-#
-#         # in case we cannot find a house to swap with house 1, we need to reset the loop
-#         # without this you might get stuck in a loop
-#         house1 = False
-#
-#     # return all the necessary information
-#     self.h1 = h1
-#     self.h2 = h2
-#
-#     return proposed
+    def re_arrange_random(self, iterations = 10000):
+        """
+        Re-arrange for simulated_annealing
+        """
+
+        house1 = False
+        i = 0
+        swap = 0
+
+        while i < iterations:
+
+            found = False
+            house1 = False
+
+            while found == False:
+
+                # get random house_ids
+                r1 = random.randint(1,150)
+                r2 = random.randint(1,150)
+
+                # find house 1
+                while house1 == False:
+                    for battery in self.batteries:
+                        for route in battery.routes:
+                            if route.house.id == r1:
+                                h1 = route
+                                b1 = battery
+                                max1 = h1.house.max_output + b1.current_capacity
+                                house1 = True
+                                break
+
+                # find house 2
+                for battery in self.batteries:
+                    for route in battery.routes:
+                        if route.house.id == r2:
+
+                            h2 = route
+                            b2 = battery
+                            max2 = h2.house.max_output + b2.current_capacity
+
+                            # if swap is possible, swap
+                            if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
+
+                                i += 1
+                                print(i)
+
+                                # calculate is the swap improves the length of the connections
+                                h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
+                                h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
+                                lengte_new =  h1len + h2len
+                                lengte_old = h1.length + h2.length
+
+                                if lengte_new < lengte_old:
+                                    self.swap(h1, h2)
+                                    swap = swap + 1
+
+                                # stop while loop
+                                found = True
+                                break
+
+                # in case we cannot find a house to swap with house 1, we need to reset the loop
+                # without this you might get stuck in a loop
+                house1 = False
+
+        print(self.calculate_total_cost())
+        print('Swaps: ', swap)
+
 
     def simulated_annealing(self, N, hill = 'True', accept = 'std', cooling = 'std'):
 
@@ -928,8 +941,6 @@ class Grid(object):
             if accept == 'std':
                 probability = max(0, min(1, np.exp(-(proposed - current) / T)))
 
-            time.sleep(0.03)
-
             # if the proposed option is better than current, accept it
             if (current - proposed) > 0:
                 probability = 1
@@ -941,6 +952,8 @@ class Grid(object):
 
             # geman parameters
             d = 2
+
+            print(T)
 
             # cooling schemes
             # standard as a test
@@ -957,9 +970,8 @@ class Grid(object):
                 T = Tend + (Tbegin - Tend) / (1 + np.exp(0.3 * (i - N / 2)))
             # geman and geman
             if cooling == 'geman':
-                T = Tbegin / (np.log(i) + d)
+                T = Tbegin / (np.log(i + d))
 
-            print(T)
         # end simulated_annealing with a hillclimber, to make sure there are no
         # more ways to improve the grid
         if hill == 'True':
@@ -970,6 +982,8 @@ class Grid(object):
             if current < best:
                 best_copy = copy.deepcopy(self)
                 best = current
+
+        print(best)
 
         return best_copy
 
