@@ -6,4 +6,4 @@
 
 
 
-Dit probleem in vrij onafhankelijk van de rest.
+Dit probleem in vrij onafhankelijk van de rest en is ook niet behandelt.
