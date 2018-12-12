@@ -1,6 +1,7 @@
 from house import House
 from battery import Battery
 from route import Route
+from grid import Grid
 from distance import distance
 
 

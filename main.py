@@ -12,17 +12,19 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    i = 1
+    i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
 
 
     grid = greedy_lookahead(grid)
-    grid.draw_grid("")
+    # grid.draw_grid("")
     #
-    grid = greedy(grid)
+    # grid = greedy(grid)
     grid = hillclimber(grid)
     grid.draw_grid("")
+
+    grid.simulated_annealing(1000)
     # # costsGreedy = []
     # costsAlt = []
     # costsHillGreedy = []

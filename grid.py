@@ -346,6 +346,204 @@ class Grid(object):
                 self.connect(numb, battery.id)
 
 
+    def random(self):
+        """
+        Randomly connects houses to batteries, if no solution, disconnect_all and repeat
+        """
+        # random.shuffle(self.batteries)
+        while self.unconnected_houses != []:
+            for battery in self.batteries:
+
+
+                min_out = min(house.max_output for house in self.unconnected_houses)
+
+
+                while battery.current_capacity > min_out:
+
+                    idx = random.randint(0, len(self.unconnected_houses) - 1)
+                    house_id = self.unconnected_houses[idx].id
+
+                    self.connect(house_id, battery.id)
+
+                    if self.unconnected_houses == []:
+                        break
+                    else:
+                        min_out = min(house.max_output for house in self.unconnected_houses)
+            if self.unconnected_houses != []:
+                self.disconnect_all()
+
+
+    def greedy_alt(self):
+        """
+        Alternative greedy algorithm that connects houses in order of output (high to low)
+        Currently not working
+        """
+        # function that returns max output
+        def max_output_func(house):
+            return house.max_output
+        # sort houses from smallest max output to largest
+        self.unconnected_houses.sort(key=max_output_func, reverse=True)
+
+        counter = 0
+        while self.unconnected_houses != []:
+            for house in self.unconnected_houses:
+                smallest_dist = float('inf')
+                closest_battery_id = None
+                for battery in self.batteries:
+                    dist = distance(house.location, battery.location)
+                    if dist < smallest_dist and battery.current_capacity > house.max_output:
+                        closest_battery_id =  battery.id
+                        smallest_dist = dist
+                self.connect(house.id, closest_battery_id)
+
+                # exit after many repeats
+                counter += 1
+                if counter > 1000:
+                    return
+
+
+    def look(self, battery):
+        r = self.range_connected(battery)
+        print(r)
+        lowest =  [0, 0]
+        outputs = [house.max_output for house in self.unconnected_houses]
+        best_dist = float('inf')
+        out_houses = []
+        for i in range(r[1]):
+             x = itertools.combinations(outputs, i)
+             print("progress!")
+             for j in x:
+                 # print(sum(j) - battery.current_capacity)
+                 if 0 < battery.current_capacity - sum(j)  < battery.current_capacity - sum(lowest) and battery.current_capacity - sum(j) < 7 :
+                     houses = []
+                     for i in j:
+                         for house in self.unconnected_houses:
+                             if house.max_output == i:
+                                 houses.append(house)
+                     total_dist = 0
+                     for h in houses:
+                         total_dist += distance(h.location, battery.location)
+                     if total_dist < best_dist:
+                         best_dist = total_dist
+                         lowest = j
+                         out_houses = houses
+                     # print(sum(j) - battery.current_capacity)
+        houses = []
+        if sum(lowest) < battery.current_capacity and sum(j) - battery.current_capacity < 7:
+            for i in lowest:
+                for house in self.unconnected_houses:
+                    if house.max_output == i:
+                        houses.append(house)
+
+        return houses
+
+
+    def greed(self):
+        counter = 0
+        while self.unconnected_houses != []:
+            best_dist = float('inf')
+            for house in self.unconnected_houses:
+                lowest_dist_house = float('inf')
+                for battery in self.batteries:
+                    dist = distance(house.location, battery.location)
+                    if dist < lowest_dist_house and battery.current_capacity > house.max_output and battery.current_capacity > 280:
+                        bat_id = battery.id
+                        house_id = house.id
+                        lowest_dist_house = dist
+                    elif 50 < battery.current_capacity < 280:
+                        if self.range_connected(battery)[1] < 9:
+                            houses = self.look(battery)
+                            for h in houses:
+                                self.connect(h.id, battery.id)
+
+                if lowest_dist_house < best_dist:
+                    connect_bat_id = bat_id
+                    connect_house_id = house_id
+                    best_dist =  lowest_dist_house
+            self.connect(connect_house_id, connect_bat_id)
+            counter += 1
+            print(counter)
+            if counter > 200:
+                return
+        if self.unconnected_houses != []:
+            for house in self.unconnected_houses:
+                print(house.max_output)
+            for battery in self.batteries:
+                print(battery.current_capacity)
+
+
+    def greedy(self):
+        """
+        Connects next closest house to battery
+        """
+        # random.shuffle(self.batteries)
+
+        # find min and max output value
+        all_outputs = [house.max_output for house in self.houses]
+        min_out = min(all_outputs)
+        max_out = max(all_outputs)
+
+        # calculate factor, this represent the average amount allowed leftover capacity
+        leftover_when_all_connected = sum(battery.max_capacity for battery in self.batteries) - sum(all_outputs)
+        factor = leftover_when_all_connected / len(self.batteries)
+
+        # algoritm does not work for third wijk because range of output is very low
+        # the smallest house is left over when connecting via greedy,
+        # therefore for this wijk we connect this house first to the first battery
+        # this gives us the best option to make a good fit with this house included
+        if self.name == 'wijk3':
+            for house in self.houses:
+                if house.max_output == min_out:
+                    min_house_id = house.id
+                    self.connect(min_house_id, 1)
+
+        # for each battery loop over houses find current closest house and connect
+        # when leftover capacity is under the max output a house can possibly have
+        # but over 5 the algorithm tries to find a better fit
+        for battery in self.batteries:
+            for counter in range(len(self.unconnected_houses)):
+
+                closest_house = battery.find_closest_house(self.unconnected_houses)
+
+                # input check
+                if closest_house == None:
+                    # print("No house to connect")
+                    break
+
+                house_id_connect = closest_house.id
+
+                # leftover capcity after adding current house that will be connected
+                leftover_cap = battery.current_capacity - closest_house.max_output
+
+                if  max_out > leftover_cap > factor:
+                    # find better option to connect if present
+                    for house in self.unconnected_houses:
+                        # difference of current loop house
+                        difference_current = battery.current_capacity - house.max_output
+                        # see if current house is a better fit
+                        if difference_current < leftover_cap and difference_current > 0:
+                            # set house_id and difference to new option
+                            house_id_connect = house.id
+                            leftover_cap = battery.current_capacity - house.max_output
+
+
+                if leftover_cap > factor * 2:
+                    current_best = float('inf')
+                    for house1 in self.unconnected_houses:
+                        for house2 in self.unconnected_houses:
+                            combi = house1.max_output + house2.max_output - battery.current_capacity
+                            if 0 < combi < factor and combi < current_best:
+                                house_id_connect = house1.id
+                                current_best = combi
+
+
+
+
+
+                # print(house_id_connect)
+                self.connect(house_id_connect, battery.id)
+
+
     def find_best_option(self, houses, battery, sum_houses_capacity, sum_houses_distance):
         """
         Werk niet
@@ -389,6 +587,42 @@ class Grid(object):
         #         print(i)
 
 
+    def hillclimber(self):
+        """
+        This hillclimber algoritm checks if a swap between two houses can be made,
+        and if so, if the swap would shorten the length of the path, if this is
+        the case, the swap is made.
+        """
+
+        # set swap to true to start the loop
+        swap = True
+
+        # loops until no swaps can be made
+        while swap == True:
+            # sets swap to false
+            swap = False
+            # loops through the batteries
+            for b1 in self.batteries:
+                # loops through the houses in the batteries
+                for h1 in b1.routes:
+                    # loops through the batteries
+                    for b2 in self.batteries:
+                        # loops through the houses in the batteries
+                        for h2 in b2.routes:
+                            h1cap = h1.house.max_output + b1.current_capacity
+                            h2cap = h2.house.max_output + b2.current_capacity
+                            # checks if a swap between two houses can be made
+                            if h1.house.max_output < h2cap and h2.house.max_output < h1cap:
+                                    # calculate is the swap improves the length of the connections
+                                    h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
+                                    h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
+                                    lengte_new =  h1len + h2len
+                                    lengte_old = h1.length + h2.length
+
+                                    # makes the swap if the length is improved
+                                    if swap == False and lengte_new < lengte_old and h1.house.id != h2.house.id:
+                                        swap = self.swap(h1, h2)
+                                        break
 
 
     def hillclimber_double(self):

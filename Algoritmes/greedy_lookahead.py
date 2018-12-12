@@ -5,6 +5,7 @@ from distance import distance
 from grid import Grid
 import itertools
 import random
+from Algoritmes import greedy
 
 def look(grid, battery):
     r = grid.range_connected(battery)
@@ -74,7 +75,7 @@ def greedy_lookahead(grid):
         counter += 1
         print(counter)
         if counter > 101:
-            return grid
-
+            break
+    grid = greedy(grid)
 
     return grid
