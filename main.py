@@ -9,13 +9,13 @@ import random
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+#improt tkinter 
 
 if __name__ == "__main__":
 
     i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-
 
     grid = greedy_lookahead(grid)
     # grid.draw_grid("")
@@ -46,7 +46,6 @@ if __name__ == "__main__":
     # print(f"Alt Min: {min(costsAlt)} Max: {max(costsAlt)} Mean: {np.mean(costsAlt)}")
     # print(f"Hill --> Greedy, Min: {min(costsHillGreedy)} Max: {max(costsHillGreedy)} Mean: {np.mean(costsHillGreedy)}")
     # print(f"Hill --> Alt Min: {min(costsHillAlt)} Max: {max(costsHillAlt)} Mean: {np.mean(costsHillAlt)}")
-
 
 #    grid.greed()
 #    grid.draw_grid("greed")
@@ -80,9 +79,6 @@ if __name__ == "__main__":
 
 
 
-
-
-
 #    grid.random_hillclimber(0, 5)
 #    grid.greed()
 #    grid.greedy()
@@ -102,8 +98,6 @@ if __name__ == "__main__":
 
 
 
-
-
     #    all_costs = []
 #    for i in range(3):
 #        grid.verplaat_batterij_met_k_means(5)
@@ -113,3 +107,52 @@ if __name__ == "__main__":
 #        grid.hillclimber_double()
 #        all_costs.append(grid.calculate_total_cost())
 #
+
+
+# =============================================================================
+# code for user interface
+# =============================================================================
+
+#    def sel():
+#       selection = "You selected the option " + str(var.get())
+#       label.config(text = selection)
+#    
+#    root = Tk()
+#    var = IntVar()
+#    R1 = Radiobutton(root, text="Wijk 1", variable=var, value=1,
+#                      command=sel)
+#    R1.pack( anchor = W )
+#    
+#    R2 = Radiobutton(root, text="Wijk 2", variable=var, value=2,
+#                      command=sel)
+#    R2.pack( anchor = W )
+#    
+#    R3 = Radiobutton(root, text="Wijk 3", variable=var, value=3,
+#                      command=sel)
+#    R3.pack( anchor = W)
+#    
+#    label = Label(root)
+#    label.pack()
+#    
+#    
+#    root = Tk()
+#    var = IntVar()
+#    R1 = Radiobutton(root, text="Greedy Algorithme", variable=var, value=1,
+#                      command=sel)
+#    R1.pack( anchor = W )
+#    
+#    R2 = Radiobutton(root, text="Random", variable=var, value=2,
+#                      command=sel)
+#    R2.pack( anchor = W )
+#    
+#    R3 = Radiobutton(root, text="Random Hill Climber", variable=var, value=3,
+#                      command=sel)
+#    R3.pack( anchor = W)
+#    
+#    R3 = Radiobutton(root, text="Greedy Hill Climber", variable=var, value=3,
+#                      command=sel)
+#    R3.pack( anchor = W)
+#    
+#    label = Label(root)
+#    label.pack()
+#    root.mainloop()
