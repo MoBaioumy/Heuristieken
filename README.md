@@ -9,7 +9,7 @@ This repository is for the course *'Heuristieken'* of fall 2018. Our project is 
 
 Groene energie is de energie van de toekomst, en zelf produceren is de mode van nu. Veel huizen hebben tegenwoordig zonnepanelen, windmolens of andere installaties om zelf energie mee te produceren. Fortuinlijk genoeg produceren die installaties vaak meer dan voor eigen consumptie nodig is. Het overschot zou kunnen worden terugverkocht aan de leverancier, maar de infrastructuur (het grid) is daar veelal niet op berekend. Om de pieken in consumptie en produktie te kunnen managen moeten er batterijen geplaatst worden.
 
-Voor een feasibility study zijn drie dummy-woonwijken opgesteld, met daarin vijf batterijen. De huizen hebben zonnepanelen met een maximale output, de batterijen hebben een maximale capaciteit.
+Voor een feasibility study zijn drie dummy-woonwijken opgesteld, met daarin vijf batterijen en 150 huizen. De huizen hebben zonnepanelen met een maximale output, de batterijen hebben een maximale capaciteit.
 
 Zie de volgende links voor alle deeldocumentatie:
 - [Date structuur](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Data%20Structure.md)
