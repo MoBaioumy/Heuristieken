@@ -13,7 +13,7 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    i = 3
+    i = 1
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
 
@@ -22,9 +22,18 @@ if __name__ == "__main__":
     #
     # grid = greedy(grid)
     grid = hillclimber(grid)
+#    grid.hillclimber_double()
+    grid.draw_grid("")
+    
+#    grid.best_battery_number()
+    
+    grid.verplaat_batterij_met_k_means(6)
+    grid = greedy_lookahead(grid)
+    grid = hillclimber(grid)
+
     grid.draw_grid("")
 
-    grid.simulated_annealing(1000)
+#    grid.simulated_annealing(1000)
     # # costsGreedy = []
     # costsAlt = []
     # costsHillGreedy = []
