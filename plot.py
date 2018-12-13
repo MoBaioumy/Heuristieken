@@ -28,6 +28,8 @@ while not input[-5:] == '.json':
     input = askopenfilename()
 
 
+
+
 with open(input) as f:
     data = json.load(f)
     f.close()
@@ -50,7 +52,15 @@ random_times= data["Random times"]
 hillclimber_times = data["Hillclimber times "]
 
 
-bins = len(random)-2
+
+# min_plot = int(lowerbound[wijk_index] * 0.95)
+# max_plot = int(max(random) * 1.05)
+# print(min_plot)
+# print(max_plot)
+# bins = int((max(random) *1.05) - lowerbound[wijk_index] * 0.95)
+#
+bins = len(random)-2 #+ len(hillclimber) - 2
+
 plot1 = plt.hist(hillclimber, bins=bins, stacked=True, label="Hillclimber")
 plot2 = plt.hist(random, bins=bins, stacked=True, label="Random")
 
@@ -61,8 +71,6 @@ random.pop()
 hillclimber.sort()
 hillclimber.pop()
 hillclimber.pop()
-
-
 
 p_random = normaltest(random)
 p_hillclimber = normaltest(hillclimber)

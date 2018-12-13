@@ -795,7 +795,7 @@ class Grid(object):
 
         # parameters
         Tbegin = 100
-        Tend = 0
+        Tend = 0.01
         T = Tbegin
 
         for i in range(N):
@@ -809,8 +809,9 @@ class Grid(object):
 
             # calculate probability of acceptance
             if accept == 'std':
-                probability = max(0, min(1, np.exp(-(proposed - current) / T)))
 
+                probability = max(0, min(1, np.exp(-(proposed - current) / T)))
+                print(probability)
             # if the proposed option is better than current, accept it
             if current > proposed:
                 probability = 1
