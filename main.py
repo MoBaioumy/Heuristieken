@@ -13,7 +13,7 @@ import numpy as np
 
 if __name__ == "__main__":
 
-    i = 1
+    i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
 
@@ -26,10 +26,34 @@ if __name__ == "__main__":
     grid.draw_grid("")
     
 #    grid.best_battery_number()
+    all_costs = []
     
-    grid.verplaat_batterij_met_k_means(6)
-    grid = greedy_lookahead(grid)
-    grid = hillclimber(grid)
+    for i in range(300):
+        try:
+            grid.verplaat_batterij_met_k_means(5)
+        except:
+            print("Can't do K_means")
+            
+        grid = greedy_lookahead(grid)
+        grid = hillclimber(grid)
+        all_costs.append(grid.calculate_total_cost())
+        all_costs.append('$')
+        for j in range(5):
+            all_costs.append(grid.batteries[j].location[0])
+            all_costs.append(grid.batteries[j].location[1])
+        
+        all_costs.append('&')
+        
+        
+    dt = datetime.now()
+    stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+    with open(f'Results/K_means/k_means_best_{wijk_naam}_{stdt}.json', 'w') as f:
+            json.dump(all_costs, f,indent=4)
+
+        
+    
+    
+    
 
     grid.draw_grid("")
 

@@ -1175,18 +1175,18 @@ class Grid(object):
         np.random.seed(200)
             # centroids[i] = [x, y]
         centroids = {
-            i+1: [np.random.randint(0, 50), np.random.randint(0, 50)]
+            i+1: [random.randint(0, 50), random.randint(0, 50)]
             for i in range(k)
         }
 
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color='k')
+#        fig = plt.figure(figsize=(5, 5))
+#        plt.scatter(df['x'], df['y'], color='k')
         colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c', 6: 'y'}
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
+#        plt.show()
 
         def assignment(df, centroids):
             for i in centroids.keys():
@@ -1206,13 +1206,13 @@ class Grid(object):
         df = assignment(df, centroids)
             # print(df.head())
 
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+#        fig = plt.figure(figsize=(5, 5))
+#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
+#        plt.show()
 
         old_centroids = copy.deepcopy(centroids)
 
@@ -1224,31 +1224,31 @@ class Grid(object):
 
         centroids = update(centroids)
 
-        fig = plt.figure(figsize=(5, 5))
-        ax = plt.axes()
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
+#        fig = plt.figure(figsize=(5, 5))
+#        ax = plt.axes()
+#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
         for i in old_centroids.keys():
             old_x = old_centroids[i][0]
             old_y = old_centroids[i][1]
             dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
             dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
-            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
+#            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
         plt.show()
 
         df = assignment(df, centroids)
 
             # Plot results
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+#        fig = plt.figure(figsize=(5, 5))
+#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
+#        plt.show()
 
         while True:
             closest_centroids = df['closest'].copy(deep=True)
@@ -1257,13 +1257,13 @@ class Grid(object):
             if closest_centroids.equals(df['closest']):
                 break
 
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+#        fig = plt.figure(figsize=(5, 5))
+#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+#        for i in centroids.keys():
+#            plt.scatter(*centroids[i], color=colmap[i])
+#        plt.xlim(-5, 55)
+#        plt.ylim(-5, 55)
+#        plt.show()
 
         new_locations = []
         for i in centroids:
