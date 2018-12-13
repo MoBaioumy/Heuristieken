@@ -668,7 +668,6 @@ class Grid(object):
                                             swap = swap(h1, h2, h3, h4)
                                             break
 
-
     def re_arrange(self):
         """
         Re-arrange for simulated_annealing
@@ -706,9 +705,11 @@ class Grid(object):
                         # if swap is possible, swap
                         if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
 
-                            # copy grid and make the swap
-                            proposed = copy.deepcopy(self)
-                            proposed.swap(h1, h2)
+                            # calculate is the swap improves the length of the connections
+                            h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
+                            h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
+                            lengte_new = h1len + h2len
+                            lengte_old = h1.length + h2.length
 
                             # stop while loop
                             found = True
@@ -719,13 +720,11 @@ class Grid(object):
             house1 = False
 
         # return all the necessary information
+        self.proposed = (lengte_new - lengte_old) * 9
         self.h1 = h1
         self.h2 = h2
 
-        return proposed
-
-
-    def re_arrange_random(self, iterations = 100000):
+    def re_arrange_random(self, it = 10000):
         """
         Re-arrange for simulated_annealing
         """
@@ -734,7 +733,7 @@ class Grid(object):
         i = 0
         swap = 0
 
-        while i < iterations:
+        while i < it:
 
             found = False
             house1 = False
@@ -769,12 +768,11 @@ class Grid(object):
                             if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
 
                                 i += 1
-                                print(i)
 
                                 # calculate is the swap improves the length of the connections
                                 h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
                                 h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
-                                lengte_new =  h1len + h2len
+                                lengte_new = h1len + h2len
                                 lengte_old = h1.length + h2.length
 
                                 if lengte_new < lengte_old:
@@ -789,11 +787,7 @@ class Grid(object):
                 # without this you might get stuck in a loop
                 house1 = False
 
-        print(self.calculate_total_cost())
-        print('Swaps: ', swap)
-
-
-    def simulated_annealing(self, N, hill = 'True', accept = 'std', cooling = 'std'):
+    def simulated_annealing(self, N, hill = 'False', accept = 'std', cooling = 'std'):
 
         """
         Simulated annealing
@@ -804,9 +798,6 @@ class Grid(object):
         Tend = 0
         T = Tbegin
 
-        best = self.calculate_total_cost()
-        best_copy = copy.deepcopy(self)
-
         for i in range(N):
 
             # get a proposition for a swap
@@ -814,18 +805,14 @@ class Grid(object):
 
             # calculate difference of options
             current = self.calculate_total_cost()
-            proposed = prop.calculate_total_cost()
-
-            if proposed < best:
-                best_copy = copy.deepcopy(prop)
-                best = proposed
+            proposed = current + self.proposed
 
             # calculate probability of acceptance
             if accept == 'std':
                 probability = max(0, min(1, np.exp(-(proposed - current) / T)))
 
             # if the proposed option is better than current, accept it
-            if (current - proposed) > 0:
+            if current > proposed:
                 probability = 1
 
             # if option is worse, generate a random number between 0 and 1, if that
@@ -858,17 +845,8 @@ class Grid(object):
         if hill == 'True':
             self.hillclimber()
 
-            # check if current version is the best version
-            current = self.calculate_total_cost()
-            if current < best:
-                best_copy = copy.deepcopy(self)
-                best = current
 
-
-        return best_copy
-
-
-    def repeat_simulated_annealing(self, N, iterations = 1000, hill = 'True', begin = 'random', bound = float('inf')):
+    def repeat_simulated_annealing(self, N, iterations = 1000, hill = 'True', begin = 'random', bound = float('inf'), cooling = 'lin'):
 
         """
         Repeats simulated annealing for a x number of times with different options.
@@ -877,28 +855,35 @@ class Grid(object):
         costs = []
         i = 0
         costs_random = [999999, 999998]
-        times_random =  []
         costs_sa = [999999, 999998]
-        times_sa = []
+        costs_hill = [999999, 999998]
+        costs_hill2 = [999999, 999998]
         combination = {}
 
         while i < N:
+
+            print("Current iteration: ", i)
+
+            if i % 100 == 0:
+                print('Current best cost simulated annealing: ', min(costs_sa))
+                print('Current best cost hillclimber: ', min(costs_hill))
 
             # let the use pick from which point to start
             if begin == 'random':
 
                 # get random solution save time and costs
-                random_start = time.time()
                 self.random()
-                random_stop = time.time()
-                times_random.append(random_stop - random_start)
                 cost_r = self.calculate_total_cost()
                 costs_random.append(cost_r)
 
             if begin == 'greedy':
                 self.greedy()
+                self.re_arrange_random(it=10000)
+
             if hill == 'True':
-                self.hillclimber()
+                self.re_arrange_random(it=10000)
+                cost = self.calculate_total_cost()
+                costs_hill.append(cost)
 
             # calculate cost for bound
             cost = self.calculate_total_cost()
@@ -907,11 +892,8 @@ class Grid(object):
             if cost < bound:
 
                 # run simulated annealing and save time and costs
-                sa_start = time.time()
-                grid = self.simulated_annealing(iterations, hill='False', cooling='lin')
-                sa_stop = time.time()
-
-                cost = grid.calculate_total_cost()
+                self.simulated_annealing(iterations, cooling=cooling)
+                cost = self.calculate_total_cost()
                 costs_sa.append(cost)
 
                 i += 1
@@ -928,426 +910,429 @@ class Grid(object):
                 current_combi["Costs best solution"] = min(costs_sa)
                 combination = current_combi
 
+            self.hillclimber()
+            cost = self.calculate_total_cost()
+            costs_hill2.append(cost)
+
             # empty the grid
             self.disconnect_all()
 
         # save all results in dict aswell
+        combination["Hill after SA"] = min(costs_hill2)
         combination["All random results"] = costs_random
+        combination["Hillclimber results"] = costs_hill
         combination["All simulated annealing results"] = costs_sa
-        combination["Random times"] = times_random
-        combination["Simulated annealing times "] = times_sa
 
         # get current datetime in string
         dt = datetime.now()
         stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
 
         # dump data of best found solution to .json file
-        with open(f'Results/RandomSimulatedAnnealing/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_simulated_annealing_{i}_repeats_bound_{bound}.json', 'w') as f:
+        with open(f'Results/simulatedannealing/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_simulated_annealing_{i}_coolingscheme_{cooling}_steps_sa_{iterations}stepshill_{10000}.json', 'w') as f:
             json.dump(combination, f,indent=4)
 
-
-    def random_hillclimber(self, cost_bound, repeats):
-        """
-        Random hillclimber take a certain cost bound and an amount of repeats as input
-        The algorithm first finds a random solution for connecting all houses
-        Then it runs a hillclimber to find the local mamximum
-        It will repeat untill a solution is found under the cost bound
-        Or untill amount of repeats is reached
-        House combinations for best solution will be saved in .json
-        Cost results for random and hillclimbers are saved aswell
-        """
-
-
-        # initiate
-        counter = 0
-        costs_random = [999999, 999998]
-        times_random =  []
-        costs_hillclimber = [999999, 999998]
-        times_hillclimber = []
-        current_lowest_cost =  float('inf')
-        combination = {}
-
-        # loop untill repeats is reached or untill combination under lower bound is found
-        while min(costs_hillclimber) > cost_bound and counter < repeats:
+        def random_hillclimber(self, cost_bound, repeats):
+            """
+            Random hillclimber take a certain cost bound and an amount of repeats as input
+            The algorithm first finds a random solution for connecting all houses
+            Then it runs a hillclimber to find the local mamximum
+            It will repeat untill a solution is found under the cost bound
+            Or untill amount of repeats is reached
+            House combinations for best solution will be saved in .json
+            Cost results for random and hillclimbers are saved aswell
+            """
 
 
-            # get random solution save time and costs
-            random_start = time.time()
-            self.random()
-            random_stop = time.time()
+            # initiate
+            counter = 0
+            costs_random = [999999, 999998]
+            times_random =  []
+            costs_hillclimber = [999999, 999998]
+            times_hillclimber = []
+            current_lowest_cost =  float('inf')
+            combination = {}
 
-            times_random.append(random_stop - random_start)
-
-            cost_r = self.calculate_total_cost()
-            costs_random.append(cost_r)
-
-
-            # run hillclimber save time and costs
-            hill_start = time.time()
-            self.hillclimber()
-            hill_stop = time.time()
-
-            times_hillclimber.append(hill_stop - hill_start)
-
-            cost_h = self.calculate_total_cost()
-            costs_hillclimber.append(cost_h)
+            # loop untill repeats is reached or untill combination under lower bound is found
+            while min(costs_hillclimber) > cost_bound and counter < repeats:
 
 
+                # get random solution save time and costs
+                random_start = time.time()
+                self.random()
+                random_stop = time.time()
 
-            # if cost of hillclimber is best solution save data for .json export
-            if cost_h < current_lowest_cost:
-                current_lowest_cost = cost_h
-                current_combi = {}
-                for battery in self.batteries:
-                    house_ids = []
-                    for route in battery.routes:
-                        house_id = route.house.id
-                        house_ids.append(house_id)
-                    current_combi[f'{battery.id}'] = house_ids
-                current_combi["Costs best solution"] = cost_h
-                combination = current_combi
+                times_random.append(random_stop - random_start)
 
-            # disconnect for new iteration
-            self.disconnect_all()
-            counter += 1
-            print(counter)
-
-        # save all results in dict aswell
-        combination["All random results"] = costs_random
-        combination["All hillclimber results"] = costs_hillclimber
-        combination["Random times"] = times_random
-        combination["Hillclimber times "] = times_hillclimber
-
-        # get current datetime in string
-        dt = datetime.now()
-        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
-
-        # dump data of best found solution to .json file
-        with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
-            json.dump(combination, f,indent=4)
+                cost_r = self.calculate_total_cost()
+                costs_random.append(cost_r)
 
 
-    def random_move_greedy_hillclimber(self, repeats):
-        """
-        Repeats the following:
-        Randomly moves the batteries then runs a greedy algortim and hillclimber
-        Saves results
-        """
-        # .json output dict
-        info = {}
-        best = float('inf')
+                # run hillclimber save time and costs
+                hill_start = time.time()
+                self.hillclimber()
+                hill_stop = time.time()
 
-        # for input repeats move batteries to random location run greedy and hillclimbers
-        # calculate cost and save battery location and costs results to output dict
-        for idx in range(repeats):
-            self.move_batteries_random()
-            self.greedy()
-            self.hillclimber()
-            cost = self.calculate_total_cost()
-            if cost < best:
-                best = cost
-            locations = [battery.location for battery in self.batteries]
-            info[idx] = {'Cost':cost, 'Location':locations}
-            self.disconnect_all()
+                times_hillclimber.append(hill_stop - hill_start)
 
-        # get current datetime in string
-        dt = datetime.now()
-        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
-
-        # dump results to .json file
-        with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
-            json.dump(info, f,indent=4)
+                cost_h = self.calculate_total_cost()
+                costs_hillclimber.append(cost_h)
 
 
-    def k_means2(self, x_houses, y_houses, k):
-        """
-        As input (3 inputs) you need an array with the x coordiantes of all the houses
-        and another with y coordinates and the third input the number of
-        clusters you want (so number of batteries).
-        """
-        df = pd.DataFrame({'x': x_houses,'y': x_houses})
+
+                # if cost of hillclimber is best solution save data for .json export
+                if cost_h < current_lowest_cost:
+                    current_lowest_cost = cost_h
+                    current_combi = {}
+                    for battery in self.batteries:
+                        house_ids = []
+                        for route in battery.routes:
+                            house_id = route.house.id
+                            house_ids.append(house_id)
+                        current_combi[f'{battery.id}'] = house_ids
+                    current_combi["Costs best solution"] = cost_h
+                    combination = current_combi
+
+                # disconnect for new iteration
+                self.disconnect_all()
+                counter += 1
+                print(counter)
+
+            # save all results in dict aswell
+            combination["All random results"] = costs_random
+            combination["All hillclimber results"] = costs_hillclimber
+            combination["Random times"] = times_random
+            combination["Hillclimber times "] = times_hillclimber
+
+            # get current datetime in string
+            dt = datetime.now()
+            stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+
+            # dump data of best found solution to .json file
+            with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
+                json.dump(combination, f,indent=4)
 
 
-        np.random.seed(200)
-        k = k
-        # centroids[i] = [x, y]
-        centroids = {
-            i+1: [random.randint(0, 50), random.randint(0, 50)]
-            for i in range(k)
-        }
+        def random_move_greedy_hillclimber(self, repeats):
+            """
+            Repeats the following:
+            Randomly moves the batteries then runs a greedy algortim and hillclimber
+            Saves results
+            """
+            # .json output dict
+            info = {}
+            best = float('inf')
 
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color='k')
-#        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
+            # for input repeats move batteries to random location run greedy and hillclimbers
+            # calculate cost and save battery location and costs results to output dict
+            for idx in range(repeats):
+                self.move_batteries_random()
+                self.greedy()
+                self.hillclimber()
+                cost = self.calculate_total_cost()
+                if cost < best:
+                    best = cost
+                locations = [battery.location for battery in self.batteries]
+                info[idx] = {'Cost':cost, 'Location':locations}
+                self.disconnect_all()
 
-        def assignment(df, centroids):
-            for i in centroids.keys():
-                # sqrt((x1 - x2)^2 - (y1 - y2)^2)
-                df['distance_from_{}'.format(i)] = (
-                    np.sqrt(
-                        (df['x'] - centroids[i][0]) ** 2
-                        + (df['y'] - centroids[i][1]) ** 2
+            # get current datetime in string
+            dt = datetime.now()
+            stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+
+            # dump results to .json file
+            with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
+                json.dump(info, f,indent=4)
+
+
+        def k_means2(self, x_houses, y_houses, k):
+            """
+            As input (3 inputs) you need an array with the x coordiantes of all the houses
+            and another with y coordinates and the third input the number of
+            clusters you want (so number of batteries).
+            """
+            df = pd.DataFrame({'x': x_houses,'y': x_houses})
+
+
+            np.random.seed(200)
+            k = k
+            # centroids[i] = [x, y]
+            centroids = {
+                i+1: [random.randint(0, 50), random.randint(0, 50)]
+                for i in range(k)
+            }
+
+    #        fig = plt.figure(figsize=(5, 5))
+    #        plt.scatter(df['x'], df['y'], color='k')
+    #        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
+    #        for i in centroids.keys():
+    #            plt.scatter(*centroids[i], color=colmap[i])
+    #        plt.xlim(-5, 55)
+    #        plt.ylim(-5, 55)
+    #        plt.show()
+
+            def assignment(df, centroids):
+                for i in centroids.keys():
+                    # sqrt((x1 - x2)^2 - (y1 - y2)^2)
+                    df['distance_from_{}'.format(i)] = (
+                        np.sqrt(
+                            (df['x'] - centroids[i][0]) ** 2
+                            + (df['y'] - centroids[i][1]) ** 2
+                        )
                     )
-                )
-            centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
-            df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
-            df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
-            df['color'] = df['closest'].map(lambda x: colmap[x])
-            return df
+                centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
+                df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
+                df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
+                df['color'] = df['closest'].map(lambda x: colmap[x])
+                return df
 
-        df = assignment(df, centroids)
-        # print(df.head())
-
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
-
-        old_centroids = copy.deepcopy(centroids)
-
-        def update(k):
-            for i in centroids.keys():
-                centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
-                centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
-            return k
-
-        centroids = update(centroids)
-
-#        fig = plt.figure(figsize=(5, 5))
-#        ax = plt.axes()
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-        for i in old_centroids.keys():
-            old_x = old_centroids[i][0]
-            old_y = old_centroids[i][1]
-            dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
-            dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
-#            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
-#        plt.show()
-
-        df = assignment(df, centroids)
-
-        # Plot results
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
-
-        while True:
-            closest_centroids = df['closest'].copy(deep=True)
-            centroids = update(centroids)
             df = assignment(df, centroids)
-            if closest_centroids.equals(df['closest']):
-                break
+            # print(df.head())
 
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
+    #        fig = plt.figure(figsize=(5, 5))
+    #        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+    #        for i in centroids.keys():
+    #            plt.scatter(*centroids[i], color=colmap[i])
+    #        plt.xlim(-5, 55)
+    #        plt.ylim(-5, 55)
+    #        plt.show()
 
-        new_locations = []
-        for i in centroids:
-            loc = (centroids[i][0], centroids[i][1])
-            new_locations.append(loc)
+            old_centroids = copy.deepcopy(centroids)
 
-        for i in range(len(self.batteries)):
-            bat = self.batteries[i]
-            bat.move(new_locations[i])
-            print()
+            def update(k):
+                for i in centroids.keys():
+                    centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
+                    centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
+                return k
+
+            centroids = update(centroids)
+
+    #        fig = plt.figure(figsize=(5, 5))
+    #        ax = plt.axes()
+    #        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+    #        for i in centroids.keys():
+    #            plt.scatter(*centroids[i], color=colmap[i])
+    #        plt.xlim(-5, 55)
+    #        plt.ylim(-5, 55)
+            for i in old_centroids.keys():
+                old_x = old_centroids[i][0]
+                old_y = old_centroids[i][1]
+                dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
+                dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
+    #            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
+    #        plt.show()
+
+            df = assignment(df, centroids)
+
+            # Plot results
+    #        fig = plt.figure(figsize=(5, 5))
+    #        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+    #        for i in centroids.keys():
+    #            plt.scatter(*centroids[i], color=colmap[i])
+    #        plt.xlim(-5, 55)
+    #        plt.ylim(-5, 55)
+    #        plt.show()
+
+            while True:
+                closest_centroids = df['closest'].copy(deep=True)
+                centroids = update(centroids)
+                df = assignment(df, centroids)
+                if closest_centroids.equals(df['closest']):
+                    break
+
+    #        fig = plt.figure(figsize=(5, 5))
+    #        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+    #        for i in centroids.keys():
+    #            plt.scatter(*centroids[i], color=colmap[i])
+    #        plt.xlim(-5, 55)
+    #        plt.ylim(-5, 55)
+    #        plt.show()
+
+            new_locations = []
+            for i in centroids:
+                loc = (centroids[i][0], centroids[i][1])
+                new_locations.append(loc)
+
+            for i in range(len(self.batteries)):
+                bat = self.batteries[i]
+                bat.move(new_locations[i])
+                print()
 
 
-    def verplaat_batterij_met_k_means(self, k):
-        """
-        Input the number of clusters you want (so number of batteries).
-        """
+        def verplaat_batterij_met_k_means(self, k):
+            """
+            Input the number of clusters you want (so number of batteries).
+            """
 
-        x_houses = [house.location[0] for house in self.houses]
-        y_houses = [house.location[1] for house in self.houses]
-        df = pd.DataFrame({'x': x_houses,'y': y_houses})
+            x_houses = [house.location[0] for house in self.houses]
+            y_houses = [house.location[1] for house in self.houses]
+            df = pd.DataFrame({'x': x_houses,'y': y_houses})
 
-        ## Please comment
-        np.random.seed(200)
-        # centroids[i] = [x, y]
-        centroids = {
-            i+1: [np.random.randint(0, 50), np.random.randint(0, 50)]
-            for i in range(k)
-        }
+            ## Please comment
+            np.random.seed(200)
+            # centroids[i] = [x, y]
+            centroids = {
+                i+1: [np.random.randint(0, 50), np.random.randint(0, 50)]
+                for i in range(k)
+            }
 
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color='k')
-        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
-
-        def assignment(df, centroids):
+            fig = plt.figure(figsize=(5, 5))
+            plt.scatter(df['x'], df['y'], color='k')
+            colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
             for i in centroids.keys():
-                # sqrt((x1 - x2)^2 - (y1 - y2)^2)
-                df['distance_from_{}'.format(i)] = (
-                    np.sqrt(
-                        (df['x'] - centroids[i][0]) ** 2
-                        + (df['y'] - centroids[i][1]) ** 2
+                plt.scatter(*centroids[i], color=colmap[i])
+            plt.xlim(-5, 55)
+            plt.ylim(-5, 55)
+            plt.show()
+
+            def assignment(df, centroids):
+                for i in centroids.keys():
+                    # sqrt((x1 - x2)^2 - (y1 - y2)^2)
+                    df['distance_from_{}'.format(i)] = (
+                        np.sqrt(
+                            (df['x'] - centroids[i][0]) ** 2
+                            + (df['y'] - centroids[i][1]) ** 2
+                        )
                     )
-                )
-            centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
-            df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
-            df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
-            df['color'] = df['closest'].map(lambda x: colmap[x])
-            return df
+                centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
+                df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
+                df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
+                df['color'] = df['closest'].map(lambda x: colmap[x])
+                return df
 
-        df = assignment(df, centroids)
-        # print(df.head())
-
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
-
-        old_centroids = copy.deepcopy(centroids)
-
-        def update(k):
-            for i in centroids.keys():
-                centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
-                centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
-            return k
-
-        centroids = update(centroids)
-
-        fig = plt.figure(figsize=(5, 5))
-        ax = plt.axes()
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        for i in old_centroids.keys():
-            old_x = old_centroids[i][0]
-            old_y = old_centroids[i][1]
-            dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
-            dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
-            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
-        plt.show()
-
-        df = assignment(df, centroids)
-
-        # Plot results
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
-
-        while True:
-            closest_centroids = df['closest'].copy(deep=True)
-            centroids = update(centroids)
             df = assignment(df, centroids)
-            if closest_centroids.equals(df['closest']):
-                break
+            # print(df.head())
 
-        fig = plt.figure(figsize=(5, 5))
-        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-        for i in centroids.keys():
-            plt.scatter(*centroids[i], color=colmap[i])
-        plt.xlim(-5, 55)
-        plt.ylim(-5, 55)
-        plt.show()
+            fig = plt.figure(figsize=(5, 5))
+            plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+            for i in centroids.keys():
+                plt.scatter(*centroids[i], color=colmap[i])
+            plt.xlim(-5, 55)
+            plt.ylim(-5, 55)
+            plt.show()
 
-        new_locations = []
-        for i in centroids:
-            loc = (int(centroids[i][0]), int(centroids[i][1]))
-            new_locations.append(loc)
+            old_centroids = copy.deepcopy(centroids)
 
-        for i in range(len(self.batteries)):
-            bat = self.batteries[i]
-            bat.move(new_locations[i])
-            print()
+            def update(k):
+                for i in centroids.keys():
+                    centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
+                    centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
+                return k
+
+            centroids = update(centroids)
+
+            fig = plt.figure(figsize=(5, 5))
+            ax = plt.axes()
+            plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+            for i in centroids.keys():
+                plt.scatter(*centroids[i], color=colmap[i])
+            plt.xlim(-5, 55)
+            plt.ylim(-5, 55)
+            for i in old_centroids.keys():
+                old_x = old_centroids[i][0]
+                old_y = old_centroids[i][1]
+                dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
+                dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
+                ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
+            plt.show()
+
+            df = assignment(df, centroids)
+
+            # Plot results
+            fig = plt.figure(figsize=(5, 5))
+            plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+            for i in centroids.keys():
+                plt.scatter(*centroids[i], color=colmap[i])
+            plt.xlim(-5, 55)
+            plt.ylim(-5, 55)
+            plt.show()
+
+            while True:
+                closest_centroids = df['closest'].copy(deep=True)
+                centroids = update(centroids)
+                df = assignment(df, centroids)
+                if closest_centroids.equals(df['closest']):
+                    break
+
+            fig = plt.figure(figsize=(5, 5))
+            plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+            for i in centroids.keys():
+                plt.scatter(*centroids[i], color=colmap[i])
+            plt.xlim(-5, 55)
+            plt.ylim(-5, 55)
+            plt.show()
+
+            new_locations = []
+            for i in centroids:
+                loc = (int(centroids[i][0]), int(centroids[i][1]))
+                new_locations.append(loc)
+
+            for i in range(len(self.batteries)):
+                bat = self.batteries[i]
+                bat.move(new_locations[i])
+                print()
 
 
-    def move_calc(self):
-        # generate tuple's of all coordinates
-        coordinates = list()
-        for x in range (0, 51):
-            for y in range (0, 51):
-                coordinates.append((x, y))
+        def move_calc(self):
+            # generate tuple's of all coordinates
+            coordinates = list()
+            for x in range (0, 51):
+                for y in range (0, 51):
+                    coordinates.append((x, y))
 
-        # create representation of grid in dict
-        grid_locations = {}
-        for loc in coordinates:
-            grid_locations[loc] = set([0])
+            # create representation of grid in dict
+            grid_locations = {}
+            for loc in coordinates:
+                grid_locations[loc] = set([0])
 
-        # place house max output values on location
-        for house in self.unconnected_houses:
-            grid_locations[house.location] = set([house.max_output])
+            # place house max output values on location
+            for house in self.unconnected_houses:
+                grid_locations[house.location] = set([house.max_output])
 
-        counter = 0
+            counter = 0
 
-        max = self.batteries[0].max_capacity
+            max = self.batteries[0].max_capacity
 
-        finished_locations = list()
+            finished_locations = list()
 
-        for i in range(15):
-            # make structure to hold new values
-            new_grid_locations = {}
-            for location in coordinates:
-                new_grid_locations[location] = set([0])
+            for i in range(15):
+                # make structure to hold new values
+                new_grid_locations = {}
+                for location in coordinates:
+                    new_grid_locations[location] = set([0])
 
-            # loop over grid locations
-            for loc in grid_locations:
+                # loop over grid locations
+                for loc in grid_locations:
 
-                # initiate
-                up, down, left, right = None, None, None, None
+                    # initiate
+                    up, down, left, right = None, None, None, None
 
-                # up
-                # if up exists
-                if loc[1] < 50:
-                    # make up location
-                    up = (loc[0], loc[1] + 1)
-                    # if it is smaller than max cap battery
-                    temp = grid_locations[loc]|grid_locations[up]
+                    # up
+                    # if up exists
+                    if loc[1] < 50:
+                        # make up location
+                        up = (loc[0], loc[1] + 1)
+                        # if it is smaller than max cap battery
+                        temp = grid_locations[loc]|grid_locations[up]
 
-                # down
-                if loc[1] > 0:
-                    down = (loc[0], loc[1] - 1)
-                    temp = temp|grid_locations[down]
+                    # down
+                    if loc[1] > 0:
+                        down = (loc[0], loc[1] - 1)
+                        temp = temp|grid_locations[down]
 
-                # left
-                if loc[0] > 0:
-                    left = (loc[0] - 1, loc[1])
-                    temp = temp|grid_locations[left]
+                    # left
+                    if loc[0] > 0:
+                        left = (loc[0] - 1, loc[1])
+                        temp = temp|grid_locations[left]
 
-                # right
-                if loc[0] < 50:
-                    right = (loc[0] + 1, loc[1])
-                    temp = temp|grid_locations[right]
+                    # right
+                    if loc[0] < 50:
+                        right = (loc[0] + 1, loc[1])
+                        temp = temp|grid_locations[right]
 
-                new_grid_locations[loc] = temp
-            del grid_locations
-            grid_locations = copy.deepcopy(new_grid_locations)
+                    new_grid_locations[loc] = temp
+                del grid_locations
+                grid_locations = copy.deepcopy(new_grid_locations)
 
-        for i in grid_locations:
-            if  sum(grid_locations[i]) > max:
-                print(i)
+            for i in grid_locations:
+                if  sum(grid_locations[i]) > max:
+                    print(i)
