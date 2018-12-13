@@ -931,117 +931,117 @@ class Grid(object):
         with open(f'Results/simulatedannealing/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_simulated_annealing_{i}_coolingscheme_{cooling}_steps_sa_{iterations}stepshill_{10000}.json', 'w') as f:
             json.dump(combination, f,indent=4)
 
-        def random_hillclimber(self, cost_bound, repeats):
-            """
-            Random hillclimber take a certain cost bound and an amount of repeats as input
-            The algorithm first finds a random solution for connecting all houses
-            Then it runs a hillclimber to find the local mamximum
-            It will repeat untill a solution is found under the cost bound
-            Or untill amount of repeats is reached
-            House combinations for best solution will be saved in .json
-            Cost results for random and hillclimbers are saved aswell
-            """
+    def random_hillclimber(self, cost_bound, repeats):
+        """
+        Random hillclimber take a certain cost bound and an amount of repeats as input
+        The algorithm first finds a random solution for connecting all houses
+        Then it runs a hillclimber to find the local mamximum
+        It will repeat untill a solution is found under the cost bound
+        Or untill amount of repeats is reached
+        House combinations for best solution will be saved in .json
+        Cost results for random and hillclimbers are saved aswell
+        """
 
 
-            # initiate
-            counter = 0
-            costs_random = [999999, 999998]
-            times_random =  []
-            costs_hillclimber = [999999, 999998]
-            times_hillclimber = []
-            current_lowest_cost =  float('inf')
-            combination = {}
+        # initiate
+        counter = 0
+        costs_random = [999999, 999998]
+        times_random =  []
+        costs_hillclimber = [999999, 999998]
+        times_hillclimber = []
+        current_lowest_cost =  float('inf')
+        combination = {}
 
-            # loop untill repeats is reached or untill combination under lower bound is found
-            while min(costs_hillclimber) > cost_bound and counter < repeats:
-
-
-                # get random solution save time and costs
-                random_start = time.time()
-                self.random()
-                random_stop = time.time()
-
-                times_random.append(random_stop - random_start)
-
-                cost_r = self.calculate_total_cost()
-                costs_random.append(cost_r)
+        # loop untill repeats is reached or untill combination under lower bound is found
+        while min(costs_hillclimber) > cost_bound and counter < repeats:
 
 
-                # run hillclimber save time and costs
-                hill_start = time.time()
-                self.hillclimber()
-                hill_stop = time.time()
+            # get random solution save time and costs
+            random_start = time.time()
+            self.random()
+            random_stop = time.time()
 
-                times_hillclimber.append(hill_stop - hill_start)
+            times_random.append(random_stop - random_start)
 
-                cost_h = self.calculate_total_cost()
-                costs_hillclimber.append(cost_h)
-
-
-
-                # if cost of hillclimber is best solution save data for .json export
-                if cost_h < current_lowest_cost:
-                    current_lowest_cost = cost_h
-                    current_combi = {}
-                    for battery in self.batteries:
-                        house_ids = []
-                        for route in battery.routes:
-                            house_id = route.house.id
-                            house_ids.append(house_id)
-                        current_combi[f'{battery.id}'] = house_ids
-                    current_combi["Costs best solution"] = cost_h
-                    combination = current_combi
-
-                # disconnect for new iteration
-                self.disconnect_all()
-                counter += 1
-                print(counter)
-
-            # save all results in dict aswell
-            combination["All random results"] = costs_random
-            combination["All hillclimber results"] = costs_hillclimber
-            combination["Random times"] = times_random
-            combination["Hillclimber times "] = times_hillclimber
-
-            # get current datetime in string
-            dt = datetime.now()
-            stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
-
-            # dump data of best found solution to .json file
-            with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
-                json.dump(combination, f,indent=4)
+            cost_r = self.calculate_total_cost()
+            costs_random.append(cost_r)
 
 
-        def random_move_greedy_hillclimber(self, repeats):
-            """
-            Repeats the following:
-            Randomly moves the batteries then runs a greedy algortim and hillclimber
-            Saves results
-            """
-            # .json output dict
-            info = {}
-            best = float('inf')
+            # run hillclimber save time and costs
+            hill_start = time.time()
+            self.hillclimber()
+            hill_stop = time.time()
 
-            # for input repeats move batteries to random location run greedy and hillclimbers
-            # calculate cost and save battery location and costs results to output dict
-            for idx in range(repeats):
-                self.move_batteries_random()
-                self.greedy()
-                self.hillclimber()
-                cost = self.calculate_total_cost()
-                if cost < best:
-                    best = cost
-                locations = [battery.location for battery in self.batteries]
-                info[idx] = {'Cost':cost, 'Location':locations}
-                self.disconnect_all()
+            times_hillclimber.append(hill_stop - hill_start)
 
-            # get current datetime in string
-            dt = datetime.now()
-            stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+            cost_h = self.calculate_total_cost()
+            costs_hillclimber.append(cost_h)
 
-            # dump results to .json file
-            with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
-                json.dump(info, f,indent=4)
+
+
+            # if cost of hillclimber is best solution save data for .json export
+            if cost_h < current_lowest_cost:
+                current_lowest_cost = cost_h
+                current_combi = {}
+                for battery in self.batteries:
+                    house_ids = []
+                    for route in battery.routes:
+                        house_id = route.house.id
+                        house_ids.append(house_id)
+                    current_combi[f'{battery.id}'] = house_ids
+                current_combi["Costs best solution"] = cost_h
+                combination = current_combi
+
+            # disconnect for new iteration
+            self.disconnect_all()
+            counter += 1
+            print(counter)
+
+        # save all results in dict aswell
+        combination["All random results"] = costs_random
+        combination["All hillclimber results"] = costs_hillclimber
+        combination["Random times"] = times_random
+        combination["Hillclimber times "] = times_hillclimber
+
+        # get current datetime in string
+        dt = datetime.now()
+        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+
+        # dump data of best found solution to .json file
+        with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
+            json.dump(combination, f,indent=4)
+
+
+    def random_move_greedy_hillclimber(self, repeats):
+        """
+        Repeats the following:
+        Randomly moves the batteries then runs a greedy algortim and hillclimber
+        Saves results
+        """
+        # .json output dict
+        info = {}
+        best = float('inf')
+
+        # for input repeats move batteries to random location run greedy and hillclimbers
+        # calculate cost and save battery location and costs results to output dict
+        for idx in range(repeats):
+            self.move_batteries_random()
+            self.greedy()
+            self.hillclimber()
+            cost = self.calculate_total_cost()
+            if cost < best:
+                best = cost
+            locations = [battery.location for battery in self.batteries]
+            info[idx] = {'Cost':cost, 'Location':locations}
+            self.disconnect_all()
+
+        # get current datetime in string
+        dt = datetime.now()
+        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+
+        # dump results to .json file
+        with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
+            json.dump(info, f,indent=4)
 
 
         def k_means2(self, x_houses, y_houses, k):
@@ -1276,67 +1276,67 @@ class Grid(object):
     
 
 
-        def move_calc(self):
-            # generate tuple's of all coordinates
-            coordinates = list()
-            for x in range (0, 51):
-                for y in range (0, 51):
-                    coordinates.append((x, y))
+    def move_calc(self):
+        # generate tuple's of all coordinates
+        coordinates = list()
+        for x in range (0, 51):
+            for y in range (0, 51):
+                coordinates.append((x, y))
 
-            # create representation of grid in dict
-            grid_locations = {}
-            for loc in coordinates:
-                grid_locations[loc] = set([0])
+        # create representation of grid in dict
+        grid_locations = {}
+        for loc in coordinates:
+            grid_locations[loc] = set([0])
 
-            # place house max output values on location
-            for house in self.unconnected_houses:
-                grid_locations[house.location] = set([house.max_output])
+        # place house max output values on location
+        for house in self.unconnected_houses:
+            grid_locations[house.location] = set([house.max_output])
 
-            counter = 0
+        counter = 0
 
-            max = self.batteries[0].max_capacity
+        max = self.batteries[0].max_capacity
 
-            finished_locations = list()
+        finished_locations = list()
 
-            for i in range(15):
-                # make structure to hold new values
-                new_grid_locations = {}
-                for location in coordinates:
-                    new_grid_locations[location] = set([0])
+        for i in range(15):
+            # make structure to hold new values
+            new_grid_locations = {}
+            for location in coordinates:
+                new_grid_locations[location] = set([0])
 
-                # loop over grid locations
-                for loc in grid_locations:
+            # loop over grid locations
+            for loc in grid_locations:
 
-                    # initiate
-                    up, down, left, right = None, None, None, None
+                # initiate
+                up, down, left, right = None, None, None, None
 
-                    # up
-                    # if up exists
-                    if loc[1] < 50:
-                        # make up location
-                        up = (loc[0], loc[1] + 1)
-                        # if it is smaller than max cap battery
-                        temp = grid_locations[loc]|grid_locations[up]
+                # up
+                # if up exists
+                if loc[1] < 50:
+                    # make up location
+                    up = (loc[0], loc[1] + 1)
+                    # if it is smaller than max cap battery
+                    temp = grid_locations[loc]|grid_locations[up]
 
-                    # down
-                    if loc[1] > 0:
-                        down = (loc[0], loc[1] - 1)
-                        temp = temp|grid_locations[down]
+                # down
+                if loc[1] > 0:
+                    down = (loc[0], loc[1] - 1)
+                    temp = temp|grid_locations[down]
 
-                    # left
-                    if loc[0] > 0:
-                        left = (loc[0] - 1, loc[1])
-                        temp = temp|grid_locations[left]
+                # left
+                if loc[0] > 0:
+                    left = (loc[0] - 1, loc[1])
+                    temp = temp|grid_locations[left]
 
-                    # right
-                    if loc[0] < 50:
-                        right = (loc[0] + 1, loc[1])
-                        temp = temp|grid_locations[right]
+                # right
+                if loc[0] < 50:
+                    right = (loc[0] + 1, loc[1])
+                    temp = temp|grid_locations[right]
 
-                    new_grid_locations[loc] = temp
-                del grid_locations
-                grid_locations = copy.deepcopy(new_grid_locations)
+                new_grid_locations[loc] = temp
+            del grid_locations
+            grid_locations = copy.deepcopy(new_grid_locations)
 
-            for i in grid_locations:
-                if  sum(grid_locations[i]) > max:
-                    print(i)
+        for i in grid_locations:
+            if  sum(grid_locations[i]) > max:
+                print(i)
