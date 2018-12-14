@@ -1257,13 +1257,13 @@ class Grid(object):
             if closest_centroids.equals(df['closest']):
                 break
 
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
+        fig = plt.figure(figsize=(5, 5))
+        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
+        for i in centroids.keys():
+            plt.scatter(*centroids[i], color=colmap[i], marker = 'D', s = 200)
+        plt.xlim(-5, 55)
+        plt.ylim(-5, 55)
+        plt.show()
 
         new_locations = []
         for i in centroids:
