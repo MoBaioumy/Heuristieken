@@ -2,7 +2,6 @@
 # Philip Oosterholt
 # Mohamed Baioumy
 # Thomas Hoedeman
-
 import csv
 from Objects.house import House
 from Objects.battery import Battery
