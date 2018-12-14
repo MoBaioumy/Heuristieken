@@ -47,45 +47,46 @@ best_first = [56986, 45835, 44107]
 
 
 random = data["All random results"]
-hillclimber = data["All hillclimber results"]
-random_times= data["Random times"]
-hillclimber_times = data["Hillclimber times "]
+hillclimber = data["Hillclimber results"]
+annealing = data["All simulated annealing results"]
 
+random.sort()
 
+# bins = len(random)-2
+bins =  int((max(random[:-2]) * 1.05) - lowerbound[wijk_index] *0.95)
 
-# min_plot = int(lowerbound[wijk_index] * 0.95)
-# max_plot = int(max(random) * 1.05)
-# print(min_plot)
-# print(max_plot)
-# bins = int((max(random) *1.05) - lowerbound[wijk_index] * 0.95)
-#
-bins = len(random)-2 #+ len(hillclimber) - 2
-
+print(bins)
 plot1 = plt.hist(hillclimber, bins=bins, stacked=True, label="Hillclimber")
 plot2 = plt.hist(random, bins=bins, stacked=True, label="Random")
+plot3 = plt.hist(annealing, bins=bins, stacked=True, label="Annealing")
 
 # delete highest two nonsence values
-random.sort()
+# random.sort()
 random.pop()
 random.pop()
 hillclimber.sort()
 hillclimber.pop()
 hillclimber.pop()
+annealing.sort()
+annealing.pop()
+annealing.pop()
+
 
 p_random = normaltest(random)
 p_hillclimber = normaltest(hillclimber)
+p_annealing = normaltest(annealing)
 
 # plt.ylim(0, 800)
 plt.xlim(lowerbound[wijk_index] * 0.95, max(random) * 1.05)
 plt.xlabel("Costs", fontsize=18)
 plt.ylabel("Iterations", fontsize=18)
-plt.title(f"{wijk_naam} distribution of costs random (p={round(p_random, 3)}) and hillclimber (p={round(p_hillclimber)}), repeats: {len(random)}\n Hillclimbers performed on displayed random data", fontsize =13)
+plt.title(f"{wijk_naam} distribution of costs random (p={round(p_random, 3)}) hillclimber (p={round(p_hillclimber, 2)}) and simulated annealing (p={round(p_annealing, 2)}), repeats: {len(random)}\n Hillclimbers and simulated annealing performed on displayed random data", fontsize =13)
 
-plot3 = plt.axvline(greedy[wijk_index], color="gold", label="Greedy", linewidth=1.5)
-plot4 = plt.axvline(greedy_hill[wijk_index], color="red", label="Greedy/Hillclimber", linewidth=1.5)
-plot5 = plt.axvline(greedy_double_hill[wijk_index], color="green", label="Greedy/Double Hillclimber", linewidth=1.5)
-plot6 = plt.axvline(lowerbound[wijk_index], color="black", label="Lower bound", linewidth=1.5)
-plot7 = plt.axvline(best_first[wijk_index], color="purple", label="Best first", linewidth=1.5, alpha=0.7)
+plot4 = plt.axvline(greedy[wijk_index], color="gold", label="Greedy", linewidth=1.5)
+plot5 = plt.axvline(greedy_hill[wijk_index], color="red", label="Greedy/Hillclimber", linewidth=1.5)
+plot6 = plt.axvline(greedy_double_hill[wijk_index], color="green", label="Greedy/Double Hillclimber", linewidth=1.5)
+plot7 = plt.axvline(lowerbound[wijk_index], color="black", label="Lower bound", linewidth=1.5)
+plot8 = plt.axvline(best_first[wijk_index], color="purple", label="Best first", linewidth=1.5, alpha=0.7)
 
 plt.legend()
 plt.show()

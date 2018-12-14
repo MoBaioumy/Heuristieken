@@ -1,3 +1,8 @@
+# SmartGrid December 2018
+# Philip Oosterholt
+# Mohamed Baioumy
+# Thomas Hoedeman
+
 def distance(location_1, location_2):
     """
     Made for the SmartGrid assignment for Programmeertheorie

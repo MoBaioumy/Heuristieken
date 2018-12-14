@@ -1,3 +1,8 @@
+<!-- # SmartGrid December 2018
+Philip Oosterholt
+Mohamed Baioumy
+Thomas Hoedeman -->
+
 ### Probleem C
 
 *Nu is het zo, dat de batterijen misschien niet op de best mogelijke plaatsen staan. Het verplaatsen van batterijen compliceert de zaak enorm, maar de opdrachtgever wil het toch proberen, om inzicht in het probleem te krijgen. Verplaats de batterijen, en probeer een beter resultaat te realiseren.*
@@ -22,7 +27,7 @@
 
 ### K Means
 
-Het K Means algorithmes is een clustering algorithme. Er wordt een getal k (aantal clusters) gespecificeerd en vervolgens worden k clusters van de data set gemaakt. [Lees meer](https://en.wikipedia.org/wiki/K-means_clustering) 
+Het K Means algorithmes is een clustering algorithme. Er wordt een getal k (aantal clusters) gespecificeerd en vervolgens worden k clusters van de data set gemaakt. [Lees meer](https://en.wikipedia.org/wiki/K-means_clustering)
 
 Het werkt als volg in ons geval:
 
@@ -46,7 +51,7 @@ Het werkt als volg in ons geval:
    ![6](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/kMeans%20-%20optimal%20result/Figure%206.png)
 
    ​
-   
+
 
 
 
@@ -64,7 +69,7 @@ Het recept van stap C gaat dus als volg:
 
 K_means kan voor een aantal situaties niet goed werken. Zie de volgende situatie bijvoorbeeld
 
-Het K Means algorithmes is een clustering algorithme. Er wordt een getal k (aantal clusters) gespecificeerd en vervolgens worden k clusters van de data set gemaakt. [Lees meer](https://en.wikipedia.org/wiki/K-means_clustering) 
+Het K Means algorithmes is een clustering algorithme. Er wordt een getal k (aantal clusters) gespecificeerd en vervolgens worden k clusters van de data set gemaakt. [Lees meer](https://en.wikipedia.org/wiki/K-means_clustering)
 
 Het werkt als volg in ons geval:
 
@@ -89,5 +94,4 @@ Het werkt als volg in ons geval:
 
 
 
-Omdat de paarse batterij aan het begin geen huizen had, is zij verdwenen in de analyse. Ook kunnen oneindige loops bestaan als een huis precies in het midden staat van 2 batterijen. 
-
+Omdat de paarse batterij aan het begin geen huizen had, is zij verdwenen in de analyse. Ook kunnen oneindige loops bestaan als een huis precies in het midden staat van 2 batterijen.

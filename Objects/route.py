@@ -1,3 +1,8 @@
+# SmartGrid December 2018
+# Philip Oosterholt
+# Mohamed Baioumy
+# Thomas Hoedeman
+
 class Route(object):
     """
     Representation of a route object in the SmartGrid assignment

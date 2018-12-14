@@ -1,3 +1,8 @@
+<!-- # SmartGrid December 2018
+Philip Oosterholt
+Mohamed Baioumy
+Thomas Hoedeman -->
+
 Delen A en B van het problem zijn erg met elkaar verbonden en dus worden ze samen als een geheel presenteerd.
 
 ### Probleem A

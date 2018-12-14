@@ -1,3 +1,8 @@
+<!-- # SmartGrid December 2018
+Philip Oosterholt
+Mohamed Baioumy
+Thomas Hoedeman -->
+
 This document includes acknowledgements for all used resources during this project.
 
 https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html

@@ -1,3 +1,8 @@
+<!-- # SmartGrid December 2018
+Philip Oosterholt
+Mohamed Baioumy
+Thomas Hoedeman -->
+
 # Waarom zijn sommige wijken moeilijker op te lossen dan anderen?
 
 ## Vergelijking effectiviteit van algortitmes tussen wijken
@@ -67,7 +72,7 @@ Zoals als hier te zien is, wijk 3 heeft een erg smalle sprijding vergeleken met 
 ### Variatie in oplossingen
 Wanneer je kijkt naar hoe de huizen zijn aangesloten tussen verschillende goede oplossingen dan zie je dat er een zeer grote variatie is tussen de oplossingen in wijk 1. In wijk 2 en vooral wijk 3 lijken de oplossingen veel meer op elkaar.
 
-In deze vergelijkingen hebben we voor runs langer dan 5000 (de meeste zijn 20,000), de beste oplossing gepakt, en deze met elkaar vergeleken. 
+In deze vergelijkingen hebben we voor runs langer dan 5000 (de meeste zijn 20,000), de beste oplossing gepakt, en deze met elkaar vergeleken.
 
 |                 | Wijk 1 | Wijk 2 | Wijk 3    |
 | --------------- | ------ | ------ | ------ |

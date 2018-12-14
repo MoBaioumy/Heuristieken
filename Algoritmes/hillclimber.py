@@ -1,8 +1,8 @@
-from house import House
-from battery import Battery
-from route import Route
-from grid import Grid
-from distance import distance
+from Objects.house import House
+from Objects.battery import Battery
+from Objects.route import Route
+from Objects.grid import Grid
+from Objects.distance import distance
 
 
 def hillclimber(grid):

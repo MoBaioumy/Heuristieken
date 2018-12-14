@@ -1,63 +1,76 @@
+# SmartGrid December 2018
+# Philip Oosterholt
+# Mohamed Baioumy
+# Thomas Hoedeman
+
+# Internal imports
+from Objects.grid import Grid
+from Objects.house import House
+from Objects.battery import Battery
+from Objects.route import Route
+from Objects.distance import distance
+from Algoritmes import greedy, greedy_alt, greedy_lookahead, random_connect, hillclimbe
+
+# External imports
 import csv
-from grid import Grid
-from house import House
-from battery import Battery
-from route import Route
-from Algoritmes import greedy, greedy_alt, greedy_lookahead, random_connect, hillclimber
-from distance import distance
 import random
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-#improt tkinter 
+import copy
 
 if __name__ == "__main__":
 
-    i = 3
+    i = 2
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
 
-    grid = greedy_lookahead(grid)
+    # grid = greedy_lookahead(grid)
     # grid.draw_grid("")
     #
-    # grid = greedy(grid)
-    grid = hillclimber(grid)
-#    grid.hillclimber_double()
-    grid.draw_grid("")
-    
+    gridRandom = random_connect(grid)
+    gridRandom2 = copy.deepcopy(gridRandom)
+    gridHill = hillclimber(gridRandom)
+    gridHill.draw_grid("Greedy Hillclimber")
+    gridRandom2.re_arrange_random(100000)
+    gridRandom2.draw_grid("Random Hillclimber")
+
+
+
+
 #    grid.best_battery_number()
-    all_costs = []
-    
-    for i in range(300):
-        try:
-            grid.verplaat_batterij_met_k_means(5)
-        except:
-            print("Can't do K_means")
-            
-        grid = greedy_lookahead(grid)
-        grid = hillclimber(grid)
-        all_costs.append(grid.calculate_total_cost())
-        all_costs.append('$')
-        for j in range(5):
-            all_costs.append(grid.batteries[j].location[0])
-            all_costs.append(grid.batteries[j].location[1])
-        
-        all_costs.append('&')
-        
-        
-    dt = datetime.now()
-    stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
-    with open(f'Results/K_means/k_means_best_{wijk_naam}_{stdt}.json', 'w') as f:
-            json.dump(all_costs, f,indent=4)
-
-        
-    
-    
-    
-
-    grid.draw_grid("")
-
-#    grid.simulated_annealing(1000)
+#     all_costs = []
+#
+#     for i in range(300):
+#         try:
+#             grid.verplaat_batterij_met_k_means(5)
+#         except:
+#             print("Can't do K_means")
+#
+#         grid = greedy_lookahead(grid)
+#         grid = hillclimber(grid)
+#         all_costs.append(grid.calculate_total_cost())
+#         all_costs.append('$')
+#         for j in range(5):
+#             all_costs.append(grid.batteries[j].location[0])
+#             all_costs.append(grid.batteries[j].location[1])
+#
+#         all_costs.append('&')
+#
+#
+#     dt = datetime.now()
+#     stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
+#     with open(f'Results/K_means/k_means_best_{wijk_naam}_{stdt}.json', 'w') as f:
+#             json.dump(all_costs, f,indent=4)
+#
+#
+#
+#
+#
+#
+#     grid.draw_grid("")
+#
+# #    grid.simulated_annealing(1000)
     # # costsGreedy = []
     # costsAlt = []
     # costsHillGreedy = []
@@ -149,43 +162,43 @@ if __name__ == "__main__":
 #    def sel():
 #       selection = "You selected the option " + str(var.get())
 #       label.config(text = selection)
-#    
+#
 #    root = Tk()
 #    var = IntVar()
 #    R1 = Radiobutton(root, text="Wijk 1", variable=var, value=1,
 #                      command=sel)
 #    R1.pack( anchor = W )
-#    
+#
 #    R2 = Radiobutton(root, text="Wijk 2", variable=var, value=2,
 #                      command=sel)
 #    R2.pack( anchor = W )
-#    
+#
 #    R3 = Radiobutton(root, text="Wijk 3", variable=var, value=3,
 #                      command=sel)
 #    R3.pack( anchor = W)
-#    
+#
 #    label = Label(root)
 #    label.pack()
-#    
-#    
+#
+#
 #    root = Tk()
 #    var = IntVar()
 #    R1 = Radiobutton(root, text="Greedy Algorithme", variable=var, value=1,
 #                      command=sel)
 #    R1.pack( anchor = W )
-#    
+#
 #    R2 = Radiobutton(root, text="Random", variable=var, value=2,
 #                      command=sel)
 #    R2.pack( anchor = W )
-#    
+#
 #    R3 = Radiobutton(root, text="Random Hill Climber", variable=var, value=3,
 #                      command=sel)
 #    R3.pack( anchor = W)
-#    
+#
 #    R3 = Radiobutton(root, text="Greedy Hill Climber", variable=var, value=3,
 #                      command=sel)
 #    R3.pack( anchor = W)
-#    
+#
 #    label = Label(root)
 #    label.pack()
 #    root.mainloop()

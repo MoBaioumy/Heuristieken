@@ -1,3 +1,8 @@
+<!-- # SmartGrid December 2018
+Philip Oosterholt
+Mohamed Baioumy
+Thomas Hoedeman -->
+
 ## Data Structure
 
 Om deze problemen op te lossen hebben we een data structuur gecreerd met de volgende objecten
@@ -35,7 +40,7 @@ Methods
 - draw_route: tekent een route
 - range_connected: berekent het bereik van huizen dat aan een batterij verbonden kan worden dus hoeveel minimaal en hoeveel maximaal
 
-Algoritmes --  voor een beschrijving zie de documentatie van de sub vragen. 
+Algoritmes --  voor een beschrijving zie de documentatie van de sub vragen.
 
 - Simple (A)
 - Random (A)
