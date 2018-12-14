@@ -9,14 +9,14 @@ from Algoritmes import greedy
 
 def look(grid, battery):
     r = grid.range_connected(battery)
-    print(r)
+#    print(r)
     lowest_combination =  [0, 0]
     all_outputs = [house.max_output for house in grid.unconnected_houses]
     best_dist = float('inf')
     out_houses = []
     for i in range(r[1]):
          combinations = itertools.combinations(all_outputs, i)
-         print("progress!")
+#         print("progress!")
          for combi in combinations:
              # print(sum(j) - battery.current_capacity)
              if 0 < battery.current_capacity - sum(combi)  < battery.current_capacity - sum(lowest_combination) and battery.current_capacity - sum(combi) < 7 :
@@ -73,7 +73,7 @@ def greedy_lookahead(grid):
         # print(best_dist)
         grid.connect(connect_house_id, connect_bat_id)
         counter += 1
-        print(counter)
+#        print(counter)
         if counter > 101:
             break
     grid = greedy(grid)
