@@ -5,7 +5,7 @@ from Objects.grid import Grid
 from Objects.distance import distance
 
 
-def hillclimber(grid):
+def hillclimber_greedy(grid):
     """
     This hillclimber algoritm checks if a swap between two houses can be made,
     and if so, if the swap would shorten the length of the path, if this is

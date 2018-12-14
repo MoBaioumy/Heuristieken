@@ -5,11 +5,7 @@
 
 # Internal imports
 from Objects.grid import Grid
-from Objects.house import House
-from Objects.battery import Battery
-from Objects.route import Route
-from Objects.distance import distance
-from Algoritmes import greedy, greedy_alt, greedy_lookahead, random_connect, hillclimbe
+import Algoritmes
 
 # External imports
 import csv
@@ -24,17 +20,11 @@ if __name__ == "__main__":
     i = 2
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-
-    # grid = greedy_lookahead(grid)
+    # grid.simple()
     # grid.draw_grid("")
-    #
-    gridRandom = random_connect(grid)
-    gridRandom2 = copy.deepcopy(gridRandom)
-    gridHill = hillclimber(gridRandom)
-    gridHill.draw_grid("Greedy Hillclimber")
-    gridRandom2.re_arrange_random(100000)
-    gridRandom2.draw_grid("Random Hillclimber")
-
+    gridSimple = Algoritmes.simple(grid)
+    gridSimple = Algoritmes.hillclimber_greedy_double_swap(grid)
+    gridSimple.draw_grid("")
 
 
 
@@ -208,7 +198,7 @@ if __name__ == "__main__":
 # code for variable k_means
 # =============================================================================
 
-    # 
+    #
     # all_costs = []
     # runs = 500
     #

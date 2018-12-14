@@ -1,7 +1,7 @@
-from Objects.house import House
-from Objects.battery import Battery
-from Objects.route import Route
-from Objects.distance import distance
+# from Objects.house import House
+# from Objects.battery import Battery
+# from Objects.route import Route
+# from Objects.distance import distance
 from Objects.grid import Grid
 import random
 

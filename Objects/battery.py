@@ -3,6 +3,8 @@
 # Mohamed Baioumy
 # Thomas Hoedeman
 
+from Objects.distance import distance
+
 class Battery(object):
     """
     Representation of a battery in the SmartGrid assignment
