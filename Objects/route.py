@@ -36,7 +36,7 @@ class Route(object):
         """
         Print description
         """
-        return f"this route (ID = {self.id}) connects house: {self.house.id} with battery: {self.battery_id}"
+        return f"this route of length: {self.length} (ID = {self.id}) connects house: {self.house.id} with battery: {self.battery_id}"
 
 
     def plan_manhattan_grid_route(self):
@@ -71,5 +71,5 @@ class Route(object):
                 current_location = (current_location[0], current_location[1] + 1)
                 grid_route.append(current_location)
         # return list of coordinates of grid_route and print length
-        # print(f"length route:{self.length}")
+        print(f"length route:{self.length}")
         return grid_route

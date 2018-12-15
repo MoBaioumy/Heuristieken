@@ -1,6 +1,3 @@
-from Objects.house import House
-from Objects.battery import Battery
-from Objects.route import Route
 from Objects.grid import Grid
 from Objects.distance import distance
 import Algoritmes

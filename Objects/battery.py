@@ -55,7 +55,6 @@ class Battery(object):
             route.length = abs(route.house.location[0] - route.battery_location[0]) + abs(route.house.location[1] - route.battery_location[1])
             route.cost = route.length * route.cost_gridline
             route.grid_route = route.plan_manhattan_grid_route()
-            print(route.id)
 
         # update cost of routes
         self.cost_routes = self.calculate_routes_cost()

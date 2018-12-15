@@ -45,6 +45,7 @@ class Grid(object):
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
         self.unconnected_houses = copy.deepcopy(self.houses)
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
+        # random.shuffle(self.batteries)
         # size of grid
         self.size = (50, 50)
 
@@ -112,7 +113,7 @@ class Grid(object):
 
         # if house max_output exceeds battery capacity return and print error message
         if B.current_capacity < H.max_output:
-            # print(f"Battery capacity ({round(B.current_capacity, 2)}) is not sufficient")
+            print(f"Battery capacity ({round(B.current_capacity, 2)}) is not sufficient")
             return
 
         # remove house from unconnected list
@@ -126,7 +127,7 @@ class Grid(object):
         self.batteries[B_index].routes.append(route)
 
         # print connection made
-        # print(f"connected house {H.id} with battery {B.id}")
+        print(f"connected house {H.id} with battery {B.id}")
 
         # recalculate battery current capacity
         self.batteries[B_index].current_capacity -= H.max_output
@@ -148,7 +149,7 @@ class Grid(object):
                     self.unconnected_houses.append(route.house)
                     # remove route
                     self.batteries[battery_idx].routes.remove(route)
-                    # print(f"house {house_id} disconnected")
+                    print(f"house {house_id} disconnected")
                     return True
         # if house id not found print error message
         print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
@@ -170,6 +171,8 @@ class Grid(object):
             # disconnect houses
             self.disconnect(h1.house.id)
             self.disconnect(h2.house.id)
+            print(h1)
+            print(h2)
             # reconnected houses swapped
             self.connect(h1.house.id, h2.battery_id)
             self.connect(h2.house.id, h1.battery_id)
@@ -343,10 +346,6 @@ class Grid(object):
             # move battery
             battery.move(location)
 
-
-    # From here algorithms only, above methods
-
-
     def re_arrange(self):
         """
         Re-arrange for simulated_annealing
@@ -402,7 +401,12 @@ class Grid(object):
         self.proposed = (lengte_new - lengte_old) * 9
         self.h1 = h1
         self.h2 = h2
-        
+
+    # From here algorithms only, above methods
+
+
+
+
 
     def re_arrange_random(self, it = 10000):
         """
@@ -420,9 +424,11 @@ class Grid(object):
 
             while found == False:
 
+
                 # get random house_ids
                 r1 = random.randint(1,150)
                 r2 = random.randint(1,150)
+
 
                 # find house 1
                 while house1 == False:
@@ -445,7 +451,7 @@ class Grid(object):
                             max2 = h2.house.max_output + b2.current_capacity
 
                             # if swap is possible, swap
-                            if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
+                            if h1.house.max_output < max2 and h2.house.max_output < max1 and h1.house.id != h2.house.id:
 
                                 i += 1
 
@@ -455,7 +461,9 @@ class Grid(object):
                                 lengte_new = h1len + h2len
                                 lengte_old = h1.length + h2.length
 
-                                if lengte_new < lengte_old:
+                                if lengte_new < lengte_old and h1.battery_id != h2.battery_id:
+                                    print(h1.battery_id )
+                                    print(h2.battery_id )
                                     self.swap(h1, h2)
                                     swap = swap + 1
 
