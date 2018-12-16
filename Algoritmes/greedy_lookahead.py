@@ -1,8 +1,6 @@
-from Objects.house import House
-from Objects.battery import Battery
-from Objects.route import Route
-from Objects.distance import distance
 from Objects.grid import Grid
+from Objects.distance import distance
+
 import itertools
 import random
 from Algoritmes import greedy
@@ -16,7 +14,7 @@ def look(grid, battery):
     out_houses = []
     for i in range(r[1]):
          combinations = itertools.combinations(all_outputs, i)
-#         print("progress!")
+         print("progress!")
          for combi in combinations:
              # print(sum(j) - battery.current_capacity)
              if 0 < battery.current_capacity - sum(combi)  < battery.current_capacity - sum(lowest_combination) and battery.current_capacity - sum(combi) < 7 :
@@ -55,16 +53,15 @@ def greedy_lookahead(grid):
             lowest_dist_house = float('inf')
             for battery in grid.batteries:
                 dist = distance(house.location, battery.location)
-                if dist < lowest_dist_house and battery.current_capacity > house.max_output:
-                    # and battery.current_capacity > 280
+                if dist < lowest_dist_house and battery.current_capacity > house.max_output and battery.current_capacity > 280:
                     bat_id = battery.id
                     house_id = house.id
                     lowest_dist_house = dist
-                # elif 30 < battery.current_capacity < 280:
-                #     if 0 < grid.range_connected(battery)[1] < 9:
-                #         houses = look(grid, battery)
-                #         for h in houses:
-                #             grid.connect(h.id, battery.id)
+                elif 30 < battery.current_capacity < 280:
+                    if 0 < grid.range_connected(battery)[1] < 7:
+                        houses = look(grid, battery)
+                        for h in houses:
+                            grid.connect(h.id, battery.id)
 
             if lowest_dist_house < best_dist:
                 connect_bat_id = bat_id
@@ -74,7 +71,7 @@ def greedy_lookahead(grid):
         grid.connect(connect_house_id, connect_bat_id)
         counter += 1
 #        print(counter)
-        if counter > 101:
+        if counter > 1000:
             break
     grid = greedy(grid)
 

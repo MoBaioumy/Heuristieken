@@ -3,16 +3,16 @@
 # Mohamed Baioumy
 # Thomas Hoedeman
 
-# Internal imports
 from Objects.grid import Grid
 import Algoritmes
 
 if __name__ == "__main__":
 
-    i = 2
+    i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-    print(grid)
+    grid =  Algoritmes.greedy_lookahead(grid)
+    grid.draw_grid("greedy_alt")
 
     # grid = Algoritmes.move_calc(grid)
     # grid.draw_grid(grid.lower_bound())
