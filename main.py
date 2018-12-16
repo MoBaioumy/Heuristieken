@@ -12,7 +12,25 @@ if __name__ == "__main__":
     i = 2
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-
+    Algoritmes.silhouette(i)
+#    wijk_naam = "wijk" + str(i)
+#    grid = Grid(wijk_naam)
+#    for bat in grid.batteries:
+#        print(bat)
+#    grid = Algoritmes.greedy(grid)
+#    for bat in grid.batteries:
+#        print(bat)
+#
+#    grid.draw_grid("")
+#    grid = Algoritmes.hillclimber_random(grid)
+#    for bat in grid.batteries:
+#        print(bat)
+#    # # grid.re_arrange_random()
+#    # # grid.simple()
+#    grid.draw_grid("")
+    # gridSimple = Algoritmes.greedy(grid)
+    # gridSimple = Algoritmes.hillclimber_random(grid)
+    # grid.draw_grid("")
     Algoritmes.repeat_simulated_annealing(grid, 5)
     # grid.move_batteries_random()
     # grid.draw_grid("")
