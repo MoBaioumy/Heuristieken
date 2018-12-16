@@ -6,6 +6,7 @@ Thomas Hoedeman -->
 This document includes acknowledgements for all used resources during this project.
 
 For the script to plot silhouette analysis: 
-[Scikit learn website](https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html)
+[Scikit learn website](https://scikit-learn.org/stable/index.html)
 
+The visualizations of K Means in the slides is thanks to the following code:
 http://benalexkeen.com/k-means-clustering-in-python/
