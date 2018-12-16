@@ -28,6 +28,13 @@ visualized. The silhouette plot for cluster 0 when ``n_clusters`` is equal to
 cluster. However when the ``n_clusters`` is equal to 4, all the plots are more
 or less of similar thickness and hence are of similar sizes as can be also
 verified from the labelled scatter plot on the right.
+
+
+*****
+Credit to most of this script belongs to Scikit Learn Website
+https://scikit-learn.org/stable/index.html
+*****
+
 """
 
 from __future__ import print_function
@@ -39,26 +46,33 @@ from sklearn.metrics import silhouette_samples, silhouette_score
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
+import csv
 
 print(__doc__)
 
+i = 2
+
+
+file_name = f"Huizen_Batterijen/wijk{i}_huizen.csv"
+with open(file_name, "r") as csvfile:
+    houses = [[int(row[0]), int(row[1])] for row in csv.reader(csvfile) if row[0].isdigit()]
+
+X = np.ndarray(shape = (150, 2))
+
+
+for i in range(len(houses)):
+    X[i] = houses[i]
+    
 # Generating the sample data from make_blobs
 # This particular setting has one distinct cluster and 3 clusters placed close
 # together.
-X, y = make_blobs(n_samples=150,
-                  n_features=2,
-                  centers=4,
-                  cluster_std=1,
-                  center_box=(-10.0, 10.0),
-                  shuffle=True,
-                  random_state=1)  # For reproducibility
 
-range_n_clusters = [5, 6, 7, 8, 9]
+range_n_clusters = [2, 5, 6, 7, 8, 9, 10]
 
 for n_clusters in range_n_clusters:
     # Create a subplot with 1 row and 2 columns
     fig, (ax1, ax2) = plt.subplots(1, 2)
-    fig.set_size_inches(18, 7)
+    fig.set_size_inches(17, 7)
 
     # The 1st subplot is the silhouette plot
     # The silhouette coefficient can range from -1, 1 but in this example all
@@ -69,7 +83,7 @@ for n_clusters in range_n_clusters:
     ax1.set_ylim([0, len(X) + (n_clusters + 1) * 10])
 
     # Initialize the clusterer with n_clusters value and a random generator
-    # seed of 10 for reproducibility.
+    # seed of 10 for reproducibility
     clusterer = KMeans(n_clusters=n_clusters, random_state=10)
     cluster_labels = clusterer.fit_predict(X)
 
@@ -118,7 +132,7 @@ for n_clusters in range_n_clusters:
 
     # 2nd Plot showing the actual clusters formed
     colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
-    ax2.scatter(X[:, 0], X[:, 1], marker='.', s=30, lw=0, alpha=0.7,
+    ax2.scatter(X[:, 0], X[:, 1], marker='.', s=150, lw=0, alpha=0.7,
                 c=colors, edgecolor='k')
 
     # Labeling the clusters
@@ -132,10 +146,10 @@ for n_clusters in range_n_clusters:
                     s=50, edgecolor='k')
 
     ax2.set_title("The visualization of the clustered data.")
-    ax2.set_xlabel("Feature space for the 1st feature")
-    ax2.set_ylabel("Feature space for the 2nd feature")
+    ax2.set_xlabel("X Coordinates")
+    ax2.set_ylabel("Y Coordinates")
 
-    plt.suptitle(("Silhouette analysis for KMeans clustering on sample data "
+    plt.suptitle((f"Silhouette analysis for KMeans clustering on wijk {i} "
                   "with n_clusters = %d" % n_clusters),
                  fontsize=14, fontweight='bold')
 
