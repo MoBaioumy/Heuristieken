@@ -3,7 +3,6 @@
 # Mohamed Baioumy
 # Thomas Hoedeman
 
-# Internal imports
 from Objects.grid import Grid
 import Algoritmes
 
@@ -17,7 +16,7 @@ import copy
 
 if __name__ == "__main__":
 
-    i = 2
+    i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
     for bat in grid.batteries:
