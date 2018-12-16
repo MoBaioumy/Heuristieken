@@ -7,36 +7,28 @@
 from Objects.grid import Grid
 import Algoritmes
 
-# External imports
-import csv
-import random
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-import copy
-
 if __name__ == "__main__":
 
     i = 2
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-    for bat in grid.batteries:
-        print(bat)
-    grid = Algoritmes.greedy(grid)
-    for bat in grid.batteries:
-        print(bat)
 
-    grid.draw_grid("")
-    grid = Algoritmes.hillclimber_random(grid)
-    for bat in grid.batteries:
-        print(bat)
-    # # grid.re_arrange_random()
-    # # grid.simple()
-    grid.draw_grid("")
-    # gridSimple = Algoritmes.greedy(grid)
-    # gridSimple = Algoritmes.hillclimber_random(grid)
+    Algoritmes.repeat_simulated_annealing(grid, 5)
+    # grid.move_batteries_random()
     # grid.draw_grid("")
-
+    # lb = grid.lower_bound()
+    # print(lb)
+    # grid = Algoritmes.random_connect(grid)
+    # grid = Algoritmes.hillclimber_random(grid, 50000)
+    #
+    #
+    # costs = grid.calculate_total_cost()
+    #
+    # grid.draw_grid(f"distance to lower bound: {costs - lb}")
+    # grid = Algoritmes.simulated_annealing(grid, 50000, hill = True, cooling ='sig')
+    #
+    # costs = grid.calculate_total_cost()
+    # grid.draw_grid(f"distance to lower bound: {costs - lb}")
 
 
 #    grid.best_battery_number()

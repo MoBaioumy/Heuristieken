@@ -12,18 +12,9 @@ from Objects.distance import distance
 
 # Libraries
 import csv
-from operator import attrgetter
-import matplotlib.pyplot as plt
-import numpy as np
-import random
-import copy
-import json
-from datetime import datetime
-import copy
-import time
+import random # needed
+import copy # needed
 import pandas as pd
-import math
-
 
 
 class Grid(object):
@@ -45,7 +36,7 @@ class Grid(object):
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
         self.unconnected_houses = copy.deepcopy(self.houses)
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
-        # random.shuffle(self.batteries)
+
         # size of grid
         self.size = (50, 50)
 
@@ -202,7 +193,7 @@ class Grid(object):
         return total_cost
 
 
-    def shortest_paths(self):
+    def lower_bound(self):
         """
         Finds the manhattan distance for the shortest path for each house
         Returns a list with all shortest distances
@@ -218,10 +209,16 @@ class Grid(object):
                     current_house_shortest = dist
             all_shortest.append(current_house_shortest)
 
-        return all_shortest
+        # calculate lower bound costs
+        lower_bound = 0
+        for battery in self.batteries:
+            lower_bound += battery.cost
+        lower_bound += sum(all_shortest) * 9
+
+        return lower_bound
 
 
-    def longest_paths(self):
+    def upper_bound(self):
         """
         Finds the manhattan distance for the longest path for each house
         Returns a list with all longest distances
@@ -230,14 +227,20 @@ class Grid(object):
         # loop over houses for each house loop over batteries
         # find the longest distance to a battery and append to output list
         for house in self.houses:
-            current_house_shortest = float('-inf')
+            current_house_longest = float('-inf')
             for battery in self.batteries:
                 dist = distance(house.location, battery.location)
-                if dist > current_house_shortest:
-                    current_house_shortest = dist
-            all_longest.append(current_house_shortest)
+                if dist > current_house_longest:
+                    current_house_longest = dist
+            all_longest.append(current_house_longest)
 
-        return all_longest
+        # calculate lower bound costs
+        upper_bound = 0
+        for battery in self.batteries:
+            upper_bound += battery.cost
+        upper_bound += sum(all_longest) * 9
+
+        return upper_bound
 
 
     def draw_grid(self, info):
@@ -346,6 +349,14 @@ class Grid(object):
             # move battery
             battery.move(location)
 
+
+    def best_battery_number(self):
+        """
+        Loads file with best battery locations for this grid determined by k_means
+        """
+        self.batteries = self.load_batteries(f"Huizen_Batterijen/{self.name}_batterijen_opt_number.csv")
+
+
     def re_arrange(self):
         """
         Re-arrange for simulated_annealing
@@ -380,12 +391,21 @@ class Grid(object):
                         b2 = battery
                         max2 = h2.house.max_output + b2.current_capacity
 
+                        # Find battery ids
+                        bat1Index = None
+                        bat2Index =  None
+                        for idx, battery in enumerate(self.batteries):
+                            if battery.id == h1.battery_id:
+                                bat1Index = idx
+                            if battery.id == h2.battery_id:
+                                bat2Index = idx
+
                         # if swap is possible, swap
-                        if h1.house.max_output < max2 and h2.house.max_output < max1 and h1 != h2:
+                        if h1.house.max_output < max2 and h2.house.max_output < max1 and h1.battery_id != h2.battery_id:
 
                             # calculate is the swap improves the length of the connections
-                            h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
-                            h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
+                            h1len = distance(h1.house.location, self.batteries[bat2Index].location)
+                            h2len = distance(h2.house.location, self.batteries[bat1Index].location)
                             lengte_new = h1len + h2len
                             lengte_old = h1.length + h2.length
 
@@ -404,454 +424,6 @@ class Grid(object):
 
     # From here algorithms only, above methods
 
-
-
-
-
-    def re_arrange_random(self, it = 10000):
-        """
-        Re-arrange for simulated_annealing
-        """
-
-        house1 = False
-        i = 0
-        swap = 0
-
-        while i < it:
-
-            found = False
-            house1 = False
-
-            while found == False:
-
-
-                # get random house_ids
-                r1 = random.randint(1,150)
-                r2 = random.randint(1,150)
-
-
-                # find house 1
-                while house1 == False:
-                    for battery in self.batteries:
-                        for route in battery.routes:
-                            if route.house.id == r1:
-                                h1 = route
-                                b1 = battery
-                                max1 = h1.house.max_output + b1.current_capacity
-                                house1 = True
-                                break
-
-                # find house 2
-                for battery in self.batteries:
-                    for route in battery.routes:
-                        if route.house.id == r2:
-
-                            h2 = route
-                            b2 = battery
-                            max2 = h2.house.max_output + b2.current_capacity
-
-                            # if swap is possible, swap
-                            if h1.house.max_output < max2 and h2.house.max_output < max1 and h1.house.id != h2.house.id:
-
-                                i += 1
-
-                                # calculate is the swap improves the length of the connections
-                                h1len = distance(h1.house.location, self.batteries[h2.battery_id - 1].location)
-                                h2len = distance(h2.house.location, self.batteries[h1.battery_id - 1].location)
-                                lengte_new = h1len + h2len
-                                lengte_old = h1.length + h2.length
-
-                                if lengte_new < lengte_old and h1.battery_id != h2.battery_id:
-                                    print(h1.battery_id )
-                                    print(h2.battery_id )
-                                    self.swap(h1, h2)
-                                    swap = swap + 1
-
-                                # stop while loop
-                                found = True
-                                break
-
-                # in case we cannot find a house to swap with house 1, we need to reset the loop
-                # without this you might get stuck in a loop
-                house1 = False
-
-
-    def simulated_annealing(self, N, hill = 'False', accept = 'std', cooling = 'std'):
-
-        """
-        Simulated annealing
-        """
-
-        # parameters
-        Tbegin = 100
-        Tend = 0.01
-        T = Tbegin
-
-        for i in range(N):
-
-            # get a proposition for a swap
-            prop = self.re_arrange()
-
-            # calculate difference of options
-            current = self.calculate_total_cost()
-            proposed = current + self.proposed
-
-            # calculate probability of acceptance
-            if accept == 'std':
-
-                probability = max(0, min(1, np.exp(-(proposed - current) / T)))
-                print(probability)
-            # if the proposed option is better than current, accept it
-            if current > proposed:
-                probability = 1
-
-            # if option is worse, generate a random number between 0 and 1, if that
-            # number is lower than the probability, make the swap
-            if np.random.rand() < probability:
-                self.swap(self.h1, self.h2)
-
-            # geman parameters
-            d = 2
-
-            # cooling schemes
-            # standard as a test
-            if cooling == 'std':
-                T = 0.999 * T
-            # linear
-            if cooling == 'lin':
-                T = Tbegin - i * (Tbegin - Tend) / N
-            # exponential
-            if cooling == 'exp':
-                 T = Tbegin * math.pow(Tend / Tbegin, i / N)
-            # sigmodial
-            if cooling == 'sig':
-                T = Tend + (Tbegin - Tend) / (1 + np.exp(0.3 * (i - N / 2)))
-            # geman and geman
-            if cooling == 'geman':
-                T = Tbegin / (np.log(i + d))
-
-        # end simulated_annealing with a hillclimber, to make sure there are no
-        # more ways to improve the grid
-        if hill == 'True':
-            self.hillclimber()
-
-
-    def repeat_simulated_annealing(self, N, iterations = 1000, hill = 'True', begin = 'random', bound = float('inf'), cooling = 'lin'):
-
-        """
-        Repeats simulated annealing for a x number of times with different options.
-        """
-
-        costs = []
-        i = 0
-        costs_random = [999999, 999998]
-        costs_sa = [999999, 999998]
-        costs_hill = [999999, 999998]
-        costs_hill2 = [999999, 999998]
-        combination = {}
-
-        while i < N:
-
-            print("Current iteration: ", i)
-
-            if i % 100 == 0:
-                print('Current best cost simulated annealing: ', min(costs_sa))
-                print('Current best cost hillclimber: ', min(costs_hill))
-
-            # let the use pick from which point to start
-            if begin == 'random':
-
-                # get random solution save time and costs
-                self.random()
-                cost_r = self.calculate_total_cost()
-                costs_random.append(cost_r)
-
-            if begin == 'greedy':
-                self.greedy()
-                self.re_arrange_random(it=10000)
-
-            if hill == 'True':
-                self.re_arrange_random(it=10000)
-                cost = self.calculate_total_cost()
-                costs_hill.append(cost)
-
-            # calculate cost for bound
-            cost = self.calculate_total_cost()
-
-            # if the cost is acceptable, i.e. under the bound, run simulated_annealing
-            if cost < bound:
-
-                # run simulated annealing and save time and costs
-                self.simulated_annealing(iterations, cooling=cooling)
-                cost = self.calculate_total_cost()
-                costs_sa.append(cost)
-
-                i += 1
-
-            # if cost of hillclimber is best solution save data for .json export
-            if cost == min(costs_sa):
-                current_combi = {}
-                for battery in self.batteries:
-                    house_ids = []
-                    for route in battery.routes:
-                        house_id = route.house.id
-                        house_ids.append(house_id)
-                    current_combi[f'{battery.id}'] = house_ids
-                current_combi["Costs best solution"] = min(costs_sa)
-                combination = current_combi
-
-            self.hillclimber()
-            cost = self.calculate_total_cost()
-            costs_hill2.append(cost)
-
-            # empty the grid
-            self.disconnect_all()
-
-        # save all results in dict aswell
-        combination["Hill after SA"] = min(costs_hill2)
-        combination["All random results"] = costs_random
-        combination["Hillclimber results"] = costs_hill
-        combination["All simulated annealing results"] = costs_sa
-
-        # get current datetime in string
-        dt = datetime.now()
-        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
-
-        # dump data of best found solution to .json file
-        with open(f'Results/simulatedannealing/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_simulated_annealing_{i}_coolingscheme_{cooling}_steps_sa_{iterations}stepshill_{10000}.json', 'w') as f:
-            json.dump(combination, f,indent=4)
-
-
-    def random_hillclimber(self, cost_bound, repeats):
-        """
-        Random hillclimber take a certain cost bound and an amount of repeats as input
-        The algorithm first finds a random solution for connecting all houses
-        Then it runs a hillclimber to find the local mamximum
-        It will repeat untill a solution is found under the cost bound
-        Or untill amount of repeats is reached
-        House combinations for best solution will be saved in .json
-        Cost results for random and hillclimbers are saved aswell
-        """
-
-
-        # initiate
-        counter = 0
-        costs_random = [999999, 999998]
-        times_random =  []
-        costs_hillclimber = [999999, 999998]
-        times_hillclimber = []
-        current_lowest_cost =  float('inf')
-        combination = {}
-
-        # loop untill repeats is reached or untill combination under lower bound is found
-        while min(costs_hillclimber) > cost_bound and counter < repeats:
-
-
-            # get random solution save time and costs
-            random_start = time.time()
-            self.random()
-            random_stop = time.time()
-
-            times_random.append(random_stop - random_start)
-
-            cost_r = self.calculate_total_cost()
-            costs_random.append(cost_r)
-
-
-            # run hillclimber save time and costs
-            hill_start = time.time()
-            self.hillclimber()
-            hill_stop = time.time()
-
-            times_hillclimber.append(hill_stop - hill_start)
-
-            cost_h = self.calculate_total_cost()
-            costs_hillclimber.append(cost_h)
-
-
-
-            # if cost of hillclimber is best solution save data for .json export
-            if cost_h < current_lowest_cost:
-                current_lowest_cost = cost_h
-                current_combi = {}
-                for battery in self.batteries:
-                    house_ids = []
-                    for route in battery.routes:
-                        house_id = route.house.id
-                        house_ids.append(house_id)
-                    current_combi[f'{battery.id}'] = house_ids
-                current_combi["Costs best solution"] = cost_h
-                combination = current_combi
-
-            # disconnect for new iteration
-            self.disconnect_all()
-            counter += 1
-            print(counter)
-
-        # save all results in dict aswell
-        combination["All random results"] = costs_random
-        combination["All hillclimber results"] = costs_hillclimber
-        combination["Random times"] = times_random
-        combination["Hillclimber times "] = times_hillclimber
-
-        # get current datetime in string
-        dt = datetime.now()
-        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
-
-        # dump data of best found solution to .json file
-        with open(f'Results/RandomHillclimber/{self.name}_Best_solution_{combination["Costs best solution"]}_{stdt}_random_optimized_with_hillclimber_{counter}_repeats_bound_{cost_bound}.json', 'w') as f:
-            json.dump(combination, f,indent=4)
-
-
-    def random_move_greedy_hillclimber(self, repeats):
-        """
-        Repeats the following:
-        Randomly moves the batteries then runs a greedy algortim and hillclimber
-        Saves results
-        """
-        # .json output dict
-        info = {}
-        best = float('inf')
-
-        # for input repeats move batteries to random location run greedy and hillclimbers
-        # calculate cost and save battery location and costs results to output dict
-        for idx in range(repeats):
-            self.move_batteries_random()
-            self.greedy()
-            self.hillclimber()
-            cost = self.calculate_total_cost()
-            if cost < best:
-                best = cost
-            locations = [battery.location for battery in self.batteries]
-            info[idx] = {'Cost':cost, 'Location':locations}
-            self.disconnect_all()
-
-        # get current datetime in string
-        dt = datetime.now()
-        stdt = '{:%B-%d-%Y_%H%M}'.format(dt)
-
-        # dump results to .json file
-        with open(f'Results/RandomMove/{self.name}_Best_solution_{best}_{stdt}_random_move_greedy_optimized_with_hillclimber_{idx+1}_repeats.json', 'w') as f:
-            json.dump(info, f,indent=4)
-
-
-        def k_means2(self, x_houses, y_houses, k):
-            """
-            As input (3 inputs) you need an array with the x coordiantes of all the houses
-            and another with y coordinates and the third input the number of
-            clusters you want (so number of batteries).
-            """
-            df = pd.DataFrame({'x': x_houses,'y': x_houses})
-
-
-            np.random.seed(200)
-            k = k
-            # centroids[i] = [x, y]
-            centroids = {
-                i+1: [random.randint(0, 50), random.randint(0, 50)]
-                for i in range(k)
-            }
-
-    #        fig = plt.figure(figsize=(5, 5))
-    #        plt.scatter(df['x'], df['y'], color='k')
-    #        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c'}
-    #        for i in centroids.keys():
-    #            plt.scatter(*centroids[i], color=colmap[i])
-    #        plt.xlim(-5, 55)
-    #        plt.ylim(-5, 55)
-    #        plt.show()
-
-            def assignment(df, centroids):
-                for i in centroids.keys():
-                    # sqrt((x1 - x2)^2 - (y1 - y2)^2)
-                    df['distance_from_{}'.format(i)] = (
-                        np.sqrt(
-                            (df['x'] - centroids[i][0]) ** 2
-                            + (df['y'] - centroids[i][1]) ** 2
-                        )
-                    )
-                centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
-                df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
-                df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
-                df['color'] = df['closest'].map(lambda x: colmap[x])
-                return df
-
-            df = assignment(df, centroids)
-            # print(df.head())
-
-    #        fig = plt.figure(figsize=(5, 5))
-    #        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-    #        for i in centroids.keys():
-    #            plt.scatter(*centroids[i], color=colmap[i])
-    #        plt.xlim(-5, 55)
-    #        plt.ylim(-5, 55)
-    #        plt.show()
-
-            old_centroids = copy.deepcopy(centroids)
-
-            def update(k):
-                for i in centroids.keys():
-                    centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
-                    centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
-                return k
-
-            centroids = update(centroids)
-
-    #        fig = plt.figure(figsize=(5, 5))
-    #        ax = plt.axes()
-    #        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-    #        for i in centroids.keys():
-    #            plt.scatter(*centroids[i], color=colmap[i])
-    #        plt.xlim(-5, 55)
-    #        plt.ylim(-5, 55)
-            for i in old_centroids.keys():
-                old_x = old_centroids[i][0]
-                old_y = old_centroids[i][1]
-                dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
-                dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
-    #            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
-    #        plt.show()
-
-            df = assignment(df, centroids)
-
-            # Plot results
-    #        fig = plt.figure(figsize=(5, 5))
-    #        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-    #        for i in centroids.keys():
-    #            plt.scatter(*centroids[i], color=colmap[i])
-    #        plt.xlim(-5, 55)
-    #        plt.ylim(-5, 55)
-    #        plt.show()
-
-            while True:
-                closest_centroids = df['closest'].copy(deep=True)
-                centroids = update(centroids)
-                df = assignment(df, centroids)
-                if closest_centroids.equals(df['closest']):
-                    break
-
-    #        fig = plt.figure(figsize=(5, 5))
-    #        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-    #        for i in centroids.keys():
-    #            plt.scatter(*centroids[i], color=colmap[i])
-    #        plt.xlim(-5, 55)
-    #        plt.ylim(-5, 55)
-    #        plt.show()
-
-            new_locations = []
-            for i in centroids:
-                loc = (centroids[i][0], centroids[i][1])
-                new_locations.append(loc)
-
-            for i in range(len(self.batteries)):
-                bat = self.batteries[i]
-                bat.move(new_locations[i])
-                print()
-
-
-    def best_battery_number(self):
-
-        self.batteries = self.load_batteries(f"Huizen_Batterijen/{self.name}_batterijen_opt_number.csv")
 
 
     def verplaat_batterij_met_k_means(self, k):

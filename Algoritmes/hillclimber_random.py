@@ -1,3 +1,8 @@
+# SmartGrid December 2018
+# Philip Oosterholt
+# Mohamed Baioumy
+# Thomas Hoedeman
+
 from Objects.grid import Grid
 from Objects.distance import distance
 import random
@@ -47,10 +52,19 @@ def hillclimber_random(grid, it = 10000):
 
                             i += 1
 
+                            # Find battery ids
+                            bat1Index = None
+                            bat2Index =  None
+                            for idx, battery in enumerate(grid.batteries):
+                                if battery.id == h1.battery_id:
+                                    bat1Index = idx
+                                if battery.id == h2.battery_id:
+                                    bat2Index = idx
+
+
                             # calculate is the swap improves the length of the connections
-                            
-                            h1len = distance(h1.house.location, grid.batteries[h2.battery_id - 1].location)
-                            h2len = distance(h2.house.location, grid.batteries[h1.battery_id - 1].location)
+                            h1len = distance(h1.house.location, grid.batteries[bat2Index].location)
+                            h2len = distance(h2.house.location, grid.batteries[bat1Index].location)
                             lengte_new = h1len + h2len
                             lengte_old = h1.length + h2.length
 

@@ -1,3 +1,8 @@
+# SmartGrid December 2018
+# Philip Oosterholt
+# Mohamed Baioumy
+# Thomas Hoedeman
+
 from Objects.grid import Grid
 import random
 
