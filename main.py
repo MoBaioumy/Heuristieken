@@ -12,7 +12,14 @@ if __name__ == "__main__":
     i = 2
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-    Algoritmes.silhouette(i)
+    print(grid)
+
+    # grid = Algoritmes.move_calc(grid)
+    # grid.draw_grid(grid.lower_bound())
+    # grid = Algoritmes.k_means(grid)
+    # grid = Algoritmes.greedy(grid)
+    # grid = Algoritmes.hillclimber_greedy(grid)
+    # grid.draw_grid("kmeans" + str(grid.lower_bound()))
 #    wijk_naam = "wijk" + str(i)
 #    grid = Grid(wijk_naam)
 #    for bat in grid.batteries:
@@ -31,7 +38,7 @@ if __name__ == "__main__":
     # gridSimple = Algoritmes.greedy(grid)
     # gridSimple = Algoritmes.hillclimber_random(grid)
     # grid.draw_grid("")
-    Algoritmes.repeat_simulated_annealing(grid, 5)
+    # Algoritmes.repeat_simulated_annealing(grid, 5)
     # grid.move_batteries_random()
     # grid.draw_grid("")
     # lb = grid.lower_bound()

@@ -15,3 +15,5 @@ from Algoritmes.simple import simple
 from Algoritmes.silhouette import silhouette
 from Algoritmes.repeat_hillclimber_greedy import repeat_hillclimber_greedy
 from Algoritmes.repeat_simulated_annealing import repeat_simulated_annealing
+from Algoritmes.k_means import k_means
+from Algoritmes.move_calc import move_calc

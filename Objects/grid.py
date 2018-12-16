@@ -12,9 +12,9 @@ from Objects.distance import distance
 
 # Libraries
 import csv
-import random # needed
-import copy # needed
-import pandas as pd
+import random
+import copy
+import matplotlib.pyplot as plt
 
 
 class Grid(object):
@@ -27,7 +27,8 @@ class Grid(object):
 
     def __init__(self, wijk_N):
         """
-        Initialize a grid"""
+        Initialize a grid based on given excel files
+        """
         # id
         self.id = Grid.id
         Grid.id += 1
@@ -45,7 +46,7 @@ class Grid(object):
         """
         Print description
         """
-        return f" GridID: {self.id} Grid size: {self.size}"
+        return f"Wijk: {self.name[-1]} GridID: {self.id} Grid size: {self.size}"
 
 
     def load_houses(self, filename):
@@ -80,10 +81,10 @@ class Grid(object):
         # error check
         if not H:
             print("House not found, try disconnecting it first")
-            return
+            return False
         if len(H) > 1:
             print("Mutiple houses found, please reload grid")
-            return
+            return False
 
         # unlist
         H = H[0]
@@ -94,10 +95,10 @@ class Grid(object):
         # error check
         if not B:
             print("Battery not found, please enter the id not the index number")
-            return
+            return False
         if len(B) > 1:
             print("Mutiple batteries found, please reload grid")
-            return
+            return False
 
         # unlist
         B = B[0]
@@ -105,7 +106,7 @@ class Grid(object):
         # if house max_output exceeds battery capacity return and print error message
         if B.current_capacity < H.max_output:
             print(f"Battery capacity ({round(B.current_capacity, 2)}) is not sufficient")
-            return
+            return False
 
         # remove house from unconnected list
         self.unconnected_houses.remove(H)
@@ -122,6 +123,8 @@ class Grid(object):
 
         # recalculate battery current capacity
         self.batteries[B_index].current_capacity -= H.max_output
+
+        return True
 
 
     def disconnect(self, house_id):
@@ -157,13 +160,14 @@ class Grid(object):
 
 
     def swap(self, h1, h2, h3 = False, h4 = False):
+        """
+        Swaps 2 or 4 houses
+        """
         swap = False
         if h3 == False:
             # disconnect houses
             self.disconnect(h1.house.id)
             self.disconnect(h2.house.id)
-            print(h1)
-            print(h2)
             # reconnected houses swapped
             self.connect(h1.house.id, h2.battery_id)
             self.connect(h2.house.id, h1.battery_id)
@@ -195,8 +199,9 @@ class Grid(object):
 
     def lower_bound(self):
         """
-        Finds the manhattan distance for the shortest path for each house
-        Returns a list with all shortest distances
+        Calculates the lower_bound based on the  manhattan distance for the shortest path
+        for each house.
+        Returns the total grid cost of the lower_bound
         """
         all_shortest = []
         # loop over houses for each house loop over batteries
@@ -220,8 +225,9 @@ class Grid(object):
 
     def upper_bound(self):
         """
-        Finds the manhattan distance for the longest path for each house
-        Returns a list with all longest distances
+        Calculates the upper_bound based on the manhattan distance for the longest path
+        for each house.
+        Returns the total grid cost of the upper_bound
         """
         all_longest = []
         # loop over houses for each house loop over batteries
@@ -321,7 +327,7 @@ class Grid(object):
 
     def move_batteries_random(self):
         """
-        Moves all batteries to a random new location
+        Moves each battery to a random new location
         """
         # for each battery
         for battery in self.batteries:
@@ -421,185 +427,3 @@ class Grid(object):
         self.proposed = (lengte_new - lengte_old) * 9
         self.h1 = h1
         self.h2 = h2
-
-    # From here algorithms only, above methods
-
-
-
-    def verplaat_batterij_met_k_means(self, k):
-        """
-        Input the number of clusters you want (so number of batteries).
-        """
-
-        x_houses = [house.location[0] for house in self.houses]
-        y_houses = [house.location[1] for house in self.houses]
-        df = pd.DataFrame({'x': x_houses,'y': y_houses})
-
-            ## Please comment
-        np.random.seed(200)
-            # centroids[i] = [x, y]
-        centroids = {
-            i+1: [random.randint(0, 50), random.randint(0, 50)]
-            for i in range(k)
-        }
-
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color='k')
-        colmap = {1: 'r', 2: 'g', 3: 'b', 4: 'm', 5: 'c', 6: 'y'}
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
-
-        def assignment(df, centroids):
-            for i in centroids.keys():
-                    # sqrt((x1 - x2)^2 - (y1 - y2)^2)
-                df['distance_from_{}'.format(i)] = (
-                    np.sqrt(
-                        (df['x'] - centroids[i][0]) ** 2
-                        + (df['y'] - centroids[i][1]) ** 2
-                    )
-                )
-            centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
-            df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
-            df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
-            df['color'] = df['closest'].map(lambda x: colmap[x])
-            return df
-
-        df = assignment(df, centroids)
-            # print(df.head())
-
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
-
-        old_centroids = copy.deepcopy(centroids)
-
-        def update(k):
-            for i in centroids.keys():
-                centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
-                centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
-            return k
-
-        centroids = update(centroids)
-
-#        fig = plt.figure(figsize=(5, 5))
-#        ax = plt.axes()
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-        for i in old_centroids.keys():
-            old_x = old_centroids[i][0]
-            old_y = old_centroids[i][1]
-            dx = (centroids[i][0] - old_centroids[i][0]) * 0.75
-            dy = (centroids[i][1] - old_centroids[i][1]) * 0.75
-#            ax.arrow(old_x, old_y, dx, dy, head_width=2, head_length=3, fc=colmap[i], ec=colmap[i])
-        plt.show()
-
-        df = assignment(df, centroids)
-
-            # Plot results
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
-
-        while True:
-            closest_centroids = df['closest'].copy(deep=True)
-            centroids = update(centroids)
-            df = assignment(df, centroids)
-            if closest_centroids.equals(df['closest']):
-                break
-
-#        fig = plt.figure(figsize=(5, 5))
-#        plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.3, edgecolor='k')
-#        for i in centroids.keys():
-#            plt.scatter(*centroids[i], color=colmap[i])
-#        plt.xlim(-5, 55)
-#        plt.ylim(-5, 55)
-#        plt.show()
-
-        new_locations = []
-        for i in centroids:
-            loc = (int(centroids[i][0]), int(centroids[i][1]))
-            new_locations.append(loc)
-
-        for i in range(len(self.batteries)):
-            bat = self.batteries[i]
-            bat.move(new_locations[i])
-
-
-    def move_calc(self):
-        # generate tuple's of all coordinates
-        coordinates = list()
-        for x in range (0, 51):
-            for y in range (0, 51):
-                coordinates.append((x, y))
-
-        # create representation of grid in dict
-        grid_locations = {}
-        for loc in coordinates:
-            grid_locations[loc] = set([0])
-
-        # place house max output values on location
-        for house in self.unconnected_houses:
-            grid_locations[house.location] = set([house.max_output])
-
-        counter = 0
-
-        max = self.batteries[0].max_capacity
-
-        finished_locations = list()
-
-        for i in range(15):
-            # make structure to hold new values
-            new_grid_locations = {}
-            for location in coordinates:
-                new_grid_locations[location] = set([0])
-
-            # loop over grid locations
-            for loc in grid_locations:
-
-                # initiate
-                up, down, left, right = None, None, None, None
-
-                # up
-                # if up exists
-                if loc[1] < 50:
-                    # make up location
-                    up = (loc[0], loc[1] + 1)
-                    # if it is smaller than max cap battery
-                    temp = grid_locations[loc]|grid_locations[up]
-
-                # down
-                if loc[1] > 0:
-                    down = (loc[0], loc[1] - 1)
-                    temp = temp|grid_locations[down]
-
-                # left
-                if loc[0] > 0:
-                    left = (loc[0] - 1, loc[1])
-                    temp = temp|grid_locations[left]
-
-                # right
-                if loc[0] < 50:
-                    right = (loc[0] + 1, loc[1])
-                    temp = temp|grid_locations[right]
-
-                new_grid_locations[loc] = temp
-            del grid_locations
-            grid_locations = copy.deepcopy(new_grid_locations)
-
-        for i in grid_locations:
-            if  sum(grid_locations[i]) > max:
-                print(i)
