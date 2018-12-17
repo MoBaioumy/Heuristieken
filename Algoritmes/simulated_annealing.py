@@ -11,7 +11,6 @@ import math
 
 
 def simulated_annealing(grid, N, hill = 'False', accept = 'std', cooling = 'std'):
-
     """
     Simulated annealing
     """
@@ -32,6 +31,7 @@ def simulated_annealing(grid, N, hill = 'False', accept = 'std', cooling = 'std'
         # calculate probability of acceptance
         if accept == 'std':
             probability = max(0, min(1, np.exp(-(proposed - current) / T)))
+
         # if the proposed option is better than current, accept it
         if current > proposed:
             probability = 1
@@ -65,4 +65,5 @@ def simulated_annealing(grid, N, hill = 'False', accept = 'std', cooling = 'std'
     # more ways to improve the grid
     if hill == 'True':
         grid  = Algoritmes.hillclimber_greedy(grid)
+
     return grid
