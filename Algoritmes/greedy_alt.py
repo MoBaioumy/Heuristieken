@@ -1,4 +1,10 @@
+# SmartGrid December 2018
+# Philip Oosterholt
+# Mohamed Baioumy
+# Thomas Hoedeman
+
 from Objects.grid import Grid
+from Objects.distance import distance
 import random
 import Algoritmes
 
@@ -30,8 +36,8 @@ def greedy_alt(grid):
         if counter > 1000:
             break
 
-    # fill last part greedy if needed
+    # fill last part with the other greedy if needed
     if grid.unconnected_houses != []:
-        grid = greedy(grid)
+        grid = Algoritmes.greedy(grid)
 
     return grid

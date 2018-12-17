@@ -38,7 +38,7 @@ class Grid(object):
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
         self.unconnected_houses = copy.deepcopy(self.houses)
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
-
+        random.shuffle(self.batteries)
         # size of grid
         self.size = (50, 50)
 
@@ -70,7 +70,7 @@ class Grid(object):
         with open(filename, "r") as csvfile:
             # loop over rows of csv file make battery based on data and add to battery list
             batteries = [Battery(row[0], row[1], "Normal", row[2], int(row[3])) for row in csv.reader(csvfile) if row[0].isdigit()]
-        
+
 #        for i in range(6):
 #            batteries = [Battery(np.random.randint(20 + i, 120), np.random.randint(30 + i, 120), "New", 1800, 1800)]
         return batteries
@@ -169,7 +169,7 @@ class Grid(object):
         Swaps 2 or 4 houses
         """
         swap = False
-        if h3 == False:
+        if h3 == False or h4 == False:
             # disconnect houses
             self.disconnect(h1.house.id)
             self.disconnect(h2.house.id)
@@ -254,7 +254,7 @@ class Grid(object):
         return upper_bound
 
 
-    def draw_grid(self, info):
+    def draw_grid(self, info = ""):
         """
         Draw routes using the grid_route property of the routes
         """

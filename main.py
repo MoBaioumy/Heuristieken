@@ -6,6 +6,7 @@
 from Objects.grid import Grid
 import Algoritmes
 
+
 # External imports
 import csv
 import random
@@ -16,23 +17,31 @@ import copy
 
 if __name__ == "__main__":
 
-    i = 3
+    i = 2
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
-    grid = Algoritmes.k_means(grid)
-    for bat in grid.batteries:
-        print(bat)
-    grid = Algoritmes.greedy(grid)
-    for bat in grid.batteries:
-        print(bat)
+    grid =  Algoritmes.greedy_lookahead(grid)
+    grid.draw_grid()
 
-    grid.draw_grid("")
-    grid = Algoritmes.hillclimber_random(grid)
-    for bat in grid.batteries:
-        print(bat)
-    # # grid.re_arrange_random()
-    # # grid.simple()
-    grid.draw_grid("")
+    grid =  Algoritmes.hillclimber_greedy_double_swap(grid)
+    grid.draw_grid()
+
+    grid = Algoritmes.simulated_annealing(grid, 100000)
+    grid.draw_grid()
+    # grid = Algoritmes.k_means(grid)
+    # for bat in grid.batteries:
+    #     print(bat)
+    # grid = Algoritmes.greedy(grid)
+    # for bat in grid.batteries:
+    #     print(bat)
+    #
+    # grid.draw_grid("")
+    # grid = Algoritmes.hillclimber_random(grid)
+    # for bat in grid.batteries:
+    #     print(bat)
+    # # # grid.re_arrange_random()
+    # # # grid.simple()
+    # grid.draw_grid("")
     # gridSimple = Algoritmes.greedy(grid)
     # gridSimple = Algoritmes.hillclimber_random(grid)
     # grid.draw_grid("")
