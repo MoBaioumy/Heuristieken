@@ -41,7 +41,7 @@ class Grid(object):
         self.houses = self.load_houses(f"Huizen_Batterijen/{wijk_N}_huizen.csv")
         self.unconnected_houses = copy.deepcopy(self.houses)
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
-
+        random.shuffle(self.batteries)
         # size of grid
         self.size = (GRID_WIDTH, GRID_LENGTH)
 
@@ -172,7 +172,7 @@ class Grid(object):
         Swaps 2 or 4 houses
         """
         swap = False
-        if h3 == False:
+        if h3 == False or h4 == False:
             # disconnect houses
             self.disconnect(h1.house.id)
             self.disconnect(h2.house.id)
@@ -257,7 +257,7 @@ class Grid(object):
         return upper_bound
 
 
-    def draw_grid(self, info):
+    def draw_grid(self, info = ""):
         """
         Draw routes using the grid_route property of the routes
         """

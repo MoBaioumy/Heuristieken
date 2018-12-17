@@ -37,10 +37,19 @@ def hillclimber_greedy_double_swap(grid):
 
                                     len_old = h1.length + h2.length + h3.length + h4.length
 
-                                    d1 = distance(h1.house.location, grid.batteries[h3.battery_id - 1].location)
-                                    d2 = distance(h2.house.location, grid.batteries[h3.battery_id - 1].location)
-                                    d3 = distance(h3.house.location, grid.batteries[h1.battery_id - 1].location)
-                                    d4 = distance(h4.house.location, grid.batteries[h1.battery_id - 1].location)
+                                    # Find battery ids
+                                    bat1Index = None
+                                    bat3Index =  None
+                                    for idx, battery in enumerate(grid.batteries):
+                                        if battery.id == h1.battery_id:
+                                            bat1Index = idx
+                                        if battery.id == h3.battery_id:
+                                            bat3Index = idx
+
+                                    d1 = distance(h1.house.location, grid.batteries[bat3Index].location)
+                                    d2 = distance(h2.house.location, grid.batteries[bat3Index].location)
+                                    d3 = distance(h3.house.location, grid.batteries[bat1Index].location)
+                                    d4 = distance(h4.house.location, grid.batteries[bat1Index].location)
 
                                     len_new = d1 + d2 + d3 + d4
 

@@ -1,10 +1,10 @@
 import json
 from tkinter.filedialog import askopenfilename
-from grid import Grid
-from house import House
-from battery import Battery
-from route import Route
-from distance import distance
+import Algoritmes
+from Object.grid import Grid
+
+
+
 
 input =  'filename'
 
@@ -31,4 +31,6 @@ for i in range(1, 6):
     current = data[str(i)]
     for house_id in current:
         grid.connect(house_id, i)
+
+grid = Algoritmes.hillclimber_greedy_double_swap(grid)
 grid.draw_grid("Best solution")

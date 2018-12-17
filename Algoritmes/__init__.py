@@ -12,7 +12,6 @@ from Algoritmes.simulated_annealing import simulated_annealing
 from Algoritmes.greedy_lookahead import greedy_lookahead
 from Algoritmes.random_connect import random_connect
 from Algoritmes.simple import simple
-from Algoritmes.silhouette import silhouette
 from Algoritmes.repeat_hillclimber_greedy import repeat_hillclimber_greedy
 from Algoritmes.repeat_simulated_annealing import repeat_simulated_annealing
 from Algoritmes.k_means import k_means

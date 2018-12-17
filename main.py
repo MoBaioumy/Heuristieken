@@ -6,6 +6,7 @@
 from Objects.grid import Grid
 import Algoritmes
 
+
 # External imports
 import csv
 import random
@@ -17,13 +18,13 @@ import copy
 from tkinter import Tk, Label, Frame, Button
 
 if __name__ == "__main__":
-    
+
     def wijk_1(k):
-        global i 
+        global i
         i = k
         print(i)
         return k
-    
+
     def hill_climber():
         global i
         print("hill climber")
@@ -34,11 +35,11 @@ if __name__ == "__main__":
         print("yo")
         grid = Algoritmes.greedy(grid)
         print("yo yo")
-        
+
 #    root = Tk()
 #    top_frame = Frame(root)
 #    top_frame.pack()
-#    
+#
 #    bottom_frame = Frame(root)
 #    bottom_frame.pack()
 #    welcome_label = Label(top_frame, text="Kies de wjik")
@@ -49,15 +50,15 @@ if __name__ == "__main__":
 #    button_2.pack(side='left')
 #    button_3 = Button(top_frame, text = "Wijk 3", fg="green", command=wijk_1(3))
 #    button_3.pack(side='left')
-#    
+#
 #    button_hill_climber = Button(bottom_frame, text = "Hill Climber", fg="Blue",command=hill_climber)
 #    button_hill_climber.pack(side='bottom')
 #    root.mainloop()
-    
+
     wijk_1(1)
     hill_climber()
-    
-    
+
+
 
 #    wijk_naam = "wijk" + str(i)
 #    grid = Grid(wijk_naam)

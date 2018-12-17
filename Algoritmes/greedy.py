@@ -20,9 +20,6 @@ def greedy(grid):
             for i in range(3):
                 grid.disconnect(random.randint(0, 150))
 
-        # shuffle battery order otherwise you always get the same solution with
-        # this algoritm, we want to explore all possible solutions
-        random.shuffle(grid.batteries)
 
         # find min and max output value of all houses
         all_outputs = [house.max_output for house in grid.houses]

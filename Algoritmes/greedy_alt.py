@@ -45,8 +45,8 @@ def greedy_alt(grid):
         if counter > MAX_ITERATIONS:
             break
 
-    # fill last part greedy if needed
+    # fill last part with the other greedy if needed
     if grid.unconnected_houses != []:
-        grid = greedy(grid)
+        grid = Algoritmes.greedy(grid)
 
     return grid
