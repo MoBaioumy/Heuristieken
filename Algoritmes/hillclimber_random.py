@@ -7,16 +7,20 @@ from Objects.grid import Grid
 from Objects.distance import distance
 import random
 
-def hillclimber_random(grid, it = 10000):
+def hillclimber_random(grid, iterations = 10000):
     """
-    Re-arrange for simulated_annealing
+    A version of the hillclimer that selects two houses at random.
+    Requires grid as input.
+
+    Optional parameters:
+
+    itterations = int (default: 10000; number of iterations)
+
     """
 
-    house1 = False
     i = 0
-    swap = 0
 
-    while i < it:
+    while i < iterations:
 
         found = False
         house1 = False
@@ -32,8 +36,12 @@ def hillclimber_random(grid, it = 10000):
                 for battery in grid.batteries:
                     for route in battery.routes:
                         if route.house.id == r1:
+
+                            # save house 1 and battery 1
                             h1 = route
                             b1 = battery
+
+                            # maximum avaliable output battery 1
                             max1 = h1.house.max_output + b1.current_capacity
                             house1 = True
                             break
@@ -43,16 +51,19 @@ def hillclimber_random(grid, it = 10000):
                 for route in battery.routes:
                     if route.house.id == r2:
 
+                        # save house 1 and battery 1
                         h2 = route
                         b2 = battery
+
+                        # maximum avaliable output battery 2
                         max2 = h2.house.max_output + b2.current_capacity
 
-                        # if swap is possible, swap
+                        # check if swap is possible
                         if h1.house.max_output < max2 and h2.house.max_output < max1 and h1.house.id != h2.house.id:
 
                             i += 1
 
-                            # Find battery ids
+                            # find battery ids
                             bat1Index = None
                             bat2Index =  None
                             for idx, battery in enumerate(grid.batteries):
@@ -61,23 +72,22 @@ def hillclimber_random(grid, it = 10000):
                                 if battery.id == h2.battery_id:
                                     bat2Index = idx
 
-
-                            # calculate is the swap improves the length of the connections
+                            # calculate if the swap improves the length of the connections
                             h1len = distance(h1.house.location, grid.batteries[bat2Index].location)
                             h2len = distance(h2.house.location, grid.batteries[bat1Index].location)
                             lengte_new = h1len + h2len
                             lengte_old = h1.length + h2.length
 
+                            # if the swap improves the length, make the swap
                             if lengte_new < lengte_old and h1.battery_id != h2.battery_id:
                                 grid.swap(h1, h2)
-                                swap = swap + 1
 
                             # stop while loop
                             found = True
                             break
 
-
             # in case we cannot find a house to swap with house 1, we need to reset the loop
-            # without this you might get stuck in a loop
+            # without this you might get stuck in the while loop
             house1 = False
+
     return grid
