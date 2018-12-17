@@ -54,8 +54,8 @@ def silhouette(i):
     file_name = f"Huizen_Batterijen/wijk{i}_huizen.csv"
     with open(file_name, "r") as csvfile:
         houses = [[int(row[0]), int(row[1])] for row in csv.reader(csvfile) if row[0].isdigit()]
-
-    X = np.ndarray(shape = (150, 2))
+        
+    X = np.ndarray(shape = (len(houses), 2))
 
 
     for i in range(len(houses)):
