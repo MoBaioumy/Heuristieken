@@ -10,13 +10,22 @@ import numpy as np
 import math
 
 
-def simulated_annealing(grid, N, hill = 'False', accept = 'std', cooling = 'std'):
+def simulated_annealing(grid, N, Tbegin = 100, Tend = 0.01, cooling = 'lin'):
     """
-    Simulated annealing
+    Simulated annealing algoritm. Description:
+
+    Requires grid as input.
+    Requires iterations N as input (int).
+
+    Optional input:
+    
+    Tbegin = int, default 100, begin temperature of simulated annealing
+    Tend = float, default 0.01, end temperature of simulated annealing
+    cooling = 'lin', 'exp', 'sig', 'geman', default 'lin'. Cooling scheme,
+    user can choose between a linear cooling scheme, exponential cooling
+    scheme, sigmodial cooling scheme and the Geman and Geman cooling scheme.
     """
-    # parameters
-    Tbegin = 100
-    Tend = 0.01
+
     T = Tbegin
 
     for i in range(N):
@@ -29,8 +38,7 @@ def simulated_annealing(grid, N, hill = 'False', accept = 'std', cooling = 'std'
         proposed = current + grid.proposed
 
         # calculate probability of acceptance
-        if accept == 'std':
-            probability = max(0, min(1, np.exp(-(proposed - current) / T)))
+        probability = max(0, min(1, np.exp(-(proposed - current) / T)))
 
         # if the proposed option is better than current, accept it
         if current > proposed:
@@ -45,9 +53,6 @@ def simulated_annealing(grid, N, hill = 'False', accept = 'std', cooling = 'std'
         d = 2
 
         # cooling schemes
-        # standard as a test
-        if cooling == 'std':
-            T = 0.999 * T
         # linear
         if cooling == 'lin':
             T = Tbegin - i * (Tbegin - Tend) / N
@@ -60,10 +65,5 @@ def simulated_annealing(grid, N, hill = 'False', accept = 'std', cooling = 'std'
         # geman and geman
         if cooling == 'geman':
             T = Tbegin / (np.log(i + d))
-
-    # end simulated_annealing with a hillclimber, to make sure there are no
-    # more ways to improve the grid
-    if hill == 'True':
-        grid  = Algoritmes.hillclimber_greedy(grid)
 
     return grid
