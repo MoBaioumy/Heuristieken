@@ -31,6 +31,4 @@ Het recept is dus als volgt:
 
 
 
-#### Variable weight clustering analysis
 
-Als de type batterijen veranderd hebben geen gestructureerde manier om goede oplossingen te behalen. Er word op dit moment gewerkt aan een custom algorithme voor dit probleem waarin de clusters niet alleen gemaakt worden maar een gewicht geven worden. Hiermee word de juiste type batterij gekozen.
