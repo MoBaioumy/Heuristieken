@@ -38,15 +38,17 @@ if __name__ == "__main__":
         grid = Grid(wijk_naam)
         grid = Algoritmes.greedy(grid)
         grid.draw_grid("")
+        grid.disconnect_all()
         root.destroy()
 
     def greedy_look_ahead():
-    global i
-    wijk_naam = "wijk" + str(i)
-    grid = Grid(wijk_naam)
-    grid = Algoritmes.greedy_lookahead(grid)
-    grid.draw_grid("")
-    root.destroy()
+        global i
+        wijk_naam = "wijk" + str(i)
+        grid = Grid(wijk_naam)
+        grid = Algoritmes.greedy_lookahead(grid)
+        grid.draw_grid("")
+        grid.disconnect_all()
+        root.destroy()
 
     def hill_climber_greedy():
         global i
@@ -54,6 +56,7 @@ if __name__ == "__main__":
         grid = Grid(wijk_naam)
         grid = Algoritmes.hillclimber_greedy(grid)
         grid.draw_grid("")
+        grid.disconnect_all()
         root.destroy()
 
     def simulated_annealing():
@@ -62,6 +65,7 @@ if __name__ == "__main__":
         grid = Grid(wijk_naam)
         grid = Algoritmes.simulated_annealing(grid)
         grid.draw_grid("")
+        grid.disconnect_all()
         root.destroy()
 
     def k_means():
@@ -70,6 +74,7 @@ if __name__ == "__main__":
         grid = Grid(wijk_naam)
         grid = Algoritmes.k_means(grid)
         grid.draw_grid("")
+        grid.disconnect_all()
         root.destroy()
 
     def repeat_simulated_annealing():
@@ -78,6 +83,7 @@ if __name__ == "__main__":
         grid = Grid(wijk_naam)
         grid = Algoritmes.repeat_simulated_annealing(grid)
         grid.draw_grid("")
+        grid.disconnect_all()
         root.destroy()
 
     def repeat_hill_climber_greedy():
@@ -94,6 +100,7 @@ if __name__ == "__main__":
         grid = Grid(wijk_naam)
         grid = Algoritmes.random_connect(grid)
         grid.draw_grid("")
+        grid.disconnect_all()
         root.destroy()
 
 
@@ -127,10 +134,10 @@ if __name__ == "__main__":
     button_k_means = Button(bottom_frame, text = "K means", fg="Blue",command=k_means)
     button_k_means.pack(side='bottom')
 
-    button_repeated_simulated_annealing = Button(bottom_frame, text = "Repeated simulated Annealing", fg="Blue",command=simulated_annealing)
+    button_repeated_simulated_annealing = Button(bottom_frame, text = "Repeated simulated Annealing", fg="Blue",command=repeat_simulated_annealing)
     button_repeated_simulated_annealing.pack(side='bottom')
 
-    button_repeat_hill_climber_greedy = Button(bottom_frame, text = "Repeated hill Climber Greedy", fg="Blue",command=hill_climber_greedy)
+    button_repeat_hill_climber_greedy = Button(bottom_frame, text = "Repeated hill Climber Greedy", fg="Blue",command=repeat_hill_climber_greedy)
     button_repeat_hill_climber_greedy.pack(side='bottom')
 
     button_random = Button(bottom_frame, text = "Random", fg="Blue",command=random_connect)
