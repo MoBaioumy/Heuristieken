@@ -31,71 +31,71 @@ if __name__ == "__main__":
         global i
         i = 3
         return i
-    
+
     def greedy():
         global i
         wijk_naam = "wijk" + str(i)
         grid = Grid(wijk_naam)
         grid = Algoritmes.greedy(grid)
-        grid.draw_grid("")    
+        grid.draw_grid("")
         root.destroy()
-        
+
     def greedy_look_ahead():
         global i
         wijk_naam = "wijk" + str(i)
         grid = Grid(wijk_naam)
         grid = Algoritmes.greedy_lookahead(grid)
-        grid.draw_grid("")    
+        grid.draw_grid("")
         root.destroy()
-        
+
     def hill_climber_greedy():
         global i
         wijk_naam = "wijk" + str(i)
         grid = Grid(wijk_naam)
         grid = Algoritmes.hillclimber_greedy(grid)
-        grid.draw_grid("")    
+        grid.draw_grid("")
         root.destroy()
-        
+
     def simulated_annealing():
         global i
         wijk_naam = "wijk" + str(i)
         grid = Grid(wijk_naam)
         grid = Algoritmes.simulated_annealing(grid)
-        grid.draw_grid("")    
+        grid.draw_grid("")
         root.destroy()
-        
+
     def k_means():
         global i
         wijk_naam = "wijk" + str(i)
         grid = Grid(wijk_naam)
         grid = Algoritmes.k_means(grid)
-        grid.draw_grid("")    
+        grid.draw_grid("")
         root.destroy()
-        
+
     def repeat_simulated_annealing():
         global i
         wijk_naam = "wijk" + str(i)
         grid = Grid(wijk_naam)
         grid = Algoritmes.repeat_simulated_annealing(grid)
-        grid.draw_grid("")    
+        grid.draw_grid("")
         root.destroy()
-        
+
     def repeat_hill_climber_greedy():
         global i
         wijk_naam = "wijk" + str(i)
         grid = Grid(wijk_naam)
         grid = Algoritmes.repeat_hillclimber_greedy(grid)
-        grid.draw_grid("")    
+        grid.draw_grid("")
         root.destroy()
-        
+
     def random_connect():
         global i
         wijk_naam = "wijk" + str(i)
         grid = Grid(wijk_naam)
         grid = Algoritmes.random_connect(grid)
-        grid.draw_grid("")    
+        grid.draw_grid("")
         root.destroy()
-        
+
 
     root = Tk()
     top_frame = Frame(root)
@@ -111,28 +111,28 @@ if __name__ == "__main__":
     button_2.pack(side='left')
     button_3 = Button(top_frame, text = "Wijk 3", fg="green", command=wijk_3)
     button_3.pack(side='left')
-    
+
     welcome_label = Label(bottom_frame, text="Kies het algorithme")
     welcome_label.pack()
 
     button_greedy_look_ahead = Button(bottom_frame, text = "Greedy Look ahead", fg="Blue",command=greedy_look_ahead)
     button_greedy_look_ahead.pack(side='bottom')
-    
+
     button_hill_climber_greedy = Button(bottom_frame, text = "Hill Climber Greedy", fg="Blue",command=hill_climber_greedy)
     button_hill_climber_greedy.pack(side='bottom')
-    
+
     button_simulated_annealing = Button(bottom_frame, text = "Simulated Annealing", fg="Blue",command=simulated_annealing)
     button_simulated_annealing.pack(side='bottom')
-    
+
     button_k_means = Button(bottom_frame, text = "K means", fg="Blue",command=k_means)
     button_k_means.pack(side='bottom')
-    
+
     button_repeated_simulated_annealing = Button(bottom_frame, text = "Repeated simulated Annealing", fg="Blue",command=simulated_annealing)
     button_repeated_simulated_annealing.pack(side='bottom')
-    
+
     button_repeat_hill_climber_greedy = Button(bottom_frame, text = "Repeated hill Climber Greedy", fg="Blue",command=hill_climber_greedy)
     button_repeat_hill_climber_greedy.pack(side='bottom')
-    
+
     button_random = Button(bottom_frame, text = "Random", fg="Blue",command=random_connect)
     button_random.pack(side='bottom')
     root.mainloop()
