@@ -18,6 +18,4 @@ Zie de volgende links voor alle deeldocumentatie:
 - [Deel A & B](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20%20A%20%26%20B.md)
 - [Deel C](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20C.md)
 - [Deel D](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20D.md)
-- [Deel E](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20E.md)
-- [Deel F](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Problem%20F.md)
 - [Acknowledgement](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/acknowledgement.md)

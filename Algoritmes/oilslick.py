@@ -13,7 +13,7 @@ def oilslick(grid, N):
     Each turn the output of a house will spread one segment in each direction
 
     This algorithm was written to determine the optimal position for batteries
-    However it is not finished
+    However it is not finished and now only would potentially provide the best position for 1 battery
 
     N = amount of turns
     """

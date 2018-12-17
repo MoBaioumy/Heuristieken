@@ -9,12 +9,6 @@ Het bedrijf SmartBatteryCompany heeft recentelijk drie types batterijen ontwikke
 
 
 
-#### State space probleem C
-
-
-
-
-
 ### Algorithmes
 
 Dit probleem kan gesplitst worden in 2 delen.

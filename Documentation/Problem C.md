@@ -19,15 +19,11 @@ Thomas Hoedeman -->
 | After K_means | 39490  | 40102  | 40615  |
 | Difference    | 25.7%  | 11.4%  | 5.0 %  |
 
-
-
-
-
-### Algorithmes
+### Algoritmes
 
 ### K Means
 
-Het K Means algorithmes is een clustering algorithme. Er wordt een getal k (aantal clusters) gespecificeerd en vervolgens worden k clusters van de data set gemaakt. [Lees meer](https://en.wikipedia.org/wiki/K-means_clustering)
+Het K Means algoritme is een clustering algoritme. Er wordt een getal k (aantal clusters) gespecificeerd en vervolgens worden k clusters van de data set gemaakt. [Lees meer](https://en.wikipedia.org/wiki/K-means_clustering)
 
 Het werkt als volg in ons geval:
 
@@ -53,17 +49,12 @@ Het werkt als volg in ons geval:
    ​
 
 
-
-
 Het recept van stap C gaat dus als volg:
 
 1. **Bepaal positie van batterij met K_means**
-2. **Greedy**
-3. **Hill Climber/ double Hill Climber**
-
-
-
-
+2. **Greedy variant of random**
+3. **Hill Climber variant**
+4. **Simulated Annealing**
 
 # Appendix
 

@@ -61,8 +61,8 @@ Dit algoritme wordt vooral gebruikt als vergelijking om in ieder geval een oplos
 
 #### Random algoritme
 
-Het random algoritme verbind per battery random huizen totdat de capaciteit vol is
-Wanneer dit geen oplossing opleverd ontbind hij alles en begint opnieuw totdat er resultaat is
+Het random algoritme verbind per batterij random huizen totdat de capaciteit vol is
+Wanneer dit geen oplossing oplevert ontbind hij alle connecties en begint opnieuw totdat er resultaat is.
 
 #### Greedy algoritme:
 
@@ -71,55 +71,57 @@ Voor het greedy algoritme maken we gebruik van de method find_closest_house waar
 De batterijen worden één voor één gevuld met huizen m.b.v. de find_closest_house method. Telkens wordt het dichtstbijzijnde huis gepakt tot de batterij capaciteit op het niveau zit waarbij de batterij capaciteit - de capaciteit van het dichtstbijzijnde huis tussen de 5 en de maximale output van het huis valt. In dit geval gaan we opzoek naar het huis dat qua capaciteit goed in de overgebleven capaciteit van de batterij past. Wanneer er meerdere huizen onder die voorwaarde vallen, kiezen we het huis met de kortste afstand. Als de overgebleven capaciteit nog boven de 10 valt, dan doen we hetzelfde als hiervoor beschreven, maar dan met twee huizen tegelijk.
 
 ### Greedy_alt:
-Sorteert de huizen op output van hoog naar laag en verbind vervolgens de huizen van hoog naar laag aan de dichtstbijzijnde batterij. Indien dit geen oplossing opleverd vult hij de laatste huizen met het greedy algoritm
+Sorteert de huizen op output van hoog naar laag en verbind vervolgens de huizen van hoog naar laag aan de dichtstbijzijnde batterij. Indien dit geen oplossing opleverd vult hij de laatste huizen met het greedy algoritme
 
 ### Greedy_lookahead:
 Zoekt elke keer het huis dat de korste verbinding heeft naar de dichtstbijzijnde batterij en verbind deze. Wanneer de capaciteit van een batterij tussen de minimale output en de gemiddelde output x N komt wordt een functie aangeroepen die alle combinaties afgaat om die batterij te vullen en dan de gene kiest die de korste afstand oplevert.
-Wanneer er geen volledige oplossing is gegenereerd wordt greedy aangeroepen om de batterijen te vullen. 
+Wanneer er geen volledige oplossing is gegenereerd wordt greedy aangeroepen om de batterijen te vullen.
 
-#### Hill climber:
+#### Hillclimber:
 
-De hill climber pakt een oplossing van of het greedy algoritme of het random algoritme. We hebben verschillende variaties op het hillclimber algoritme. Elke hill climber werkt in essentie hetzelfde, het gaat namelijk iteratief opzoek naar een verbetering en past deze verbetering toe. Dit gaat door tot dat er geen verbeteringen meer te vinden zijn. Hieronder staat per variatie beschreven wat de specifieke hill climbers doen.
+De hillclimbers zijn iteratief en verbeteren dus een bestaande oplossing. We hebben verschillende variaties op het hillclimber algoritme. Elke hill climber werkt in essentie hetzelfde, het gaat namelijk iteratief opzoek naar een verbetering en past deze verbetering toe. Dit gaat door tot dat er geen verbeteringen meer te vinden zijn. Hieronder staat per variatie beschreven wat de specifieke hill climbers doen.
 
-#### Single Hill Climber First Best
+#### Hillclimber Greedy:
+Zoekt een random huis dat verbonden is en kijkt of en met welk ander huis een wissel gemaakt kan worden. De wissel die de beste verbetering geeft wordt uitgevoerd. Hij doet dit totdat er geen wissels meer mogelijk zijn.  
 
-De single hill climber gaat per huis af of er andere huizen bij andere batterijen die kunnen wisselen van plek (dus de capaciteit wordt niet overschreden), en berekent vervolgens of de totale afstand van beide huizen minder wordt als er wordt gewisseld. Als dit zo is dan worden de huizen **direct** gewisseld, dit gaat zo lang door tot er geen wissel meer kan worden gemaakt, we zitten hier dan in een lokaal minimum.
+#### Hillclimber Greedy Double Swap:
 
-#### Single Hill Climber Best First
+Dit is een variatie op de greedy hillclimber. Het verschil is dat we 2 sets van 2 huizen verwisselen in plaats van 2 sets van 1 huis. Dit algoritme runt eerst op de greedy hill climber. Dit algoritme is aanzienlijk slomer, doordat het heel veel meer combinaties vergelijkt per iteratie, namelijk maximaal (150 * 149 * 148 * 147) i.p.v. (150 * 149). Het geeft doordat het de eerst de greedy hillclimber runt altijd een even goede of betere oplossing.
 
-Het Best First algoritme is een variatie op de hill climber waar eerst alle mogelijke verwisselingen worden gezocht en vervolgens wordt de beste optie daarvan uitgevoerd. In de praktijk betekent dit dat er minder iteraties nodig zijn om tot het lokale minimum te komen. Voor wijk 2 zijn er bijvoorbeeld maar 25 iteraties nodig om tot het lokale minimum te komen met dit algoritme, terwijl er 134 iteraties zijn bij het first best algortime. De gemiddelde scores zijn echter lager dan het first best algoritme (zie tabel)
+#### Hillclimber Random:
 
-#### Double Hill Climber
+Deze hillclimber kiest elke keer random twee huizen, wanneer het wisselen van deze huizen de totale kosten verlaagt wordt deze uitgevoerd. Door het random element heeft deze hillclimber veel meer stappen nodig om tot een oplossing te komen waar geen wissels meer gemaakt kunnen worden. Dit algoritme is vooral geschreven om te kunnen vergelijke met simulated annealing.
 
-Dit is een variatie op de hill climber. Het verschil is dat we 2 sets van 2 huizen verwisselen in plaats van 2 sets van 1 huis. Dit algoritme runt eerst op de normale hill climber. Dit algoritme runt aanzienlijk slomer, want het moet heel veel meer combinaties vergelijken per iteratie, namelijk maximaal (150 * 149 * 148 * 147) i.p.v. (150 * 149). Het geeft doordat het de eerst de normale hillclimber runt altijd een even goede of een betere oplossing. Alleen in wijk 2 zien we een kleine verbetering van de oplossing.
-
-#### Random hill climber:
+#### Repeat random --> greedy hillclimber
 
 De random hill climber runt het random algoritme totdat deze een oplossing geeft. Vervolgens run hij de hillclimber op deze oplossing.
-Het algoritme herhaalt dit totdat een gegeven aan tal herhalingen is bereikt of tot dat een oplossing onder de gegeven bound is gevonden. Random hill climber is een stochastisch algoritme, het geeft dus elke keer een andere oplossing. Dit zorgt ervoor dat we meer plekken in de state space kunnen exploreren dan de greedy hill climber. Met genoeg iteraties geeft dit ons ook de beste resultaten, alleen gemiddeld gezien zijn de resultaten minder goed dan de greedy hill climber.
+Het algoritme herhaalt dit totdat een gegeven aantal herhalingen is bereikt of tot dat een oplossing onder de gegeven bound is gevonden. Random hill climber is een stochastisch algoritme, het geeft dus elke keer een andere oplossing. Dit zorgt ervoor dat we meer plekken in de state space kunnen exploreren dan de greedy hill climber. Met genoeg iteraties geeft dit ons ook de beste resultaten, alleen gemiddeld gezien zijn de resultaten minder goed dan de greedy hill climber resultaten.
+
 
 #### Simulated annealing
 
-**Werkt nog niet helemaal.**. Simulated annealing is een algoritme om lokale optima te vermijden door oplossingen te accepteren die minder zijn dan de vorige. Dit zorgt ervoor dat je in de state space naar andere plekken gaat waar wellicht een betere oplossing ligt.
+Simulated annealing is een algoritme om lokale optima te vermijden door ook oplossingen te accepteren die de kosten niet verbeteren. Dit gebeurd aan de hand van verschillende koeling schema's. Met simualted annealing kun je uit lokale minima komen die een normale hillclimber beperken om de statespace verder te exploreren.
 
+#### Repeat simulated annealing
+Dit script wordt gebruikt om simualted annealing meerdere keren te herhalen en de resultaten eventueel te vergelijken met andere algoritmes.
 
 **Tussenstand**
 
 |                    | Wijk 1    | Wijk 2    | Wijk 3     |
 | ------------------ | --------- | --------- | ---------- |
-| Simple             | **76642** | **66679** | **69271**  |
-| Greedy Normaal     | **60586** | **49138** | **50371**  |
-| Greedy HillClimber | **56536** | **45799** | **44125**  |
-| Greedy Double Hill | **56536** | **45781** | **44125**  |
-| Hillclimber Greedy | **56986** | **45835** | **44107**  |
-| Random hillclimber | **56230** | **45628** | **43891**  |
+| Simple             | **75256** | **65329** | **69271**  |
+| Greedy             | **58795** | **47896** | **46663**  |
+| Greedy_alt         | **60667** | **47950** | **47509**  |
+| Greedy_lookahead   | **57931** | **48202** | **51064**  |
+| Greedy -> Hill     | **56365** | **45664** | **43891**  |
+| Greedy -> D Hill   | **56536** | **45781** | **44125**  |
+| Random --> Greedy hillclimber | **56230** | **45628** | **43891**  |
 | Iteraties r. hill  | **65000** | **130000**| **40000**  |
 | Lower bound        | **53188** | **45268** | **42757**  |
 
 |                                         | Wijk 1    | Wijk 2    | Wijk 3     |
 | --------------------------------------- | --------- | --------- | ---------- |
 |verschil lower bound en beste oplossing  | **5,41%** | **0,79%** | **5,00%**    |
-
 
 
 

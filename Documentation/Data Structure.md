@@ -23,7 +23,7 @@ Eigenschappen
 - Houses - (list)
 - Unconnected houses - (list)
 - Batteries - (list)
-- Groote - (tuple)
+- Size - (tuple)
 
 Methods
 
@@ -34,26 +34,12 @@ Methods
 - Disconnect: plaats een huis terug in onverbonden en verwijderd de bijhorende route uit de batterij.
 - Disconnect_all: disconnect alle huizen in de grid
 - Calculate_total_cost: bereken de kosten van de grid met de huidige verbinding inclusief de kosten van de batteirjen
-- Shortest_paths: vind het kor
-- Longest_paths: vind alle korste afstanden naar een batterij van elk huis
-- draw grid: creert een visuele represenatie van de grid
-- draw_route: tekent een route
+- Lower bound: berekent de lower bound
+- Upper bound: berekent de upper bound
+- draw grid: creert een visuele representatie van de grid
+- swap: wisselt 2 of 4 batterijen
+- move_batteries_random: verplaatst de batterijen naar random plekken
 - range_connected: berekent het bereik van huizen dat aan een batterij verbonden kan worden dus hoeveel minimaal en hoeveel maximaal
-
-Algoritmes --  voor een beschrijving zie de documentatie van de sub vragen.
-
-- Simple (A)
-- Random (A)
-- Greedy_alt (B)
-- Greedy (B)
-- Find_best_option
-- Hillclimber first best (B)
-- Hillclimber best first (B)
-- Hillclimber double first best (B)
-- Variaties van begin hillclimber:
-  - Greedy / Hillclimber (deterministisch) (B)
-  - Random / Hillclimber (stochastisch) (B)
- - K means (C)
 
 
 #### Batterij
@@ -99,3 +85,17 @@ Eigenschappen
 - ID: (int)
 - Locatie: (tuple)
 - Max output: (float)
+
+
+#### Algoritmes --  voor een beschrijving zie de documentatie van de sub vragen.
+
+- Simple (A)
+- Random (A)
+- Greedy_alt (B)
+- Greedy (B)
+- Greedy_lookahead (B)
+- Hillclimber greedy (B)
+- Hillclimber greedy double swap (B)
+- Hillclimber random (B)
+- K means (C)
+- Oilslick (C)
