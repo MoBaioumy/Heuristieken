@@ -15,13 +15,15 @@ class Battery(object):
 
     def __init__(self, x_coordinate, y_coordinate, bat_type, capacity, cost):
         """
-        Initialize a battery, assign it coordinates, type, capacity and id
+        Initialize a battery, assign its coordinates, type, capacity and id
         """
+
         self.location = (int(x_coordinate), int(y_coordinate))
         self.max_capacity = float(capacity)
 
         # keeps track of amount of capacity leftover
         self.current_capacity = float(capacity)
+
         self.type = bat_type
         self.cost = cost
 
@@ -32,19 +34,19 @@ class Battery(object):
         # list of all routes from this battery
         self.routes = list()
 
-        # route cost
+        # initialize route cost to zero
         self.cost_routes = 0
 
     def __str__(self):
         """
-        Print description
+        Print battery description
         """
         return f"id: {self.id} type: {self.type} x: {self.location[0]} y: {self.location[1]} capacity: {self.max_capacity}"
 
 
     def move(self, location):
         """
-        Move battery to new x/y location
+        Move battery to new x/y location. Location input is of type Tuple.
         """
         # new location
         self.location = location
@@ -59,6 +61,7 @@ class Battery(object):
         # update cost of routes
         self.cost_routes = self.calculate_routes_cost()
 
+        # print the movement
         print(f"Moved battery {self.id} to {self.location}")
 
 
@@ -66,7 +69,7 @@ class Battery(object):
         """
         Finds the closest house to this battery in input list
         """
-        # initiate
+        # initiate distance to infinity and have no houses as closest
         smallest_distance = float('inf')
         smallest_distance_house = None
 

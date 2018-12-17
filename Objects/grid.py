@@ -17,6 +17,8 @@ import copy
 import matplotlib.pyplot as plt
 import numpy as np
 
+GRID_LENGTH = 50
+GRID_WIDTH = 50
 
 class Grid(object):
     """
@@ -26,9 +28,10 @@ class Grid(object):
     id = 1
     counter = 0
 
+
     def __init__(self, wijk_N):
         """
-        Initialize a grid based on given excel files
+        Initialize a grid based on given csv files
         """
         # id
         self.id = Grid.id
@@ -40,19 +43,19 @@ class Grid(object):
         self.batteries = self.load_batteries(f"Huizen_Batterijen/{wijk_N}_batterijen.csv")
 
         # size of grid
-        self.size = (50, 50)
+        self.size = (GRID_WIDTH, GRID_LENGTH)
 
 
     def __str__(self):
         """
-        Print description
+        Print grid description
         """
         return f"Wijk: {self.name[-1]} GridID: {self.id} Grid size: {self.size}"
 
 
     def load_houses(self, filename):
         """
-        Load houses from .csv
+        Load houses from csv file
         """
         # Open file
         with open(filename, "r") as csvfile:
@@ -70,7 +73,7 @@ class Grid(object):
         with open(filename, "r") as csvfile:
             # loop over rows of csv file make battery based on data and add to battery list
             batteries = [Battery(row[0], row[1], "Normal", row[2], int(row[3])) for row in csv.reader(csvfile) if row[0].isdigit()]
-        
+
 #        for i in range(6):
 #            batteries = [Battery(np.random.randint(20 + i, 120), np.random.randint(30 + i, 120), "New", 1800, 1800)]
         return batteries
@@ -268,12 +271,12 @@ class Grid(object):
             plt.plot(current, size, 'k', linewidth=0.2)
 
         # set potential colors for batteries
-        colors = ['b', 'g', 'r', 'm', 'c', 'y', 'k', 'm', 'r', 'g', 'r', 'm', 'c', 'y', 'k', 'm', 'r', 'y', 'k', 'm', 'r']
+        colors = ['b', 'g', 'r', 'm', 'c', 'y']
 
         # plot all houses and batteries, house has color of battery it is connected to
         # for each route in each battery plot the grid_routes in the same color as the battery
         for idx, battery in enumerate(self.batteries):
-            color = colors[idx]
+            color = colors[idx % 6]
             # plot battery
             plt.plot(battery.location[0], battery.location[1], color + '8', markersize = 12)
 
@@ -360,12 +363,6 @@ class Grid(object):
             # move battery
             battery.move(location)
 
-
-    def best_battery_number(self):
-        """
-        Loads file with best battery locations for this grid determined by k_means
-        """
-        self.batteries = self.load_batteries(f"Huizen_Batterijen/{self.name}_batterijen_opt_number.csv")
 
 
     def re_arrange(self):

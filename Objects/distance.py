@@ -5,7 +5,6 @@
 
 def distance(location_1, location_2):
     """
-    Made for the SmartGrid assignment for Programmeertheorie
     Takes two location tuples as input
     Returns the manhattan distance between these locations
     """

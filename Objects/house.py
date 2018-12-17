@@ -11,7 +11,7 @@ class House(object):
     id = 1
     def __init__(self, x_coordinate, y_coordinate, max_output):
         """
-        Initialize an house, give it coordinates, assign maximum output and id
+        Initialize a house, give it coordinates, assign maximum output and id
         """
         self.location = (int(x_coordinate), int(y_coordinate))
         self.max_output = float(max_output)
@@ -22,6 +22,6 @@ class House(object):
 
     def __str__(self):
         """
-        Print name and description
+        Print name and description of the house
         """
         return f"id: {self.id} x: {self.location[0]} y: {self.location[1]} max output: {self.max_output}"
