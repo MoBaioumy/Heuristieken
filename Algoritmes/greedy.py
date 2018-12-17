@@ -6,7 +6,6 @@
 from Objects.grid import Grid
 import random
 
-
 def greedy(grid):
     """
     Loops over all the batteries and connects closest house to battery if

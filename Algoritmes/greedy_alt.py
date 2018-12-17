@@ -8,7 +8,6 @@ from Objects.distance import distance
 import random
 import Algoritmes
 
-
 MAX_ITERATIONS = 1000
 
 def greedy_alt(grid):

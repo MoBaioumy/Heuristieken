@@ -6,7 +6,6 @@
 from Objects.grid import Grid
 from Objects.distance import distance
 import Algoritmes
-
 import itertools
 import random
 import numpy as np
