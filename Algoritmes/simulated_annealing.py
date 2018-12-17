@@ -16,16 +16,11 @@ import random
 def simulated_annealing(grid, N, Tbegin = 100, Tend = 0.01, cooling = 'lin'):
     """
     Simulated annealing algoritm. Description:
-
     Requires grid as input.
     Requires iterations N as input (int).
-
     Optional input:
-
     Tbegin = int, default 100, begin temperature of simulated annealing
-
     Tend = float, default 0.01, end temperature of simulated annealing
-
     cooling = 'lin', 'exp', 'sig', 'geman', default 'lin'. Cooling scheme,
     user can choose between a linear cooling scheme, exponential cooling
     scheme, sigmodial cooling scheme and the Geman and Geman cooling scheme.
