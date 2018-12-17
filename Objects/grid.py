@@ -99,10 +99,8 @@ class Grid(object):
 
         # error check
         if not B:
-            print("Battery not found, please enter the id not the index number")
             return False
         if len(B) > 1:
-            print("Mutiple batteries found, please reload grid")
             return False
 
         # unlist
