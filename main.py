@@ -14,25 +14,67 @@ import pandas as pd
 import numpy as np
 import copy
 
+from tkinter import Tk, Label, Frame, Button
+
 if __name__ == "__main__":
+    
+    def wijk_1(k):
+        global i 
+        i = k
+        print(i)
+        return k
+    
+    def hill_climber():
+        global i
+        print("hill climber")
+        print(i)
+        wijk_naam = "wijk" + str(i)
+        print(wijk_naam)
+        grid = Grid(wijk_naam)
+        print("yo")
+        grid = Algoritmes.greedy(grid)
+        print("yo yo")
+        
+#    root = Tk()
+#    top_frame = Frame(root)
+#    top_frame.pack()
+#    
+#    bottom_frame = Frame(root)
+#    bottom_frame.pack()
+#    welcome_label = Label(top_frame, text="Kies de wjik")
+#    welcome_label.pack()
+#    button_1 = Button(top_frame, text = "Wijk 1", fg="green", command=wijk_1(1))
+#    button_1.pack(side='left')
+#    button_2 = Button(top_frame, text = "Wijk 2", fg="green", command=wijk_1(2))
+#    button_2.pack(side='left')
+#    button_3 = Button(top_frame, text = "Wijk 3", fg="green", command=wijk_1(3))
+#    button_3.pack(side='left')
+#    
+#    button_hill_climber = Button(bottom_frame, text = "Hill Climber", fg="Blue",command=hill_climber)
+#    button_hill_climber.pack(side='bottom')
+#    root.mainloop()
+    
+    wijk_1(1)
+    hill_climber()
+    
+    
 
-    i = 3
-    wijk_naam = "wijk" + str(i)
-    grid = Grid(wijk_naam)
-    grid = Algoritmes.k_means(grid)
-    for bat in grid.batteries:
-        print(bat)
-    grid = Algoritmes.greedy(grid)
-    for bat in grid.batteries:
-        print(bat)
-
-    grid.draw_grid("")
-    grid = Algoritmes.hillclimber_random(grid)
-    for bat in grid.batteries:
-        print(bat)
-    # # grid.re_arrange_random()
-    # # grid.simple()
-    grid.draw_grid("")
+#    wijk_naam = "wijk" + str(i)
+#    grid = Grid(wijk_naam)
+#    grid = Algoritmes.k_means(grid)
+#    for bat in grid.batteries:
+#        print(bat)
+#    grid = Algoritmes.greedy(grid)
+#    for bat in grid.batteries:
+#        print(bat)
+#
+#    grid.draw_grid("")
+#    grid = Algoritmes.hillclimber_random(grid)
+#    for bat in grid.batteries:
+#        print(bat)
+#    # # grid.re_arrange_random()
+#    # # grid.simple()
+#    grid.draw_grid("")
     # gridSimple = Algoritmes.greedy(grid)
     # gridSimple = Algoritmes.hillclimber_random(grid)
     # grid.draw_grid("")
