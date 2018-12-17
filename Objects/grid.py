@@ -289,10 +289,13 @@ class Grid(object):
         # plot all unconnected houses in black
         for house in self.unconnected_houses:
             plt.plot(house.location[0], house.location[1], 'k8', markersize = 5)
+            
+        # get lowerbound
+        lower_bound = self.lower_bound()
 
         # costs and wijk name in title
         cost = self.calculate_total_cost()
-        plt.title(f"{self.name} costs: {cost} {info}")
+        plt.title(f"{self.name} costs: {cost} {info}, lower bound: {lower_bound}")
 
         plt.show()
 
