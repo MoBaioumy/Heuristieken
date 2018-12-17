@@ -9,16 +9,19 @@ import random
 
 def greedy(grid):
     """
-    Loops over batteries and connects closest house to battery
+    Loops over all the batteries and connects closest house to battery if
+    there is capacity left
     """
     # repeat untill all houses are connected meaning a solution is found
     while grid.unconnected_houses != []:
-        # disconnect 3 random houses if solution is not found, prevents that no solution will be found, makes outcome worse
+        # disconnect 3 random houses if solution is not found, this
+        # prevents that no solution will be found and makes outcome worse
         if len(grid.unconnected_houses) < 3:
             for i in range(3):
                 grid.disconnect(random.randint(0, 150))
 
-        # shuffle battery order otherwise you always get the same solution with this algoritm, we want to explore all possible solutions
+        # shuffle battery order otherwise you always get the same solution with
+        # this algoritm, we want to explore all possible solutions
         random.shuffle(grid.batteries)
 
         # find min and max output value of all houses

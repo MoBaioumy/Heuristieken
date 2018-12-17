@@ -56,6 +56,7 @@ class Grid(object):
         """
         # Open file
         with open(filename, "r") as csvfile:
+
             # loop over rows of csv file, make house based on content and add house to house list of grid
             houses = [House(row[0], row[1], row[2]) for row in csv.reader(csvfile) if row[0].isdigit()]
         return houses
