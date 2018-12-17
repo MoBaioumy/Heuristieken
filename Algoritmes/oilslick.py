@@ -7,8 +7,16 @@ from Objects.grid import Grid
 
 import copy
 
+def oilslick(grid, N):
+    """
+    Oilslick calculates for each grid point how much output can reach that point in N amount of turns
+    Each turn the output of a house will spread one segment in each direction
 
-def move_calc(grid):
+    This algorithm was written to determine the optimal position for batteries
+    However it is not finished
+
+    N = amount of turns
+    """
     # generate tuple's of all coordinates
     coordinates = list()
     for x in range (0, 51):
@@ -30,7 +38,7 @@ def move_calc(grid):
 
     finished_locations = list()
 
-    for i in range(15):
+    for i in range(N):
         # make structure to hold new values
         new_grid_locations = {}
         for location in coordinates:
@@ -68,10 +76,3 @@ def move_calc(grid):
             new_grid_locations[loc] = temp
         del grid_locations
         grid_locations = copy.deepcopy(new_grid_locations)
-
-    print(grid_locations)
-    for i in grid_locations:
-        if  sum(grid_locations[i]) > max:
-            print(i)
-
-    return grid

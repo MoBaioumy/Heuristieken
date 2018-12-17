@@ -74,8 +74,6 @@ class Grid(object):
             # loop over rows of csv file make battery based on data and add to battery list
             batteries = [Battery(row[0], row[1], "Normal", row[2], int(row[3])) for row in csv.reader(csvfile) if row[0].isdigit()]
 
-#        for i in range(6):
-#            batteries = [Battery(np.random.randint(20 + i, 120), np.random.randint(30 + i, 120), "New", 1800, 1800)]
         return batteries
 
 
@@ -126,9 +124,6 @@ class Grid(object):
         route = Route(H, B.id, B.location)
         self.batteries[B_index].routes.append(route)
 
-        # print connection made
-        print(f"connected house {H.id} with battery {B.id}")
-
         # recalculate battery current capacity
         self.batteries[B_index].current_capacity -= H.max_output
 
@@ -151,7 +146,6 @@ class Grid(object):
                     self.unconnected_houses.append(route.house)
                     # remove route
                     self.batteries[battery_idx].routes.remove(route)
-                    print(f"house {house_id} disconnected")
                     return True
         # if house id not found print error message
         print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")

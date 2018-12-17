@@ -17,9 +17,10 @@ import copy
 
 if __name__ == "__main__":
 
-    i = 2
+    i = 3
     wijk_naam = "wijk" + str(i)
     grid = Grid(wijk_naam)
+    # grid = Algoritmes.k_means(grid)
     grid =  Algoritmes.greedy_lookahead(grid)
     grid.draw_grid()
 
@@ -28,7 +29,7 @@ if __name__ == "__main__":
 
     grid = Algoritmes.simulated_annealing(grid, 100000)
     grid.draw_grid()
-    # grid = Algoritmes.k_means(grid)
+
     # for bat in grid.batteries:
     #     print(bat)
     # grid = Algoritmes.greedy(grid)

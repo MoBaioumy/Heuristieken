@@ -46,6 +46,7 @@ def hillclimber_greedy_double_swap(grid):
                                         if battery.id == h3.battery_id:
                                             bat3Index = idx
 
+                                    # get all distances
                                     d1 = distance(h1.house.location, grid.batteries[bat3Index].location)
                                     d2 = distance(h2.house.location, grid.batteries[bat3Index].location)
                                     d3 = distance(h3.house.location, grid.batteries[bat1Index].location)

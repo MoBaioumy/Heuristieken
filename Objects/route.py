@@ -73,5 +73,4 @@ class Route(object):
                 current_location = (current_location[0], current_location[1] + 1)
                 grid_route.append(current_location)
         # return list of coordinates of grid_route and print length
-        print(f"length route:{self.length}")
         return grid_route

@@ -3,7 +3,6 @@
 # Mohamed Baioumy
 # Thomas Hoedeman
 
-
 from Objects.grid import Grid
 from Objects.distance import distance
 import Algoritmes
@@ -13,12 +12,14 @@ import random
 import numpy as np
 
 
-def greedy_lookahead(grid, N = 4, break_n = 300):
+def greedy_lookahead(grid, N = 4, break_n = 500):
     """
     Greedy lookahead will find the house with the shortest distance to a battery
     When a batteries current capacity goes between a certain range the algortim will call the look function
     This look function will look at all possible combinations of houses to fill this battery
     Look will return the combination of houses with the shortest distance
+    N =  the average amount of houses you wish to look ahead
+    break_n =  is the number of iterations you want the algorithm to try finding a solution
     """
     # initiate counter that will determine when to break
     counter = 0
@@ -49,7 +50,7 @@ def greedy_lookahead(grid, N = 4, break_n = 300):
                         houses = look(grid, battery)
                         for h in houses:
                             grid.connect(h.id, battery.id)
-
+                            
             if lowest_dist_house < best_dist:
                 connect_bat_id = bat_id
                 connect_house_id = house_id
