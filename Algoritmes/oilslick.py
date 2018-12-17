@@ -38,6 +38,7 @@ def oilslick(grid, N):
 
     finished_locations = list()
 
+
     for i in range(N):
         # make structure to hold new values
         new_grid_locations = {}
@@ -76,3 +77,10 @@ def oilslick(grid, N):
             new_grid_locations[loc] = temp
         del grid_locations
         grid_locations = copy.deepcopy(new_grid_locations)
+
+    output_locations= []
+    for i in grid_locations:
+        if sum(grid_locations[i]) > max:
+            output_locations.append(i)
+
+    return output_locations

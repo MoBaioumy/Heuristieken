@@ -56,6 +56,7 @@ def repeat_simulated_annealing(grid, N = 1, save = 'yes', compare = 'yes', sa_it
 
     for i in range(N):
 
+        print('Current iteration: ', i)
         # let the use pick from which point to start
         if begin == 'random':
 
@@ -69,9 +70,9 @@ def repeat_simulated_annealing(grid, N = 1, save = 'yes', compare = 'yes', sa_it
 
         # greedy begin
         if begin == 'greedy':
-            grid = Algoritmes.greedy(grid)
+            grid = Algoritmes.greedy_lookahead(grid)
 
-        if hill == 'True':
+        if hill == 'yes':
 
             grid = Algoritmes.hillclimber_random(grid, iterations = hill_iterations)
 

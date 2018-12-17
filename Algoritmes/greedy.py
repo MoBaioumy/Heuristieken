@@ -41,7 +41,6 @@ def greedy(grid):
 
                 # input check
                 if closest_house == None:
-                    print("No house to connect")
                     break
 
                 house_id_connect = closest_house.id

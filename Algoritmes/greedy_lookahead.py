@@ -50,7 +50,7 @@ def greedy_lookahead(grid, N = 4, break_n = 500):
                         houses = look(grid, battery)
                         for h in houses:
                             grid.connect(h.id, battery.id)
-                            
+
             if lowest_dist_house < best_dist:
                 connect_bat_id = bat_id
                 connect_house_id = house_id

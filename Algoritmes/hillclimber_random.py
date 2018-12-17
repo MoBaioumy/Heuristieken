@@ -7,14 +7,14 @@ from Objects.grid import Grid
 from Objects.distance import distance
 import random
 
-def hillclimber_random(grid, iterations = 10000):
+def hillclimber_random(grid, iterations = 100000):
     """
     A version of the hillclimer that selects two houses at random.
     Requires grid as input.
 
     Optional parameters:
 
-    itterations = int (default: 10000; number of iterations)
+    iterations = number of iterations, (int), default: 100000
 
     """
 
