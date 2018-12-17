@@ -12,10 +12,35 @@ from datetime import datetime
 import json
 
 
-def repeat_simulated_annealing(grid, N = 1, save = 'no', compare = 'yes', sa_iterations = 50000, hill_iterations = 10000, hill = 'True', begin = 'random', cooling = 'lin', Tbegin = 100, Tend = 0.01):
+def repeat_simulated_annealing(grid, N = 1, save = 'yes', compare = 'yes', sa_iterations = 50000, hill_iterations = 10000, hill = 'yes', begin = 'random', cooling = 'lin', Tbegin = 100, Tend = 0.01):
 
     """
-    Repeats simulated annealing for a x number of times with different options.
+    Repeats simulated annealing for a N number of times with different options.
+
+    Optional parameters:
+
+    N = number of repeats, (int), default = 1.
+
+    save = save the file, ('yes', 'no'), default is 'yes'.
+
+    compare = compare simulated annealing with normal hillclimber, ('yes', 'no'), default is 'yes'.
+
+    sa_iterations = number of iterations for simulated annealing, (int), default = 50000.
+
+    hill_iterations = number of iterations for hillclimber before simulated annealing, (int), default = 50000.
+
+    hill = hillclimber before simulated annealing, ('yes', 'no'), default is 'yes'.
+
+    begin = initial starting condition of grid, ('random', 'greedy'), default is 'random'.
+
+    cooling = 'lin', 'exp', 'sig', 'geman', default 'lin'. Cooling scheme,
+    user can choose between a linear cooling scheme, exponential cooling
+    scheme, sigmodial cooling scheme and the Geman and Geman cooling scheme.
+
+    Tbegin = int, default 100, begin temperature of simulated annealing
+
+    Tend = float, default 0.01, end temperature of simulated annealing
+
     """
 
     costs = []
@@ -24,6 +49,10 @@ def repeat_simulated_annealing(grid, N = 1, save = 'no', compare = 'yes', sa_ite
     costs_hill = [999999]
     costs_hill2 = [999999]
     combination = {}
+
+    # ensure that Tend is higher than 0, otherwise exponential cooling scheme does not work.
+    if Tend < 0:
+        Tend = 0.01
 
     for i in range(N):
 
