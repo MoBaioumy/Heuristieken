@@ -5,7 +5,7 @@
 
 This repository is for the course *'Heuristieken'* of fall 2018. Our project is about [Smart Grids](http://heuristieken.nl/wiki/index.php?title=SmartGrid).
 
-### !For user interface run main.py!
+### Check the [User guide](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/User%20guide.md)
 
 ### Description problem
 
