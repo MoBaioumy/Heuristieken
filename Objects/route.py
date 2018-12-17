@@ -3,6 +3,8 @@
 # Mohamed Baioumy
 # Thomas Hoedeman
 
+GRID_LINE_COST = 9
+
 class Route(object):
     """
     Representation of a route object in the SmartGrid assignment
@@ -24,7 +26,7 @@ class Route(object):
         self.length = abs(self.house.location[0] - self.battery_location[0]) + abs(self.house.location[1] - self.battery_location[1])
 
         # calculate cost
-        self.cost_gridline = 9
+        self.cost_gridline = GRID_LINE_COST
         self.cost = self.length * self.cost_gridline
 
         # set route
@@ -34,7 +36,7 @@ class Route(object):
 
     def __str__(self):
         """
-        Print description
+        Print description of the route
         """
         return f"this route of length: {self.length} (ID = {self.id}) connects house: {self.house.id} with battery: {self.battery_id}"
 

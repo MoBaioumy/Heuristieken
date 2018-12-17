@@ -4,7 +4,7 @@
 # Thomas Hoedeman
 
 from Objects.grid import Grid
-from Object.distance import distance
+from Objects.distance import distance
 import random
 import Algoritmes
 
