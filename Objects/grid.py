@@ -86,7 +86,6 @@ class Grid(object):
 
         # error check
         if not H:
-            print("House not found, try disconnecting it first")
             return False
         if len(H) > 1:
             print("Mutiple houses found, please reload grid")
@@ -148,7 +147,6 @@ class Grid(object):
                     self.batteries[battery_idx].routes.remove(route)
                     return True
         # if house id not found print error message
-        print("House not found, please check if house exists in grid.houses or excel file \nif it does exist please check grid.unconnected_houses \nif not present there, reload grid")
         return False
 
 

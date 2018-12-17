@@ -24,7 +24,7 @@ if __name__ == "__main__":
     grid =  Algoritmes.greedy_lookahead(grid)
     grid.draw_grid()
 
-    grid =  Algoritmes.hillclimber_greedy_double_swap(grid)
+    grid =  Algoritmes.hillclimber_greedy(grid)
     grid.draw_grid()
 
     grid = Algoritmes.simulated_annealing(grid, 100000)

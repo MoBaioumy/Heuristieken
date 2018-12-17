@@ -62,14 +62,20 @@ Dit algoritme wordt vooral gebruikt als vergelijking om in ieder geval een oplos
 #### Random algoritme
 
 Het random algoritme verbind per battery random huizen totdat de capaciteit vol is
-Garandeerd geen oplossing.
-Wanneer dit algoritme wel een oplossing geeft kan deze gebruikt worden als beginpunt van een hillclimber
+Wanneer dit geen oplossing opleverd ontbind hij alles en begint opnieuw totdat er resultaat is
 
 #### Greedy algoritme:
 
 Voor het greedy algoritme maken we gebruik van de method find_closest_house waarbij het dichtstbijzijnde huis wordt gezocht voor een batterij.
 
 De batterijen worden één voor één gevuld met huizen m.b.v. de find_closest_house method. Telkens wordt het dichtstbijzijnde huis gepakt tot de batterij capaciteit op het niveau zit waarbij de batterij capaciteit - de capaciteit van het dichtstbijzijnde huis tussen de 5 en de maximale output van het huis valt. In dit geval gaan we opzoek naar het huis dat qua capaciteit goed in de overgebleven capaciteit van de batterij past. Wanneer er meerdere huizen onder die voorwaarde vallen, kiezen we het huis met de kortste afstand. Als de overgebleven capaciteit nog boven de 10 valt, dan doen we hetzelfde als hiervoor beschreven, maar dan met twee huizen tegelijk.
+
+### Greedy_alt:
+Sorteert de huizen op output van hoog naar laag en verbind vervolgens de huizen van hoog naar laag aan de dichtstbijzijnde batterij. Indien dit geen oplossing opleverd vult hij de laatste huizen met het greedy algoritm
+
+### Greedy_lookahead:
+Zoekt elke keer het huis dat de korste verbinding heeft naar de dichtstbijzijnde batterij en verbind deze. Wanneer de capaciteit van een batterij tussen de minimale output en de gemiddelde output x N komt wordt een functie aangeroepen die alle combinaties afgaat om die batterij te vullen en dan de gene kiest die de korste afstand oplevert.
+Wanneer er geen volledige oplossing is gegenereerd wordt greedy aangeroepen om de batterijen te vullen. 
 
 #### Hill climber:
 
