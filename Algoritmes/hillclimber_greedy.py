@@ -1,6 +1,8 @@
-from Objects.house import House
-from Objects.battery import Battery
-from Objects.route import Route
+# SmartGrid December 2018
+# Philip Oosterholt
+# Mohamed Baioumy
+# Thomas Hoedeman
+
 from Objects.grid import Grid
 from Objects.distance import distance
 

@@ -1,11 +1,6 @@
-from Objects.house import House
-from Objects.battery import Battery
-from Objects.route import Route
-from Objects.distance import distance
 from Objects.grid import Grid
 import random
-from Algoritmes.greedy import greedy
-from Algoritmes.greedy_lookahead import greedy_lookahead
+import Algoritmes
 
 def greedy_alt(grid):
     """
@@ -27,12 +22,9 @@ def greedy_alt(grid):
             closest_battery_id = None
             for battery in grid.batteries:
                 dist = distance(house.location, battery.location)
-                print(smallest_dist)
-                print(dist)
                 if dist < smallest_dist and battery.current_capacity > house.max_output:
                     closest_battery_id =  battery.id
                     smallest_dist = dist
-            print(closest_battery_id)
             grid.connect(house.id, closest_battery_id)
         counter += 1
         if counter > 1000:

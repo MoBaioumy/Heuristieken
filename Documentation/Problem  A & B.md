@@ -31,7 +31,7 @@ De maximale kosten zijn de kosten van wanneer alle huizen aan de verste batterij
 
 Hiervoor gaan we er vanuit dat men wel altijd de korste Manhattan route van een huis naar een batterij neemt.
 
-De implementatie is te zien grid.py method longest_paths.
+De implementatie is te zien grid.py method upper_bound
 
 | Wijk 1                         | Wijk 2                        | Wijk 3                         |
 | ------------------------------ | ----------------------------- | ------------------------------ |
@@ -43,7 +43,7 @@ De implementatie is te zien grid.py method longest_paths.
 
 De minimale kosten zijn de kosten van wanneer alle huizen aan de dichtstbijzijnde batterij zijn verbonden plus de kosten van de batterijen. De kosten functie is totaal lengte routes * kosten per route element + totaal aantal batterijen * kosten per batterij.
 
-De implementatie is te zien grid.py method shortest_paths.
+De implementatie is te zien grid.py method lower_bound
 
 | Wijk 1                        | Wijk 2                        | Wijk 3                        |
 | ----------------------------- | ----------------------------- | ----------------------------- |
