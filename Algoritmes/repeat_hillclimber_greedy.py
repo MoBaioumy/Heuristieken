@@ -79,6 +79,8 @@ def repeat_hillclimber_greedy(grid, repeats, bound, save = 'yes', begin = 'rando
         grid.disconnect_all()
         counter += 1
 
+    print("Best solution: ", cost_h)
+
     if save == 'yes':
 
         # save all results in dict aswell
