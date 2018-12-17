@@ -30,7 +30,7 @@ if __name__ == "__main__":
     # 4 = hillclimber_random
     # 5 = k_means
     # 6 = simulated annealing
-    algoritme = 6
+    algoritme = 1
 
     # random
     if algoritme == 1:

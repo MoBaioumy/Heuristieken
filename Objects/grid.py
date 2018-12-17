@@ -110,7 +110,7 @@ class Grid(object):
 
         # if house max_output exceeds battery capacity return and print error message
         if B.current_capacity < H.max_output:
-            print(f"Battery capacity ({round(B.current_capacity, 2)}) is not sufficient")
+            # print(f"Battery capacity ({round(B.current_capacity, 2)}) is not sufficient")
             return False
 
         # remove house from unconnected list
@@ -287,7 +287,7 @@ class Grid(object):
         # plot all unconnected houses in black
         for house in self.unconnected_houses:
             plt.plot(house.location[0], house.location[1], 'k8', markersize = 5)
-            
+
         # get lowerbound
         lower_bound = self.lower_bound()
 
