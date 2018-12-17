@@ -65,6 +65,9 @@ if __name__ == "__main__":
 
     def hill_climber_greedy():
         global grid
+        if grid.unconnected_houses != []:
+            grid.disconnect_all()
+            grid = Algoritmes.random_connect(grid)
         grid = Algoritmes.hillclimber_greedy(grid)
         grid.draw_grid("")
 

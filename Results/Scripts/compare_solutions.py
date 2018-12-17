@@ -2,13 +2,8 @@ import json
 from tkinter.filedialog import askopenfilename
 import os
 import numpy as np
-from grid import Grid
-from house import House
-from battery import Battery
-from route import Route
-from distance import distance
 
-inputfolder = "Results/RandomHillclimber/"
+inputfolder = "Heuristieken/Results/RandomHillclimber/"
 
 wijk1 = []
 wijk2 = []

@@ -3,11 +3,11 @@
 ## **Smart Grid**
 ##### Mohamed Baioumy, Thomas Hoedeman, Philip Oosterholt #####
 
-This repository is for the course *'Heuristieken'* of fall 2018. Our project is about [Smart Grids](http://heuristieken.nl/wiki/index.php?title=SmartGrid).
+Deze repository is voor het vak *'Heuristieken'* herfst 2018. Project: [Smart Grids](http://heuristieken.nl/wiki/index.php?title=SmartGrid).
 
-### Check the [User guide](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/User%20guide.md)
+### Check de [User guide](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/User%20guide.md)
 
-### Description problem
+### beschrijving probleem
 
 Groene energie is de energie van de toekomst, en zelf produceren is de mode van nu. Veel huizen hebben tegenwoordig zonnepanelen, windmolens of andere installaties om zelf energie mee te produceren. Fortuinlijk genoeg produceren die installaties vaak meer dan voor eigen consumptie nodig is. Het overschot zou kunnen worden terugverkocht aan de leverancier, maar de infrastructuur (het grid) is daar veelal niet op berekend. Om de pieken in consumptie en produktie te kunnen managen moeten er batterijen geplaatst worden.
 
