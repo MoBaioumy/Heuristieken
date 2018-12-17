@@ -30,7 +30,7 @@ if __name__ == "__main__":
     # 4 = hillclimber_random
     # 5 = k_means
     # 6 = simulated annealing
-    algoritme = 2
+    algoritme = 5
 
     # random
     if algoritme == 1:
@@ -79,3 +79,5 @@ if __name__ == "__main__":
         grid = Algoritmes.simulated_annealing(grid, N = 100000, Tbegin = 50, Tend = 0.01, cooling = 'sig')
         cost = grid.calculate_total_cost()
         print("Cost of solution:", cost)
+
+    grid.draw_grid()
