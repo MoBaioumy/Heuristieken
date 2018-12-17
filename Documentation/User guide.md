@@ -10,6 +10,7 @@ The following window pops up:
 
 Select the option you want. 
 Now the window will automatically closed and another will open prompting you for the algorithm.
+
 ![GUI Algorithms](https://github.com/ThomasHoed/Heuristieken/blob/master/Documentation/Pictures/Gui_algorithms.PNG)
 
 Try the following:
