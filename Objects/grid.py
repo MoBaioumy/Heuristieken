@@ -15,6 +15,7 @@ import csv
 import random
 import copy
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class Grid(object):
@@ -67,7 +68,10 @@ class Grid(object):
         # open file
         with open(filename, "r") as csvfile:
             # loop over rows of csv file make battery based on data and add to battery list
-            batteries = [Battery(row[0], row[1], "Normal", row[2], 5000) for row in csv.reader(csvfile) if row[0].isdigit()]
+            batteries = [Battery(row[0], row[1], "Normal", row[2], int(row[3])) for row in csv.reader(csvfile) if row[0].isdigit()]
+        
+#        for i in range(6):
+#            batteries = [Battery(np.random.randint(20 + i, 120), np.random.randint(30 + i, 120), "New", 1800, 1800)]
         return batteries
 
 
@@ -263,7 +267,7 @@ class Grid(object):
             plt.plot(current, size, 'k', linewidth=0.2)
 
         # set potential colors for batteries
-        colors = ['b', 'g', 'r', 'm', 'c', 'y']
+        colors = ['b', 'g', 'r', 'm', 'c', 'y', 'k', 'm', 'r', 'g', 'r', 'm', 'c', 'y', 'k', 'm', 'r', 'y', 'k', 'm', 'r']
 
         # plot all houses and batteries, house has color of battery it is connected to
         # for each route in each battery plot the grid_routes in the same color as the battery
