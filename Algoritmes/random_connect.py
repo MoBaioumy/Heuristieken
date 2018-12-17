@@ -16,7 +16,7 @@ def random_connect(grid):
 
             # find min output of unconnected houses
             if len(grid.unconnected_houses) == 1:
-                min_out = grid.unconnected_houses[0]
+                min_out = grid.unconnected_houses[0].max_output
             elif len(grid.unconnected_houses) > 1:
                 min_out = min(house.max_output for house in grid.unconnected_houses)
             else:
